@@ -7,7 +7,7 @@ TextureLoader::TextureLoader(int texturesNumber)
 
 TextureLoader::~TextureLoader()
 {
-    for (int i = 0; i < texturesNumber; i++)
+    for (int i = 0; i < currentIndex; i++)
     {
         SDL_DestroyTexture(textures[i]);
     }
@@ -18,7 +18,7 @@ bool TextureLoader::Load(SDL_Renderer* renderer, const char* path)
     SDL_Surface* loadedSurface = IMG_Load(path);
     if (!loadedSurface) return false;
 
-    textures[texturesNumber++] = SDL_CreateTextureFromSurface(renderer, loadedSurface);
+    textures[currentIndex++] = SDL_CreateTextureFromSurface(renderer, loadedSurface);
     SDL_DestroySurface(loadedSurface);
 
     return true;

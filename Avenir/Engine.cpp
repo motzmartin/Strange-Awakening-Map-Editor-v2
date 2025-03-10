@@ -1,8 +1,8 @@
 #include "Engine.h"
 
-Engine::Engine(unsigned int windowWidth, unsigned int windowHeight)
-    : display(windowWidth, windowHeight, 3),
-    interfaceEvents(3)
+Engine::Engine(int windowWidth, int windowHeight, int texturesNumber, int eventsNumber)
+    : display(windowWidth, windowHeight, texturesNumber),
+    interfaceEvents(eventsNumber)
 {
     if (!display.IsInitialized()) return;
 
@@ -20,7 +20,6 @@ void Engine::Update()
     }
 
     game.Update(interfaceEvents.GetEvents(),
-        interfaceEvents.GetKeyboard(),
         interfaceEvents.GetMouseX(),
         interfaceEvents.GetMouseY());
 }

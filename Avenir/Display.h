@@ -15,7 +15,7 @@ private:
 	bool initialized = false;
 
 public:
-	Display(int windowWidth, int windowHeight, int maxTextures);
+	Display(int windowWidth, int windowHeight, int texturesNumber);
 	~Display();
 
 	void Clear();

@@ -2,11 +2,11 @@
 
 Grid::Grid()
 {
-    arr = new char* [15];
+    grid = new char* [15];
 
     for (int i = 0; i < 15; i++)
     {
-        arr[i] = new char[20]();
+        grid[i] = new char[20]();
     }
 }
 
@@ -14,10 +14,10 @@ Grid::~Grid()
 {
     for (int i = 0; i < 15; i++)
     {
-        delete[] arr[i];
+        delete[] grid[i];
     }
 
-    delete[] arr;
+    delete[] grid;
 }
 
 void Grid::Update(int selectedX, int selectedY, bool mouseDown, bool clear)
@@ -28,14 +28,14 @@ void Grid::Update(int selectedX, int selectedY, bool mouseDown, bool clear)
         {
             for (int j = 0; j < 20; j++)
             {
-                arr[i][j] = 0;
+                grid[i][j] = 0;
             }
         }
     }
 
     if (mouseDown)
     {
-        arr[selectedY][selectedX] = (arr[selectedY][selectedX] + 1) % 2;
+        grid[selectedY][selectedX] = (grid[selectedY][selectedX] + 1) % 2;
     }
 }
 
@@ -47,7 +47,7 @@ void Grid::Draw(SDL_Renderer* renderer)
     {
         for (int j = 0; j < 20; j++)
         {
-            if (arr[i][j])
+            if (grid[i][j])
             {
                 SDL_FRect rect =
                 {

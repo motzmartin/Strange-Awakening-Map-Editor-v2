@@ -12,7 +12,7 @@ private:
 	Grid grid;
 
 public:
-	void Update(bool* events, Uint8* keyboard, int mouseX, int mouseY);
+	void Update(bool* events, int mouseX, int mouseY);
 
 	Hud* GetHud();
 	Grid* GetGrid();

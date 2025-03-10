@@ -5,7 +5,7 @@
 class Grid
 {
 private:
-	char** arr = nullptr;
+	char** grid = nullptr;
 
 public:
 	Grid();

@@ -2,8 +2,8 @@
 
 #include <stdexcept>
 
-Display::Display(int windowWidth, int windowHeight, int maxTextures)
-    : textureLoader(maxTextures)
+Display::Display(int windowWidth, int windowHeight, int texturesNumber)
+    : textureLoader(texturesNumber)
 {
     if (!SDL_Init(SDL_INIT_VIDEO)) return;
 
