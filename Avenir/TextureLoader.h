@@ -7,6 +7,7 @@ class TextureLoader
 {
 private:
 	SDL_Texture** textures = nullptr;
+
 	int currentIndex = 0;
 
 public:

@@ -1,7 +1,5 @@
 #include "Display.h"
 
-#include <stdexcept>
-
 Display::Display(int windowWidth, int windowHeight, int texturesNumber)
     : textureLoader(texturesNumber)
 {
@@ -13,13 +11,11 @@ Display::Display(int windowWidth, int windowHeight, int texturesNumber)
     renderer = SDL_CreateRenderer(window, nullptr);
     if (!renderer) return;
 
+    SDL_SetRenderVSync(renderer, 1);
+
     if (!textureLoader.Load(renderer, "ressource/cursor.png")) return;
     if (!textureLoader.Load(renderer, "ressource/grid.png")) return;
     if (!textureLoader.Load(renderer, "ressource/selection.png")) return;
-
-    SDL_SetTextureAlphaMod(textureLoader.GetTexture(0), 100);
-    SDL_SetTextureAlphaMod(textureLoader.GetTexture(1), 100);
-    SDL_SetTextureAlphaMod(textureLoader.GetTexture(2), 100);
 
     SDL_HideCursor();
 

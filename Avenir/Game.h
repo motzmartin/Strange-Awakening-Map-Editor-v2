@@ -1,7 +1,5 @@
 #pragma once
 
-#include <SDL3/SDL.h>
-
 #include "Hud.h"
 #include "Grid.h"
 
