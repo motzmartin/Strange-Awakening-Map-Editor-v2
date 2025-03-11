@@ -1,5 +1,7 @@
 #pragma once
 
+#include <memory>
+
 #include "Display.h"
 #include "InterfaceEvents.h"
 #include "Game.h"
@@ -7,9 +9,9 @@
 class Engine
 {
 private:
-	Display display;
-	InterfaceEvents interfaceEvents;
-	Game game;
+	std::unique_ptr<Display> display;
+	std::unique_ptr<InterfaceEvents> interfaceEvents;
+	std::unique_ptr<Game> game;
 
 	bool running = true;
 	bool initialized = false;

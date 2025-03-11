@@ -7,7 +7,7 @@ void Hud::Update(int mouseX, int mouseY, bool trigger)
     selectedX = mouseX / 32;
 
     if (selectedX < 0) selectedX = 0;
-    else if (selectedX > 31)  selectedX = 31;
+    else if (selectedX > 31) selectedX = 31;
 
     selectedY = mouseY / 32;
 
@@ -43,8 +43,17 @@ void Hud::Draw(SDL_Renderer* renderer,
     SDL_RenderTexture(renderer, cursor, nullptr, &cursorDst);
 }
 
-int Hud::GetSelectedX() const { return selectedX; }
+int Hud::GetSelectedX() const
+{
+    return selectedX;
+}
 
-int Hud::GetSelectedY() const { return selectedY; }
+int Hud::GetSelectedY() const
+{
+    return selectedY;
+}
 
-bool Hud::IsEnabled() const { return enabled; }
+bool Hud::IsEnabled() const
+{
+    return enabled;
+}

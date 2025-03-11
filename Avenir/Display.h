@@ -1,5 +1,6 @@
 #pragma once
 
+#include <memory>
 #include <SDL3/SDL.h>
 
 #include "TextureLoader.h"
@@ -10,7 +11,7 @@ private:
 	SDL_Window* window = nullptr;
 	SDL_Renderer* renderer = nullptr;
 
-	TextureLoader textureLoader;
+	std::unique_ptr<TextureLoader> textureLoader;
 
 	bool initialized = false;
 

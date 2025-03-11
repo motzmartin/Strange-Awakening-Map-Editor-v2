@@ -24,4 +24,7 @@ bool TextureLoader::Load(SDL_Renderer* renderer, const char* path)
     return true;
 }
 
-SDL_Texture* TextureLoader::GetTexture(int index) const { return textures[index]; }
+SDL_Texture* TextureLoader::GetTexture(int index) const
+{
+    return textures[index];
+}

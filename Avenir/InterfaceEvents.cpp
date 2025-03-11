@@ -58,10 +58,22 @@ void InterfaceEvents::Clear()
     }
 }
 
-Uint8* InterfaceEvents::GetKeyboard() const { return keyboard; }
+Uint8* InterfaceEvents::GetKeyboard() const
+{
+    return keyboard;
+}
 
-int InterfaceEvents::GetMouseX() const { return mouseX; }
+int InterfaceEvents::GetMouseX() const
+{
+    return mouseX;
+}
 
-int InterfaceEvents::GetMouseY() const { return mouseY; }
+int InterfaceEvents::GetMouseY() const
+{
+    return mouseY;
+}
 
-bool* InterfaceEvents::GetEvents() const { return events; }
+bool* InterfaceEvents::GetEvents() const
+{
+    return events;
+}

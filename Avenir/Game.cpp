@@ -1,11 +1,23 @@
 #include "Game.h"
 
-void Game::Update(bool* events, int mouseX, int mouseY)
+Game::Game()
 {
-    hud.Update(mouseX, mouseY, events[1]);
-    grid.Update(hud.GetSelectedX(), hud.GetSelectedY(), events[0], events[2]);
+    hud = std::make_unique<Hud>();
+    grid = std::make_unique<Grid>();
 }
 
-Hud* Game::GetHud() { return &hud; }
+void Game::Update(bool* events, int mouseX, int mouseY)
+{
+    hud->Update(mouseX, mouseY, events[1]);
+    grid->Update(hud->GetSelectedX(), hud->GetSelectedY(), events[0], events[2]);
+}
 
-Grid* Game::GetGrid() { return &grid; }
+Hud* Game::GetHud()
+{
+    return hud.get();
+}
+
+Grid* Game::GetGrid()
+{
+    return grid.get();
+}
