@@ -1,59 +1,112 @@
 #include "Hud.h"
 
-void Hud::Update(int mouseX, int mouseY, bool trigger)
+void Hud::Update(int mouseX, int mouseY, bool showInventory)
 {
-    if (trigger) enabled = !enabled;
-
-    selectedX = mouseX / 32;
-
-    if (selectedX < 0) selectedX = 0;
-    else if (selectedX > 31) selectedX = 31;
-
-    selectedY = mouseY / 32;
-
-    if (selectedY < 0) selectedY = 0;
-    else if (selectedY > 31) selectedY = 31;
-}
-
-void Hud::Draw(SDL_Renderer* renderer,
-    int mouseX,
-    int mouseY,
-    SDL_Texture* cursor,
-    SDL_Texture* grid,
-    SDL_Texture* selection)
-{
-    SDL_RenderTexture(renderer, grid, nullptr, nullptr);
-
-    SDL_FRect selectionDst =
+    if (inventory != showInventory)
     {
-        static_cast<float>(selectedX) * 32.f,
-        static_cast<float>(selectedY) * 32.f,
-        32.f,
-        32.f
-    };
-    SDL_RenderTexture(renderer, selection, nullptr, &selectionDst);
+        if (!showInventory)
+        {
+            tileSelectedX = hoveredX - 16;
+            tileSelectedY = hoveredY - 8;
+        }
 
-    SDL_FRect cursorDst =
+        inventory = showInventory;
+    }
+
+    if (inventory)
     {
-        static_cast<float>(mouseX),
-        static_cast<float>(mouseY),
-        14.f,
-        14.f
-    };
-    SDL_RenderTexture(renderer, cursor, nullptr, &cursorDst);
+        hoveredX = mouseX / 32;
+        hoveredY = mouseY / 32;
+
+        if (hoveredX < 16) hoveredX = 16;
+        else if (hoveredX > 23) hoveredX = 23;
+
+        if (hoveredY < 8) hoveredY = 8;
+        else if (hoveredY > 15) hoveredY = 15;
+    }
+    else
+    {
+        hoveredX = (mouseX - 12) / 8;
+        hoveredY = (mouseY - 12) / 8;
+    }
 }
 
-int Hud::GetSelectedX() const
+void Hud::Draw(SDL_Renderer* renderer, SDL_Texture* sprites)
 {
-    return selectedX;
+    if (inventory)
+    {
+        SDL_FRect rect = { 0.f, 0.f, 640.f, 384.f };
+
+        SDL_SetRenderDrawColor(renderer, 63, 63, 63, 255);
+        SDL_RenderFillRect(renderer, &rect);
+
+        SDL_FRect spritesDst = { 256.f, 128.f, 128.f, 128.f };
+
+        SDL_RenderTexture(renderer, sprites, nullptr, &spritesDst);
+
+        SDL_FRect hoveredDst =
+        {
+            static_cast<float>(hoveredX) * 16.f,
+            static_cast<float>(hoveredY) * 16.f,
+            16.f,
+            16.f
+        };
+
+        SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
+        SDL_RenderRect(renderer, &hoveredDst);
+
+        if (hoveredX - 16 != tileSelectedX || hoveredY - 8 != tileSelectedY)
+        {
+            SDL_FRect selectedRect =
+            {
+                256.f + static_cast<float>(tileSelectedX) * 16.f,
+                128.f + static_cast<float>(tileSelectedY) * 16.f,
+                16.f,
+                16.f
+            };
+
+            SDL_SetRenderDrawColor(renderer, 255, 255, 0, 255);
+            SDL_RenderRect(renderer, &selectedRect);
+        }
+    }
+    else
+    {
+        SDL_FRect tileSrc =
+        {
+            static_cast<float>(tileSelectedX) * 16.f,
+            static_cast<float>(tileSelectedY) * 16.f,
+            16.f,
+            16.f
+        };
+
+        SDL_FRect tileDst =
+        {
+            static_cast<float>(hoveredX) * 4.f,
+            static_cast<float>(hoveredY) * 4.f,
+            16.f,
+            16.f
+        };
+
+        SDL_RenderTexture(renderer, sprites, &tileSrc, &tileDst);
+    }
 }
 
-int Hud::GetSelectedY() const
+int Hud::GetHoveredX() const
 {
-    return selectedY;
+    return hoveredX;
 }
 
-bool Hud::IsEnabled() const
+int Hud::GetHoveredY() const
 {
-    return enabled;
+    return hoveredY;
+}
+
+int Hud::GetTileSelectedX() const
+{
+    return tileSelectedX;
+}
+
+int Hud::GetTileSelectedY() const
+{
+    return tileSelectedY;
 }

@@ -18,13 +18,15 @@ bool TextureLoader::Load(SDL_Renderer* renderer, const char* path)
     SDL_Surface* loadedSurface = IMG_Load(path);
     if (!loadedSurface) return false;
 
-    textures[currentIndex++] = SDL_CreateTextureFromSurface(renderer, loadedSurface);
+    textures[currentIndex] = SDL_CreateTextureFromSurface(renderer, loadedSurface);
     SDL_DestroySurface(loadedSurface);
+
+    SDL_SetTextureScaleMode(textures[currentIndex++], SDL_SCALEMODE_NEAREST);
 
     return true;
 }
 
-SDL_Texture* TextureLoader::GetTexture(int index) const
+SDL_Texture** TextureLoader::GetTextures() const
 {
-    return textures[index];
+    return textures;
 }

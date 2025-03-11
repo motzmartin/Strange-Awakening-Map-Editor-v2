@@ -150,7 +150,7 @@
     <ClCompile Include="Display.cpp" />
     <ClCompile Include="Engine.cpp" />
     <ClCompile Include="Game.cpp" />
-    <ClCompile Include="Grid.cpp" />
+    <ClCompile Include="Map.cpp" />
     <ClCompile Include="Hud.cpp" />
     <ClCompile Include="InterfaceEvents.cpp" />
     <ClCompile Include="Source.cpp" />
@@ -160,7 +160,7 @@
     <ClInclude Include="Display.h" />
     <ClInclude Include="Engine.h" />
     <ClInclude Include="Game.h" />
-    <ClInclude Include="Grid.h" />
+    <ClInclude Include="Map.h" />
     <ClInclude Include="Hud.h" />
     <ClInclude Include="InterfaceEvents.h" />
     <ClInclude Include="TextureLoader.h" />

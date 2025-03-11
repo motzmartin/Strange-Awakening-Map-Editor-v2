@@ -28,11 +28,6 @@ bool InterfaceEvents::Poll()
         case SDL_EVENT_KEY_DOWN:
             switch (event.key.key)
             {
-            case SDLK_H:
-                events[1] = true;
-                break;
-            case SDLK_C:
-                events[2] = true;
             }
             break;
 

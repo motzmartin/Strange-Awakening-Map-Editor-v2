@@ -16,5 +16,5 @@ public:
 
 	bool Load(SDL_Renderer* renderer, const char* path);
 
-	SDL_Texture* GetTexture(int index) const;
+	SDL_Texture** GetTextures() const;
 };

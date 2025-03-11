@@ -4,7 +4,7 @@
 
 int SDL_main(int argc, char* argv[])
 {
-    Engine engine(640, 480, 3, 3);
+    Engine engine(1280, 768, 1, 1);
 
     if (!engine.IsInitialized())
     {

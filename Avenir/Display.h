@@ -19,7 +19,7 @@ public:
 	Display(int windowWidth, int windowHeight, int texturesNumber);
 	~Display();
 
-	void Clear();
+	void Clear(Uint8 r, Uint8 g, Uint8 b);
 	void Render();
 
 	SDL_Renderer* GetRenderer() const;

@@ -5,21 +5,20 @@
 class Hud
 {
 private:
-	int selectedX = 0;
-	int selectedY = 0;
+	int hoveredX = 0;
+	int hoveredY = 0;
 
-	bool enabled = true;
+	int tileSelectedX = 0;
+	int tileSelectedY = 0;
+
+	bool inventory = false;
 
 public:
-	void Update(int mouseX, int mouseY, bool trigger);
-	void Draw(SDL_Renderer* renderer,
-		int mouseX,
-		int mouseY,
-		SDL_Texture* cursor,
-		SDL_Texture* grid,
-		SDL_Texture* selection);
+	void Update(int mouseX, int mouseY, bool showInventory);
+	void Draw(SDL_Renderer* renderer, SDL_Texture* sprites);
 
-	int GetSelectedX() const;
-	int GetSelectedY() const;
-	bool IsEnabled() const;
+	int GetHoveredX() const;
+	int GetHoveredY() const;
+	int GetTileSelectedX() const;
+	int GetTileSelectedY() const;
 };

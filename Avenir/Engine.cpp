@@ -23,24 +23,15 @@ void Engine::Update()
 
     game->Update(interfaceEvents->GetEvents(),
         interfaceEvents->GetMouseX(),
-        interfaceEvents->GetMouseY());
+        interfaceEvents->GetMouseY(),
+        interfaceEvents->GetKeyboard());
 }
 
 void Engine::Render()
 {
-    display->Clear();
+    display->Clear(0, 0, 0);
 
-    game->GetGrid()->Draw(display->GetRenderer());
-
-    if (game->GetHud()->IsEnabled())
-    {
-        game->GetHud()->Draw(display->GetRenderer(),
-            interfaceEvents->GetMouseX(),
-            interfaceEvents->GetMouseY(),
-            display->GetTextureLoader()->GetTexture(0),
-            display->GetTextureLoader()->GetTexture(1),
-            display->GetTextureLoader()->GetTexture(2));
-    }
+    game->Draw(display->GetRenderer(), display->GetTextureLoader()->GetTextures());
 
     display->Render();
 }
