@@ -17,7 +17,7 @@ private:
 	bool initialized = false;
 
 public:
-	Engine(int windowWidth, int windowHeight, int texturesNumber, int eventsNumber);
+	Engine(int windowWidth, int windowHeight, int eventsNumber, int texturesNumber);
 
 	void Update();
 	void Render();

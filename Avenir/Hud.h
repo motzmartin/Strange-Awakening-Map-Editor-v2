@@ -8,23 +8,20 @@ class Hud
 private:
     void DrawInventory(SDL_Renderer* renderer,
         SDL_Texture* sprites,
-        int pointedX,
-        int pointedY,
-        int selectedX,
-        int selectedY);
+        SDL_FPoint pointed,
+        SDL_FPoint selected);
     void DrawFrontTiles(SDL_Renderer* renderer,
-        std::vector<SDL_Point>* frontTiles,
-        int pointedX,
-        int pointedY);
+        std::vector<SDL_FPoint>* frontTiles,
+        SDL_FPoint pointed,
+        bool isTileSelected);
 
 public:
     void Draw(SDL_Renderer* renderer,
         SDL_Texture* sprites,
-        int menu,
-        int pointedX,
-        int pointedY,
-        int selectedX,
-        int selectedY,
-        std::vector<SDL_Point>* frontTiles,
+        SDL_FPoint pointed,
+        SDL_FPoint selected,
+        std::vector<SDL_FPoint>* frontTiles,
+        int mode,
+        int grid,
         bool isTileSelected);
 };

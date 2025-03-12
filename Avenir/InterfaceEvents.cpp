@@ -1,10 +1,10 @@
 #include "InterfaceEvents.h"
 
-InterfaceEvents::InterfaceEvents(int eventsNumber)
-    : eventsNumber(eventsNumber)
+InterfaceEvents::InterfaceEvents(int _eventsNumber)
 {
     keyboard = (Uint8*)SDL_GetKeyboardState(nullptr);
 
+    eventsNumber = _eventsNumber;
     events = new bool[eventsNumber]();
 }
 
@@ -26,8 +26,10 @@ bool InterfaceEvents::Poll()
             break;
 
         case SDL_EVENT_KEY_DOWN:
-            switch (event.key.key)
+            switch (event.key.scancode)
             {
+            case SDL_SCANCODE_G:
+                events[1] = true;
             }
             break;
 
@@ -36,11 +38,7 @@ bool InterfaceEvents::Poll()
         }
     }
 
-    float tX, tY;
-    SDL_GetMouseState(&tX, &tY);
-
-    mouseX = static_cast<int>(tX);
-    mouseY = static_cast<int>(tY);
+    SDL_GetMouseState(&mouse.x, &mouse.y);
 
     return true;
 }
@@ -58,14 +56,9 @@ Uint8* InterfaceEvents::GetKeyboard() const
     return keyboard;
 }
 
-int InterfaceEvents::GetMouseX() const
+SDL_FPoint InterfaceEvents::GetMouse() const
 {
-    return mouseX;
-}
-
-int InterfaceEvents::GetMouseY() const
-{
-    return mouseY;
+    return mouse;
 }
 
 bool* InterfaceEvents::GetEvents() const

@@ -23,6 +23,6 @@ public:
 	void Render();
 
 	SDL_Renderer* GetRenderer() const;
-	TextureLoader* GetTextureLoader();
+	TextureLoader* GetTextureLoader() const;
 	bool IsInitialized() const;
 };

@@ -4,7 +4,7 @@
 
 int main(int argc, char* argv[])
 {
-    Engine engine(1280, 768, 1, 1);
+    Engine engine(1280, 768, 2, 1);
 
     if (!engine.IsInitialized())
     {

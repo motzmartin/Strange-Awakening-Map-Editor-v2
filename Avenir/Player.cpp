@@ -4,36 +4,33 @@ void Player::Update(Uint8* keyboard)
 {
 	if (keyboard[SDL_SCANCODE_LEFT])
 	{
-		x -= 2;
+		pos.x -= 1.f;
 	}
 
 	if (keyboard[SDL_SCANCODE_UP])
 	{
-		y -= 2;
+		pos.y -= 1.f;
 	}
 
 	if (keyboard[SDL_SCANCODE_RIGHT])
 	{
-		x += 2;
+		pos.x += 1.f;
 	}
 
 	if (keyboard[SDL_SCANCODE_DOWN])
 	{
-		y += 2;
+		pos.y += 1.f;
 	}
 }
 
 void Player::Draw(SDL_Renderer* renderer)
 {
-	SDL_Rect rect = { x, y, 16, 16 };
-	SDL_FRect rectF;
-	SDL_RectToFRect(&rect, &rectF);
-
+	SDL_FRect rect = { pos.x, pos.y, 16.f, 16.f };
 	SDL_SetRenderDrawColor(renderer, 0, 0, 255, 255);
-	SDL_RenderFillRect(renderer, &rectF);
+	SDL_RenderRect(renderer, &rect);
 }
 
-int Player::GetY() const
+float Player::GetY() const
 {
-	return y;
+	return pos.y;
 }

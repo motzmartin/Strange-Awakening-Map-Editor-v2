@@ -2,99 +2,115 @@
 
 void Hud::Draw(SDL_Renderer* renderer,
     SDL_Texture* sprites,
-    int menu,
-    int pointedX,
-    int pointedY,
-    int selectedX,
-    int selectedY,
-    std::vector<SDL_Point>* frontTiles,
+    SDL_FPoint pointed,
+    SDL_FPoint selected,
+    std::vector<SDL_FPoint>* frontTiles,
+    int mode,
+    int grid,
     bool isTileSelected)
 {
-    if (menu == 1)
+    if (mode == 1)
     {
-        DrawInventory(renderer, sprites, pointedX, pointedY, selectedX, selectedY);
+        SDL_SetTextureAlphaMod(sprites, 255);
+
+        DrawInventory(renderer, sprites, pointed, selected);
     }
-    else if (menu == 2)
+    else if (mode == 2 || mode == 3)
     {
         if (isTileSelected)
         {
-            SDL_Rect hoveredRect = { pointedX * 4, pointedY * 4, 16, 16 };
-            SDL_FRect hoveredRectF;
-            SDL_RectToFRect(&hoveredRect, &hoveredRectF);
-
-            SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
-            SDL_RenderRect(renderer, &hoveredRectF);
+            SDL_FRect hoveredRect = { pointed.x * 4.f, pointed.y * 4.f, 16.f, 16.f };
+            if (mode == 2)
+            {
+                SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
+            }
+            else if (mode == 3)
+            {
+                SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);
+            }
+            SDL_RenderRect(renderer, &hoveredRect);
         }
 
-        DrawFrontTiles(renderer, frontTiles, pointedX, pointedY);
+        DrawFrontTiles(renderer, frontTiles, pointed, isTileSelected);
     }
     else
     {
-        SDL_Rect tileSrc = { selectedX * 16, selectedY * 16, 16, 16 };
-        SDL_FRect tileSrcF;
-        SDL_RectToFRect(&tileSrc, &tileSrcF);
+        SDL_SetTextureAlphaMod(sprites, 191);
 
-        SDL_Rect tileDst = { pointedX * 4, pointedY * 4, 16, 16 };
-        SDL_FRect tileDstF;
-        SDL_RectToFRect(&tileDst, &tileDstF);
+        SDL_FRect tileSrc = { selected.x * 16.f, selected.y * 16.f, 16.f, 16.f };
+        SDL_FRect tileDst = { pointed.x * 4.f, pointed.y * 4.f, 16.f, 16.f };
+        SDL_RenderTexture(renderer, sprites, &tileSrc, &tileDst);
 
-        SDL_RenderTexture(renderer, sprites, &tileSrcF, &tileDstF);
+        if (grid != 0)
+        {
+            SDL_SetRenderDrawColor(renderer, 255, 255, 255, 15);
+
+            for (int i = 0; i < 40; i++)
+            {
+                SDL_FRect rect = { static_cast<float>(i) * 16.f, 0.f, 1.f, 384.f };
+                SDL_RenderRect(renderer, &rect);
+            }
+
+            for (int i = 0; i < 24; i++)
+            {
+                SDL_FRect rect = { 0.f, static_cast<float>(i) * 16.f, 640.f, 1.f };
+                SDL_RenderRect(renderer, &rect);
+            }
+
+            if (grid == 2)
+            {
+                for (int i = 0; i < 160; i++)
+                {
+                    SDL_FRect rect = { static_cast<float>(i) * 4.f, 0.f, 1.f, 384.f };
+                    SDL_RenderRect(renderer, &rect);
+                }
+
+                for (int i = 0; i < 96; i++)
+                {
+                    SDL_FRect rect = { 0.f, static_cast<float>(i) * 4.f, 640.f, 1.f };
+                    SDL_RenderRect(renderer, &rect);
+                }
+            }
+        }
     }
 }
 
 void Hud::DrawInventory(SDL_Renderer* renderer,
     SDL_Texture* sprites,
-    int pointedX,
-    int pointedY,
-    int selectedX,
-    int selectedY)
+    SDL_FPoint pointed,
+    SDL_FPoint selected)
 {
-    SDL_Rect backgroundRect = { 0, 0, 640, 384 };
-    SDL_FRect backgroundRectF;
-    SDL_RectToFRect(&backgroundRect, &backgroundRectF);
-
+    SDL_FRect backgroundRect = { 0.f, 0.f, 640.f, 384.f };
     SDL_SetRenderDrawColor(renderer, 63, 63, 63, 255);
-    SDL_RenderFillRect(renderer, &backgroundRectF);
+    SDL_RenderFillRect(renderer, &backgroundRect);
 
-    SDL_Rect inventoryRect = { 256, 128, 128, 128 };
-    SDL_FRect inventoryRectF;
-    SDL_RectToFRect(&inventoryRect, &inventoryRectF);
+    SDL_FRect inventoryRect = { 256.f, 128.f, 128.f, 128.f };
+    SDL_RenderTexture(renderer, sprites, nullptr, &inventoryRect);
 
-    SDL_RenderTexture(renderer, sprites, nullptr, &inventoryRectF);
-
-    SDL_Rect pointedRect = { pointedX * 16, pointedY * 16, 16, 16 };
-    SDL_FRect pointedRectF;
-    SDL_RectToFRect(&pointedRect, &pointedRectF);
-
+    SDL_FRect pointedRect = { pointed.x * 16.f, pointed.y * 16.f, 16.f, 16.f };
     SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
-    SDL_RenderRect(renderer, &pointedRectF);
+    SDL_RenderRect(renderer, &pointedRect);
 
-    if (pointedX - 16 != selectedX || pointedY - 8 != selectedY)
+    if (pointed.x - 16.f != selected.x || pointed.y - 8.f != selected.y)
     {
-        SDL_Rect selectedRect = { 256 + selectedX * 16, 128 + selectedY * 16, 16, 16 };
-        SDL_FRect selectedRectF;
-        SDL_RectToFRect(&selectedRect, &selectedRectF);
-
+        SDL_FRect selectedRect = { (selected.x + 16.f) * 16.f, (selected.y + 8.f) * 16, 16.f, 16.f };
         SDL_SetRenderDrawColor(renderer, 0, 255, 0, 255);
-        SDL_RenderRect(renderer, &selectedRectF);
+        SDL_RenderRect(renderer, &selectedRect);
     }
 }
 
 void Hud::DrawFrontTiles(SDL_Renderer* renderer,
-    std::vector<SDL_Point>* frontTiles,
-    int pointedX,
-    int pointedY)
+    std::vector<SDL_FPoint>* frontTiles,
+    SDL_FPoint pointed,
+    bool isTileSelected)
 {
     for (int i = 0; i < frontTiles->size(); i++)
     {
-        if (pointedX != (*frontTiles)[i].x || pointedY != (*frontTiles)[i].y)
+        if (!isTileSelected || (pointed.x != (*frontTiles)[i].x || pointed.y != (*frontTiles)[i].y))
         {
-            SDL_Rect frontRect = { (*frontTiles)[i].x * 4, (*frontTiles)[i].y * 4, 16, 16 };
-            SDL_FRect frontRectF;
-            SDL_RectToFRect(&frontRect, &frontRectF);
-
+            SDL_FRect frontRect = { (*frontTiles)[i].x * 4.f, (*frontTiles)[i].y * 4.f, 16.f, 16.f };
             SDL_SetRenderDrawColor(renderer, 255, 255, 0, 255);
-            SDL_RenderRect(renderer, &frontRectF);
+            SDL_RenderRect(renderer, &frontRect);
         }
     }
 }

@@ -1,6 +1,7 @@
 #pragma once
 
 #include <memory>
+#include <cmath>
 #include <SDL3/SDL.h>
 
 #include "Hud.h"
@@ -14,21 +15,18 @@ private:
 	std::unique_ptr<Map> map;
 	std::unique_ptr<Player> player;
 
-	int pointedX = 0;
-	int pointedY = 0;
-
-	int selectedX = 0;
-	int selectedY = 0;
+	SDL_FPoint pointed = { 0 };
+	SDL_FPoint selected = { 0 };
 
 	int tileSelected = -1;
+	int grid = 0;
+	int mode = 0;
 
-	int menu = 0;
-
-	void SetPointed(int mouseX, int mouseY);
+	void SetPointed(SDL_FPoint mouse);
 
 public:
 	Game();
 
-	void Update(bool* events, int mouseX, int mouseY, Uint8* keyboard);
+	void Update(bool* events, SDL_FPoint mouse, Uint8* keyboard);
 	void Draw(SDL_Renderer* renderer, SDL_Texture** textures);
 };

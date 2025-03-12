@@ -1,44 +1,49 @@
 #include "Map.h"
 
-void Map::Update(int hoveredX,
-    int hoveredY,
-    int tileSelectedX,
-    int tileSelectedY,
-    bool mouseDown)
+void Map::Draw(SDL_Renderer* renderer, SDL_Texture* sprites, bool behind, float playerY)
 {
-    if (mouseDown)
-    {
-        tiles.push_back({ hoveredX, hoveredY, tileSelectedX, tileSelectedY, false });
-    }
-}
+    SDL_SetTextureAlphaMod(sprites, 255);
 
-void Map::Draw(SDL_Renderer* renderer, SDL_Texture* sprites, bool behind, int playerY)
-{
     for (int i = 0; i < tiles.size(); i++)
     {
-        if ((behind && tiles[i].y < playerY) || (!behind && tiles[i].y >= playerY))
+        if (behind == (!tiles[i].front || tiles[i].pos.y * 4.f < playerY))
         {
-            SDL_Rect srcRect = { tiles[i].spriteX * 16, tiles[i].spriteY * 16, 16, 16 };
-            SDL_FRect srcRectF;
-            SDL_RectToFRect(&srcRect, &srcRectF);
+            SDL_FRect srcRect = { tiles[i].sprite.x * 16.f, tiles[i].sprite.y * 16.f, 16.f, 16.f };
+            SDL_FRect dstRect = { tiles[i].pos.x * 4.f, tiles[i].pos.y * 4.f, 16.f, 16.f };
 
-            SDL_Rect dstRect = { tiles[i].x * 4, tiles[i].y * 4, 16, 16 };
-            SDL_FRect dstRectF;
-            SDL_RectToFRect(&dstRect, &dstRectF);
-
-            SDL_RenderTexture(renderer, sprites, &srcRectF, &dstRectF);
+            SDL_RenderTexture(renderer, sprites, &srcRect, &dstRect);
         }
     }
 }
 
-int Map::GetTile(int x, int y, int* tileX, int* tileY)
+void Map::AddTile(SDL_FPoint position, SDL_FPoint sprite, bool front)
 {
-    for (int i = 0; i < tiles.size(); i++)
+    tiles.push_back({ position, sprite, front });
+}
+
+void Map::RemoveTile(int index)
+{
+    tiles.erase(tiles.begin() + index);
+}
+
+void Map::SwitchFrontTile(int index)
+{
+    tiles[index].front = !tiles[index].front;
+}
+
+int Map::GetTile(SDL_FPoint pos, SDL_FPoint* tilePos)
+{
+    for (int i = tiles.size() - 1; i >= 0; i--)
     {
-        if (x >= tiles[i].x && y >= tiles[i].y && x < tiles[i].x + 4 && y < tiles[i].y + 4)
+        if (pos.x >= tiles[i].pos.x &&
+            pos.y >= tiles[i].pos.y &&
+            pos.x < tiles[i].pos.x + 4.f &&
+            pos.y < tiles[i].pos.y + 4.f)
         {
-            if (tileX) *tileX = tiles[i].x;
-            if (tileY) *tileY = tiles[i].y;
+            if (tilePos)
+            {
+                *tilePos = tiles[i].pos;
+            }
 
             return i;
         }
@@ -47,18 +52,13 @@ int Map::GetTile(int x, int y, int* tileX, int* tileY)
     return -1;
 }
 
-void Map::GetFrontTiles(std::vector<SDL_Point>* frontTiles)
+void Map::GetFrontTiles(std::vector<SDL_FPoint>* frontTiles)
 {
     for (int i = 0; i < tiles.size(); i++)
     {
         if (tiles[i].front)
         {
-            frontTiles->push_back({ tiles[i].x, tiles[i].y });
+            frontTiles->push_back(tiles[i].pos);
         }
     }
-}
-
-void Map::SwitchFrontTile(int index)
-{
-    tiles[index].front = !tiles[index].front;
 }

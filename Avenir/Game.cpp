@@ -1,26 +1,26 @@
 #include "Game.h"
 
-void Game::SetPointed(int mouseX, int mouseY)
+void Game::SetPointed(SDL_FPoint mouse)
 {
-    if (menu == 1)
+    if (mode == 1)
     {
-        pointedX = mouseX / 32;
-        pointedY = mouseY / 32;
+        pointed.x = floorf(mouse.x / 16.f);
+        pointed.y = floorf(mouse.y / 16.f);
 
-        if (pointedX < 16) pointedX = 16;
-        else if (pointedX > 23) pointedX = 23;
+        if (pointed.x < 16.f) pointed.x = 16.f;
+        else if (pointed.x > 23.f) pointed.x = 23.f;
 
-        if (pointedY < 8) pointedY = 8;
-        else if (pointedY > 15) pointedY = 15;
+        if (pointed.y < 8.f) pointed.y = 8.f;
+        else if (pointed.y > 15.f) pointed.y = 15.f;
     }
-    else if (menu == 2)
+    else if (mode == 2 || mode == 3)
     {
-        tileSelected = map->GetTile(mouseX / 8, mouseY / 8, &pointedX, &pointedY);
+        tileSelected = map->GetTile({ floorf(mouse.x / 4.f), floorf(mouse.y / 4.f) }, &pointed);
     }
     else
     {
-        pointedX = (mouseX - 12) / 8;
-        pointedY = (mouseY - 12) / 8;
+        pointed.x = floorf(mouse.x / 4.f);
+        pointed.y = floorf(mouse.y / 4.f);
     }
 }
 
@@ -31,47 +31,38 @@ Game::Game()
     player = std::make_unique<Player>();
 }
 
-void Game::Update(bool* events, int mouseX, int mouseY, Uint8* keyboard)
+void Game::Update(bool* events, SDL_FPoint mouse, Uint8* keyboard)
 {
-    int prevMenu = menu;
+    int prevMode = mode;
 
-    if (keyboard[SDL_SCANCODE_E])
-    {
-        menu = 1;
-    }
-    else if (keyboard[SDL_SCANCODE_F])
-    {
-        menu = 2;
-    }
-    else
-    {
-        menu = 0;
-    }
+    if (keyboard[SDL_SCANCODE_E]) mode = 1;
+    else if (keyboard[SDL_SCANCODE_F]) mode = 2;
+    else if (keyboard[SDL_SCANCODE_R]) mode = 3;
+    else mode = 0;
 
-    if (menu != prevMenu)
+    if (mode != prevMode)
     {
-        if (prevMenu == 1)
+        if (prevMode == 1)
         {
-            selectedX = pointedX - 16;
-            selectedY = pointedY - 8;
+            selected.x = pointed.x - 16.f;
+            selected.y = pointed.y - 8.f;
         }
-        else if (prevMenu == 2)
+        else if (prevMode == 2)
         {
-            if (tileSelected != -1)
-            {
-                map->SwitchFrontTile(tileSelected);
-            }
+            if (tileSelected != -1) map->SwitchFrontTile(tileSelected);
+        }
+        else if (prevMode == 3)
+        {
+            if (tileSelected != -1) map->RemoveTile(tileSelected);
         }
     }
 
-    SetPointed(mouseX, mouseY);
+    SetPointed({ floorf(mouse.x / 2.f), floorf(mouse.y / 2.f) });
+
+    if (events[1]) grid = (grid + 1) % 3;
+    if (events[0]) map->AddTile(pointed, selected, false);
 
     player->Update(keyboard);
-
-    if (menu == 0)
-    {
-        map->Update(pointedX, pointedY, selectedX, selectedY, events[0]);
-    }
 }
 
 void Game::Draw(SDL_Renderer* renderer, SDL_Texture** textures)
@@ -80,20 +71,8 @@ void Game::Draw(SDL_Renderer* renderer, SDL_Texture** textures)
     player->Draw(renderer);
     map->Draw(renderer, textures[0], false, player->GetY());
 
-    std::vector<SDL_Point> frontTiles;
+    std::vector<SDL_FPoint> frontTiles;
+    if (mode == 2) map->GetFrontTiles(&frontTiles);
 
-    if (menu == 2)
-    {
-        map->GetFrontTiles(&frontTiles);
-    }
-
-    hud->Draw(renderer,
-        textures[0],
-        menu,
-        pointedX,
-        pointedY,
-        selectedX,
-        selectedY,
-        &frontTiles,
-        tileSelected != -1);
+    hud->Draw(renderer, textures[0], pointed, selected, &frontTiles, mode, grid, tileSelected != -1);
 }

@@ -5,12 +5,11 @@
 class Player
 {
 private:
-	int x = 0;
-	int y = 0;
+	SDL_FPoint pos = { 0 };
 
 public:
 	void Update(Uint8* keyboard);
 	void Draw(SDL_Renderer* renderer);
 
-	int GetY() const;
+	float GetY() const;
 };

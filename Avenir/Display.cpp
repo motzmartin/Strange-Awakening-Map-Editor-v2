@@ -16,6 +16,7 @@ Display::Display(int windowWidth, int windowHeight, int texturesNumber)
 
     SDL_SetRenderVSync(renderer, 1);
     SDL_SetRenderScale(renderer, 2.f, 2.f);
+    SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_BLEND);
 
     initialized = true;
 }
@@ -44,7 +45,7 @@ SDL_Renderer* Display::GetRenderer() const
     return renderer;
 }
 
-TextureLoader* Display::GetTextureLoader()
+TextureLoader* Display::GetTextureLoader() const
 {
     return textureLoader.get();
 }

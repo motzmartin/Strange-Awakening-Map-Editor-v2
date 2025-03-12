@@ -1,6 +1,6 @@
 #include "Engine.h"
 
-Engine::Engine(int windowWidth, int windowHeight, int texturesNumber, int eventsNumber)
+Engine::Engine(int windowWidth, int windowHeight, int eventsNumber, int texturesNumber)
 {
     display = std::make_unique<Display>(windowWidth, windowHeight, texturesNumber);
     if (!display->IsInitialized()) return;
@@ -22,8 +22,7 @@ void Engine::Update()
     }
 
     game->Update(interfaceEvents->GetEvents(),
-        interfaceEvents->GetMouseX(),
-        interfaceEvents->GetMouseY(),
+        interfaceEvents->GetMouse(),
         interfaceEvents->GetKeyboard());
 }
 

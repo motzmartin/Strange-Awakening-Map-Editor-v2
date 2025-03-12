@@ -153,6 +153,7 @@
     <ClCompile Include="Map.cpp" />
     <ClCompile Include="Hud.cpp" />
     <ClCompile Include="InterfaceEvents.cpp" />
+    <ClCompile Include="Player.cpp" />
     <ClCompile Include="Source.cpp" />
     <ClCompile Include="TextureLoader.cpp" />
   </ItemGroup>
@@ -163,6 +164,7 @@
     <ClInclude Include="Map.h" />
     <ClInclude Include="Hud.h" />
     <ClInclude Include="InterfaceEvents.h" />
+    <ClInclude Include="Player.h" />
     <ClInclude Include="TextureLoader.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
