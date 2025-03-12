@@ -1,24 +1,30 @@
 #pragma once
 
+#include <vector>
 #include <SDL3/SDL.h>
 
 class Hud
 {
 private:
-	int hoveredX = 0;
-	int hoveredY = 0;
-
-	int tileSelectedX = 0;
-	int tileSelectedY = 0;
-
-	bool inventory = false;
+    void DrawInventory(SDL_Renderer* renderer,
+        SDL_Texture* sprites,
+        int pointedX,
+        int pointedY,
+        int selectedX,
+        int selectedY);
+    void DrawFrontTiles(SDL_Renderer* renderer,
+        std::vector<SDL_Point>* frontTiles,
+        int pointedX,
+        int pointedY);
 
 public:
-	void Update(int mouseX, int mouseY, bool showInventory);
-	void Draw(SDL_Renderer* renderer, SDL_Texture* sprites);
-
-	int GetHoveredX() const;
-	int GetHoveredY() const;
-	int GetTileSelectedX() const;
-	int GetTileSelectedY() const;
+    void Draw(SDL_Renderer* renderer,
+        SDL_Texture* sprites,
+        int menu,
+        int pointedX,
+        int pointedY,
+        int selectedX,
+        int selectedY,
+        std::vector<SDL_Point>* frontTiles,
+        bool isTileSelected);
 };

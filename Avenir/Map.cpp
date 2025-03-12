@@ -1,13 +1,5 @@
 #include "Map.h"
 
-Map::Map()
-{
-}
-
-Map::~Map()
-{
-}
-
 void Map::Update(int hoveredX,
     int hoveredY,
     int tileSelectedX,
@@ -16,30 +8,57 @@ void Map::Update(int hoveredX,
 {
     if (mouseDown)
     {
-        tiles.push_back({ hoveredX, hoveredY, tileSelectedX, tileSelectedY });
+        tiles.push_back({ hoveredX, hoveredY, tileSelectedX, tileSelectedY, false });
     }
 }
 
-void Map::Draw(SDL_Renderer* renderer, SDL_Texture* sprites)
+void Map::Draw(SDL_Renderer* renderer, SDL_Texture* sprites, bool behind, int playerY)
 {
     for (int i = 0; i < tiles.size(); i++)
     {
-        SDL_FRect srcRect =
+        if ((behind && tiles[i].y < playerY) || (!behind && tiles[i].y >= playerY))
         {
-            static_cast<float>(tiles[i].spriteX) * 16.f,
-            static_cast<float>(tiles[i].spriteY) * 16.f,
-            16.f,
-            16.f
-        };
+            SDL_Rect srcRect = { tiles[i].spriteX * 16, tiles[i].spriteY * 16, 16, 16 };
+            SDL_FRect srcRectF;
+            SDL_RectToFRect(&srcRect, &srcRectF);
 
-        SDL_FRect dstRect =
-        {
-            static_cast<float>(tiles[i].x) * 4.f,
-            static_cast<float>(tiles[i].y) * 4.f,
-            16.f,
-            16.f
-        };
+            SDL_Rect dstRect = { tiles[i].x * 4, tiles[i].y * 4, 16, 16 };
+            SDL_FRect dstRectF;
+            SDL_RectToFRect(&dstRect, &dstRectF);
 
-        SDL_RenderTexture(renderer, sprites, &srcRect, &dstRect);
+            SDL_RenderTexture(renderer, sprites, &srcRectF, &dstRectF);
+        }
     }
+}
+
+int Map::GetTile(int x, int y, int* tileX, int* tileY)
+{
+    for (int i = 0; i < tiles.size(); i++)
+    {
+        if (x >= tiles[i].x && y >= tiles[i].y && x < tiles[i].x + 4 && y < tiles[i].y + 4)
+        {
+            if (tileX) *tileX = tiles[i].x;
+            if (tileY) *tileY = tiles[i].y;
+
+            return i;
+        }
+    }
+
+    return -1;
+}
+
+void Map::GetFrontTiles(std::vector<SDL_Point>* frontTiles)
+{
+    for (int i = 0; i < tiles.size(); i++)
+    {
+        if (tiles[i].front)
+        {
+            frontTiles->push_back({ tiles[i].x, tiles[i].y });
+        }
+    }
+}
+
+void Map::SwitchFrontTile(int index)
+{
+    tiles[index].front = !tiles[index].front;
 }

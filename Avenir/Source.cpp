@@ -2,7 +2,7 @@
 
 #include "Engine.h"
 
-int SDL_main(int argc, char* argv[])
+int main(int argc, char* argv[])
 {
     Engine engine(1280, 768, 1, 1);
 
