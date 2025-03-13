@@ -49,7 +49,7 @@ void Game_UpdateCursor(Game* game, Vector mouse)
 void Game_Update(Game* game, bool* events, Vector mouse, Uint8* keyboard)
 {
     Uint64 prevTimer = game->timer;
-    game->timer = SDL_GetTicks();
+    game->timer = SDL_GetTicksNS();
     Uint64 elapsed = game->timer - prevTimer;
 
     int prevMode = game->mode;
@@ -82,8 +82,16 @@ void Game_Update(Game* game, bool* events, Vector mouse, Uint8* keyboard)
         Map_AddTile(game->map, game->cursor, game->selected, false);
     }
 
-    Player_Update(game->player, keyboard, elapsed);
-    Camera_Update(game->camera, game->player->pos, elapsed);
+    if (events[1])
+    {
+        game->grid = !game->grid;
+    }
+
+    if (game->mode == 0)
+    {
+        Player_Update(game->player, keyboard, elapsed);
+        Camera_Update(game->camera, game->player->pos, elapsed);
+    }
 }
 
 void Game_Draw(Game* game, SDL_Renderer* renderer, SDL_Texture** textures, Vector mouse)
@@ -113,6 +121,7 @@ void Game_Draw(Game* game, SDL_Renderer* renderer, SDL_Texture** textures, Vecto
         game->selected,
         Camera_GetCentered(game->camera),
         game->mode,
+        game->grid,
         game->tilePointed != -1);
 
     if (game->mode == 2)

@@ -6,6 +6,7 @@ void HudRender_Draw(SDL_Renderer* renderer,
     Vector selected,
     Vector cameraPos,
     int mode,
+    bool grid,
     bool isTileSelected)
 {
     if (mode == 1)
@@ -18,30 +19,29 @@ void HudRender_Draw(SDL_Renderer* renderer,
     {
         if (isTileSelected)
         {
-            Vector selectedPos = { floorf(cursor.x - cameraPos.x), floorf(cursor.y - cameraPos.y) };
+            Vector selectedPos = { cursor.x - cameraPos.x, cursor.y - cameraPos.y };
             if (mode == 2)
             {
-                HudRender_DrawRect(renderer, selectedPos, 255, 255, 255);
+                HudRender_DrawRect(renderer, selectedPos, 48.f, 255, 255, 255);
             }
             else if (mode == 3)
             {
-                HudRender_DrawRect(renderer, selectedPos, 255, 0, 0);
+                HudRender_DrawRect(renderer, selectedPos, 48.f, 255, 0, 0);
             }
         }
     }
     else
     {
-        SDL_SetTextureAlphaMod(sprites, 191);
+        Vector tilePos = { cursor.x - cameraPos.x, cursor.y - cameraPos.y };
 
         SDL_FRect tileSrc = { selected.x / 3.f, selected.y / 3.f, 16.f, 16.f };
-        SDL_FRect tileDst =
-        {
-            floorf(cursor.x - cameraPos.x),
-            floorf(cursor.y - cameraPos.y),
-            48.f,
-            48.f
-        };
+        SDL_FRect tileDst = { tilePos.x, tilePos.y, 48.f, 48.f };
         SDL_RenderTexture(renderer, sprites, &tileSrc, &tileDst);
+
+        if (grid)
+        {
+            HudRender_DrawGrid(renderer, cameraPos);
+        }
     }
 }
 
@@ -58,12 +58,12 @@ void HudRender_DrawInventory(SDL_Renderer* renderer,
     SDL_RenderTexture(renderer, sprites, NULL, &inventoryRect);
 
     Vector cursorPos = { cursor.x + 384.f, cursor.y + 192.f };
-    HudRender_DrawRect(renderer, cursorPos, 255, 255, 255);
+    HudRender_DrawRect(renderer, cursorPos, 48.f, 255, 255, 255);
 
     if (cursor.x != selected.x || cursor.y != selected.y)
     {
         Vector selectedPos = { selected.x + 384.f, selected.y + 192.f };
-        HudRender_DrawRect(renderer, selectedPos, 0, 255, 0);
+        HudRender_DrawRect(renderer, selectedPos, 48.f, 0, 255, 0);
     }
 }
 
@@ -80,22 +80,40 @@ void HudRender_DrawFrontTiles(SDL_Renderer* renderer,
 
         if (!isTileSelected || (cursor.x != tilePos.x || cursor.y != tilePos.y))
         {
-            Vector frontPos = { floorf(tilePos.x - cameraPos.x), floorf(tilePos.y - cameraPos.y) };
-            HudRender_DrawRect(renderer, frontPos, 255, 255, 0);
+            Vector frontPos = { tilePos.x - cameraPos.x, tilePos.y - cameraPos.y };
+            HudRender_DrawRect(renderer, frontPos, 48.f, 255, 255, 0);
         }
+    }
+}
+
+void HudRender_DrawGrid(SDL_Renderer* renderer, Vector cameraPos)
+{
+    SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
+
+    for (int i = 0; i < 24 + 1; i++)
+    {
+        SDL_FRect rect = { (float)i * 48.f - fmodf(cameraPos.x, 48.f), 0.f, 3.f, 768.f };
+        SDL_RenderFillRect(renderer, &rect);
+    }
+
+    for (int i = 0; i < 16 + 1; i++)
+    {
+        SDL_FRect rect = { 0.f, (float)i * 48.f - fmodf(cameraPos.y, 48.f), 1152.f, 3.f };
+        SDL_RenderFillRect(renderer, &rect);
     }
 }
 
 void HudRender_DrawRect(SDL_Renderer* renderer,
     Vector position,
+    float size,
     Uint8 r,
     Uint8 g,
     Uint8 b)
 {
-    SDL_FRect leftSide = { position.x, position.y, 3.f, 48.f };
-    SDL_FRect rightSide = { position.x + 45.f, position.y, 3.f, 48.f };
-    SDL_FRect topSide = { position.x + 3.f, position.y, 43.f, 3.f };
-    SDL_FRect bottomSide = { position.x + 3.f, position.y + 45.f, 43.f, 3.f };
+    SDL_FRect leftSide = { position.x, position.y, 3.f, size };
+    SDL_FRect rightSide = { position.x + size - 3.f, position.y, 3.f, size };
+    SDL_FRect topSide = { position.x + 3.f, position.y, size - 6.f, 3.f };
+    SDL_FRect bottomSide = { position.x + 3.f, position.y + size - 3.f, size - 6.f, 3.f };
 
     SDL_SetRenderDrawColor(renderer, r, g, b, 255);
     SDL_RenderFillRect(renderer, &leftSide);

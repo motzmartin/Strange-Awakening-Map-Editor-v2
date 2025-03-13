@@ -27,13 +27,8 @@ void Player_Update(Player* player, Uint8* keyboard, Uint64 elapsed)
 		else acceleration.y = 1.f;
 	}
 
-	acceleration = Vector_Scale(Vector_Normalize(acceleration), elapsed * 0.15f);
+	acceleration = Vector_Scale(Vector_Normalize(acceleration), elapsed * 1.5E-7F);
 	player->pos = Vector_Add(player->pos, acceleration);
-
-	if (player->pos.x > prevPos.x) player->sprite.y = 48.f;
-	else if (player->pos.x < prevPos.x) player->sprite.y = 16.f;
-	else if (player->pos.y > prevPos.y) player->sprite.y = 0.f;
-	else if (player->pos.y < prevPos.y) player->sprite.y = 32.f;
 
 	if (prevPos.x == player->pos.x && prevPos.y == player->pos.y)
 	{
@@ -41,7 +36,12 @@ void Player_Update(Player* player, Uint8* keyboard, Uint64 elapsed)
 	}
 	else
 	{
-		player->sprite.x = (float)(player->count % 500 / 125 + 1) * 16.f;
+		player->sprite.x = (float)(player->count / 125000000 % 4 + 1) * 16.f;
+
+		if (player->pos.x > prevPos.x) player->sprite.y = 48.f;
+		else if (player->pos.x < prevPos.x) player->sprite.y = 16.f;
+		else if (player->pos.y > prevPos.y) player->sprite.y = 0.f;
+		else if (player->pos.y < prevPos.y) player->sprite.y = 32.f;
 	}
 }
 

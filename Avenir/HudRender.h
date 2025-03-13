@@ -11,6 +11,7 @@ void HudRender_Draw(SDL_Renderer* renderer,
     Vector selected,
     Vector cameraPos,
     int mode,
+    bool grid,
     bool isTileSelected);
 
 void HudRender_DrawInventory(SDL_Renderer* renderer,
@@ -25,8 +26,11 @@ void HudRender_DrawFrontTiles(SDL_Renderer* renderer,
     int frontTilesNumber,
     bool isTileSelected);
 
+void HudRender_DrawGrid(SDL_Renderer* renderer, Vector cameraPos);
+
 void HudRender_DrawRect(SDL_Renderer* renderer,
     Vector position,
+    float size,
     Uint8 r,
     Uint8 g,
     Uint8 b);

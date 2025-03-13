@@ -28,6 +28,8 @@ typedef struct Game
 	int tilePointed;
 	int mode;
 
+	bool grid;
+
 	Uint64 timer;
 } Game;
 

@@ -45,11 +45,23 @@ Vector Vector_Constrain(Vector vector, Vector min, Vector max)
 
 Vector Vector_Normalize(Vector vector)
 {
-    float mag = sqrtf(powf(vector.x, 2.f) + powf(vector.y, 2.f));
+    Vector result = { 0 };
 
-    if (mag == 0) {
-        return (Vector) { 0.f, 0.f };
+    float magnitude = sqrtf(powf(vector.x, 2.f) + powf(vector.y, 2.f));
+    if (!magnitude) {
+        return result;
     }
 
-    return (Vector) { vector.x / mag, vector.y / mag };
+    result.x = vector.x / magnitude;
+    result.y = vector.y / magnitude;
+
+    return result;
+}
+
+Vector Vector_Floor(Vector vector)
+{
+    vector.x = floorf(vector.x);
+    vector.y = floorf(vector.y);
+
+    return vector;
 }
