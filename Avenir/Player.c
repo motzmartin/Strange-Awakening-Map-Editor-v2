@@ -12,22 +12,21 @@ void Player_Update(Player* player, Uint8* keyboard, Uint64 elapsed)
 {
 	player->count += elapsed;
 
-	Vector prevPos = player->pos;
 	Vector acceleration = { 0 };
 
 	if (keyboard[SDL_SCANCODE_A] != keyboard[SDL_SCANCODE_D])
 	{
-		if (keyboard[SDL_SCANCODE_A]) acceleration.x = -1.f;
-		else acceleration.x = 1.f;
+		acceleration.x = keyboard[SDL_SCANCODE_A] ? -1.f : 1.f;
 	}
 
 	if (keyboard[SDL_SCANCODE_W] != keyboard[SDL_SCANCODE_S])
 	{
-		if (keyboard[SDL_SCANCODE_W]) acceleration.y = -1.f;
-		else acceleration.y = 1.f;
+		acceleration.y = keyboard[SDL_SCANCODE_W] ? -1.f : 1.f;
 	}
 
 	acceleration = Vector_Scale(Vector_Normalize(acceleration), elapsed * 1.5E-7F);
+
+	Vector prevPos = player->pos;
 	player->pos = Vector_Add(player->pos, acceleration);
 
 	if (prevPos.x == player->pos.x && prevPos.y == player->pos.y)

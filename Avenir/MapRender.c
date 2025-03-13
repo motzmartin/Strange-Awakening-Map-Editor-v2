@@ -12,7 +12,6 @@ void MapRender_Draw(Map* map,
     for (int i = 0; i < map->cursor; i++)
     {
         Tile* tile = map->tiles[i];
-        if (!tile) break;
 
         if (behind == (!tile->front || tile->pos.y < playerY))
         {

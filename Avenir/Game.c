@@ -28,7 +28,6 @@ void Game_UpdateCursor(Game* game, Vector mouse)
 
         Vector min = { 0 };
         Vector max = { 7.f * 48.f, 7.f * 48.f };
-
         game->cursor = Vector_Constrain(game->cursor, min, max);
     }
     else if (game->mode == 2 || game->mode == 3)
@@ -94,7 +93,7 @@ void Game_Update(Game* game, bool* events, Vector mouse, Uint8* keyboard)
     }
 }
 
-void Game_Draw(Game* game, SDL_Renderer* renderer, SDL_Texture** textures, Vector mouse)
+void Game_Draw(Game* game, SDL_Renderer* renderer, SDL_Texture** textures)
 {
     MapRender_Draw(game->map,
         renderer,

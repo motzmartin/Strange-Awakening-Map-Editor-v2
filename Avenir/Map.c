@@ -13,7 +13,7 @@ Map* Map_Create()
 
 void Map_AddTile(Map* map, Vector position, Vector selected, bool front)
 {
-    if (map->cursor >= 4096) return;
+    if (map->cursor == 4096) return;
 
     map->tiles[map->cursor] = calloc(1, sizeof(Tile));
     if (!map->tiles[map->cursor]) return;

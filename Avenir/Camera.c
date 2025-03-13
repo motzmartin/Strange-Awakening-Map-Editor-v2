@@ -14,14 +14,15 @@ void Camera_Update(Camera* camera, Vector playerPos, Uint64 elapsed)
 	Vector diff = Vector_Sub(target, camera->pos);
 
 	float distance = sqrtf(powf(diff.x, 2.f) + powf(diff.y, 2.f));
-
-	camera->pos = Vector_Add(camera->pos, Vector_Scale(diff, distance * elapsed * 1E-10F));
+	if (distance > 8.f)
+	{
+		camera->pos = Vector_Add(camera->pos, Vector_Scale(diff, distance * elapsed * 1E-10F));
+	}
 }
 
 Vector Camera_GetCentered(Camera* camera)
 {
 	Vector center = { 576.f - 24.f, 384.f - 24.f };
-
 	return Vector_Sub(Vector_Floor(camera->pos), center);
 }
 

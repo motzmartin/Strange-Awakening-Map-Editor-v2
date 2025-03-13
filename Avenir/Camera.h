@@ -1,6 +1,7 @@
 #pragma once
 
 #include <stdlib.h>
+#include <math.h>
 #include <SDL3/SDL.h>
 
 #include "Vector.h"
