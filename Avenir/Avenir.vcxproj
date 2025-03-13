@@ -151,6 +151,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Camera.c" />
     <ClCompile Include="Display.c" />
     <ClCompile Include="Engine.c" />
     <ClCompile Include="Game.c" />
@@ -161,10 +162,12 @@
     <ClCompile Include="MapRender.c" />
     <ClCompile Include="Player.c" />
     <ClCompile Include="PlayerRender.c" />
+    <ClCompile Include="Vector.c" />
     <ClCompile Include="Source.c" />
     <ClCompile Include="TextureLoader.c" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Camera.h" />
     <ClInclude Include="Display.h" />
     <ClInclude Include="Engine.h" />
     <ClInclude Include="Game.h" />
@@ -175,7 +178,7 @@
     <ClInclude Include="MapRender.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="PlayerRender.h" />
-    <ClInclude Include="Position.h" />
+    <ClInclude Include="Vector.h" />
     <ClInclude Include="TextureLoader.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

@@ -4,12 +4,12 @@
 #include <stdbool.h>
 #include <SDL3/SDL.h>
 
-#include "Position.h"
+#include "Vector.h"
 
 typedef struct InterfaceEvents
 {
 	Uint8* keyboard;
-	Position mouse;
+	Vector mouse;
 
 	bool* events;
 	int eventsNumber;

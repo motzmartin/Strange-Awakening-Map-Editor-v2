@@ -5,35 +5,75 @@ Map* Map_Create()
     Map* map = calloc(1, sizeof(Map));
     if (!map) return NULL;
 
-    map->tiles = calloc(1024, sizeof(Tile*));
+    map->tiles = calloc(4096, sizeof(Tile*));
     if (!map->tiles) return NULL;
 
     return map;
 }
 
-void Map_AddTile(Map* map, Position position, Position sprite, bool front)
+void Map_AddTile(Map* map, Vector position, Vector selected, bool front)
 {
-    int index = 0;
+    if (map->cursor >= 4096) return;
 
-    while (map->tiles[index])
-    {
-        index++;
-    }
+    map->tiles[map->cursor] = calloc(1, sizeof(Tile));
+    if (!map->tiles[map->cursor]) return;
 
-    map->tiles[index] = calloc(1, sizeof(Tile));
-    if (!map->tiles[index]) return;
-
-    Tile newTile = { position, sprite, front };
-    *map->tiles[index] = newTile;
+    Tile newTile = { position, Vector_Scale(selected, 1.f / 3.f), front };
+    *map->tiles[map->cursor++] = newTile;
 }
 
 void Map_RemoveTile(Map* map, int index)
 {
-    if (!map->tiles[index]) return;
-
     free(map->tiles[index]);
-
     map->tiles[index] = NULL;
+
+    for (int i = index; i < map->cursor - 1; i++)
+    {
+        map->tiles[i] = map->tiles[i + 1];
+    }
+
+    map->tiles[--map->cursor] = NULL;
+}
+
+int Map_GetTileIndex(Map* map, Vector position)
+{
+    for (int i = map->cursor - 1; i >= 0; i--)
+    {
+        Tile* tile = map->tiles[i];
+
+        if (position.x >= tile->pos.x && position.y >= tile->pos.y &&
+            position.x < tile->pos.x + 48.f && position.y < tile->pos.y + 48.f)
+        {
+            return i;
+        }
+    }
+
+    return -1;
+}
+
+Vector Map_GetTilePosition(Map* map, int index)
+{
+    return map->tiles[index]->pos;
+}
+
+Vector* Map_GetFrontTiles(Map* map, int* frontTilesNumber)
+{
+    Vector* frontTiles = calloc(4096, sizeof(Vector));
+    if (!frontTiles) return NULL;
+
+    int index = 0;
+
+    for (int i = 0; i < map->cursor; i++)
+    {
+        if (map->tiles[i]->front)
+        {
+            frontTiles[index++] = map->tiles[i]->pos;
+        }
+    }
+
+    *frontTilesNumber = index;
+
+    return frontTiles;
 }
 
 void Map_SwitchFrontTile(Map* map, int index)
@@ -41,89 +81,17 @@ void Map_SwitchFrontTile(Map* map, int index)
     map->tiles[index]->front = !map->tiles[index]->front;
 }
 
-int Map_GetTile(Map* map, Position pos, Position* tilePos)
+void Map_FreeFrontTiles(Vector* frontTiles)
 {
-    int index = 0;
-
-    while (map->tiles[index])
-    {
-        Tile* tile = map->tiles[index];
-
-        if (pos.x >= tile->pos.x &&
-            pos.y >= tile->pos.y &&
-            pos.x < tile->pos.x + 4.f &&
-            pos.y < tile->pos.y + 4.f)
-        {
-            if (tilePos)
-            {
-                *tilePos = tile->pos;
-            }
-
-            return index;
-        }
-
-        index++;
-    }
-
-    return -1;
-}
-
-Position** Map_GetFrontTiles(Map* map)
-{
-    Position** frontTiles = calloc(1024, sizeof(Position*));
-    if (!frontTiles) return NULL;
-
-    int index = 0;
-    int frontTilesIndex = 0;
-
-    while (map->tiles[index])
-    {
-        if (map->tiles[index]->front)
-        {
-            Position* frontTile = calloc(1, sizeof(Position));
-            if (!frontTile)
-            {
-                Map_FreeFrontTiles(frontTiles);
-                return NULL;
-            }
-
-            *frontTile = map->tiles[index]->pos;
-
-            frontTiles[frontTilesIndex++] = frontTile;
-        }
-
-        index++;
-    }
-
-    return frontTiles;
-}
-
-void Map_FreeFrontTiles(Position** frontTiles)
-{
-    if (!frontTiles)
-    {
-        return;
-    }
-
-    int index = 0;
-
-    while (frontTiles[index])
-    {
-        free(frontTiles[index]);
-
-        index++;
-    }
-
     free(frontTiles);
 }
 
 void Map_Free(Map* map)
 {
-    for (int i = 0; i < 1024; i++)
+    for (int i = 0; i < map->cursor; i++)
     {
-        Map_RemoveTile(map, i);
+        free(map->tiles[i]);
     }
-
     free(map->tiles);
 
     free(map);

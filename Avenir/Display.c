@@ -16,10 +16,15 @@ Display* Display_Create(int windowWidth, int windowHeight, int texturesNumber)
     display->textureLoader = TextureLoader_Create(texturesNumber);
     if (!display->textureLoader) return NULL;
 
-    if (!TextureLoader_Load(display->textureLoader, display->renderer, "ressource/sprites.png")) return NULL;
+    if (!TextureLoader_Load(display->textureLoader,
+        display->renderer,
+        "ressource/sprites.png")) return NULL;
+
+    if (!TextureLoader_Load(display->textureLoader,
+        display->renderer,
+        "ressource/player_sprite.png")) return NULL;
 
     SDL_SetRenderVSync(display->renderer, 1);
-    SDL_SetRenderScale(display->renderer, 2.f, 2.f);
     SDL_SetRenderDrawBlendMode(display->renderer, SDL_BLENDMODE_BLEND);
 
     return display;

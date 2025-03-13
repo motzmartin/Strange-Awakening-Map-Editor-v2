@@ -11,36 +11,47 @@ Game* Game_Create()
     game->player = Player_Create();
     if (!game->player) return NULL;
 
+    game->camera = Camera_Create();
+    if (!game->camera) return NULL;
+
+    game->timer = SDL_GetTicks();
+
     return game;
 }
 
-void Game_SetPointed(Game* game, Position mouse)
+void Game_UpdateCursor(Game* game, Vector mouse)
 {
     if (game->mode == 1)
     {
-        game->pointed.x = floorf(mouse.x / 16.f);
-        game->pointed.y = floorf(mouse.y / 16.f);
+        Vector sub = { 384.f, 192.f };
+        game->cursor = Vector_Square(Vector_Sub(mouse, sub), 48.f);
 
-        if (game->pointed.x < 16.f) game->pointed.x = 16.f;
-        else if (game->pointed.x > 23.f) game->pointed.x = 23.f;
+        Vector min = { 0 };
+        Vector max = { 7.f * 48.f, 7.f * 48.f };
 
-        if (game->pointed.y < 8.f) game->pointed.y = 8.f;
-        else if (game->pointed.y > 15.f) game->pointed.y = 15.f;
+        game->cursor = Vector_Constrain(game->cursor, min, max);
     }
     else if (game->mode == 2 || game->mode == 3)
     {
-        Position pos = { floorf(mouse.x / 4.f), floorf(mouse.y / 4.f) };
-        game->tileSelected = Map_GetTile(game->map, pos, &game->pointed);
+        game->tilePointed = Map_GetTileIndex(game->map, Vector_Add(mouse, Camera_GetCentered(game->camera)));
+
+        if (game->tilePointed != -1)
+        {
+            game->cursor = Map_GetTilePosition(game->map, game->tilePointed);
+        }
     }
     else
     {
-        game->pointed.x = floorf(mouse.x / 4.f);
-        game->pointed.y = floorf(mouse.y / 4.f);
+        game->cursor = Vector_Square(Vector_Add(mouse, Camera_GetCentered(game->camera)), 12.f);
     }
 }
 
-void Game_Update(Game* game, bool* events, Position mouse, Uint8* keyboard)
+void Game_Update(Game* game, bool* events, Vector mouse, Uint8* keyboard)
 {
+    Uint64 prevTimer = game->timer;
+    game->timer = SDL_GetTicks();
+    Uint64 elapsed = game->timer - prevTimer;
+
     int prevMode = game->mode;
 
     if (keyboard[SDL_SCANCODE_E]) game->mode = 1;
@@ -52,47 +63,69 @@ void Game_Update(Game* game, bool* events, Position mouse, Uint8* keyboard)
     {
         if (prevMode == 1)
         {
-            game->selected.x = game->pointed.x - 16.f;
-            game->selected.y = game->pointed.y - 8.f;
+            game->selected = game->cursor;
         }
-        else if (prevMode == 2)
+        else if (prevMode == 2 && game->tilePointed != -1)
         {
-            if (game->tileSelected != -1) Map_SwitchFrontTile(game->map, game->tileSelected);
+            Map_SwitchFrontTile(game->map, game->tilePointed);
         }
-        else if (prevMode == 3)
+        else if (prevMode == 3 && game->tilePointed != -1)
         {
-            if (game->tileSelected != -1) Map_RemoveTile(game->map, game->tileSelected);
+            Map_RemoveTile(game->map, game->tilePointed);
         }
     }
 
-    Position pos = { floorf(mouse.x / 2.f), floorf(mouse.y / 2.f) };
-    Game_SetPointed(game, pos);
+    Game_UpdateCursor(game, mouse);
 
-    if (events[1]) game->grid = (game->grid + 1) % 3;
-    if (events[0]) Map_AddTile(game->map, game->pointed, game->selected, false);
+    if (events[0])
+    {
+        Map_AddTile(game->map, game->cursor, game->selected, false);
+    }
 
-    Player_Update(game->player, keyboard);
+    Player_Update(game->player, keyboard, elapsed);
+    Camera_Update(game->camera, game->player->pos, elapsed);
 }
 
-void Game_Draw(Game* game, SDL_Renderer* renderer, SDL_Texture** textures)
+void Game_Draw(Game* game, SDL_Renderer* renderer, SDL_Texture** textures, Vector mouse)
 {
-    MapRender_Draw(game->map, renderer, textures[0], true, game->player->pos.y);
-    PlayerRender_Draw(game->player, renderer);
-    MapRender_Draw(game->map, renderer, textures[0], false, game->player->pos.y);
+    MapRender_Draw(game->map,
+        renderer,
+        textures[0],
+        Camera_GetCentered(game->camera),
+        game->player->pos.y,
+        true);
+
+    PlayerRender_Draw(game->player,
+        renderer,
+        textures[1],
+        Camera_GetCentered(game->camera));
+
+    MapRender_Draw(game->map,
+        renderer,
+        textures[0],
+        Camera_GetCentered(game->camera),
+        game->player->pos.y,
+        false);
 
     HudRender_Draw(renderer,
         textures[0],
-        game->pointed,
+        game->cursor,
         game->selected,
+        Camera_GetCentered(game->camera),
         game->mode,
-        game->grid,
-        game->tileSelected != -1);
+        game->tilePointed != -1);
 
     if (game->mode == 2)
     {
-        Position** frontTiles = Map_GetFrontTiles(game->map);
+        int frontTilesNumber = 0;
+        Vector* frontTiles = Map_GetFrontTiles(game->map, &frontTilesNumber);
 
-        HudRender_DrawFrontTiles(renderer, frontTiles, game->pointed, game->tileSelected != -1);
+        HudRender_DrawFrontTiles(renderer,
+            game->cursor,
+            Camera_GetCentered(game->camera),
+            frontTiles,
+            frontTilesNumber,
+            game->tilePointed != -1);
 
         Map_FreeFrontTiles(frontTiles);
     }
@@ -100,6 +133,7 @@ void Game_Draw(Game* game, SDL_Renderer* renderer, SDL_Texture** textures)
 
 void Game_Free(Game* game)
 {
+    Camera_Free(game->camera);
     Player_Free(game->player);
     Map_Free(game->map);
 

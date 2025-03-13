@@ -3,22 +3,30 @@
 #include <stdbool.h>
 #include <SDL3/SDL.h>
 
-#include "Position.h"
-
-void HudRender_DrawInventory(SDL_Renderer* renderer,
-    SDL_Texture* sprites,
-    Position pointed,
-    Position selected);
-
-void HudRender_DrawFrontTiles(SDL_Renderer* renderer,
-    Position** frontTiles,
-    Position pointed,
-    bool isTileSelected);
+#include "Vector.h"
 
 void HudRender_Draw(SDL_Renderer* renderer,
     SDL_Texture* sprites,
-    Position pointed,
-    Position selected,
+    Vector cursor,
+    Vector selected,
+    Vector cameraPos,
     int mode,
-    int grid,
     bool isTileSelected);
+
+void HudRender_DrawInventory(SDL_Renderer* renderer,
+    SDL_Texture* sprites,
+    Vector cursor,
+    Vector selected);
+
+void HudRender_DrawFrontTiles(SDL_Renderer* renderer,
+    Vector cursor,
+    Vector cameraPos,
+    Vector* frontTiles,
+    int frontTilesNumber,
+    bool isTileSelected);
+
+void HudRender_DrawRect(SDL_Renderer* renderer,
+    Vector position,
+    Uint8 r,
+    Uint8 g,
+    Uint8 b);

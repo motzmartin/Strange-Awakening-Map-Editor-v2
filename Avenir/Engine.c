@@ -44,7 +44,8 @@ void Engine_Render(Engine* engine)
 
     Game_Draw(engine->game,
         engine->display->renderer,
-        engine->display->textureLoader->textures);
+        engine->display->textureLoader->textures,
+        engine->interfaceEvents->mouse);
 
     Display_Render(engine->display);
 }
