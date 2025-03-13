@@ -1,32 +1,38 @@
 #pragma once
 
-#include <memory>
-#include <cmath>
+#include <stdlib.h>
+#include <stdbool.h>
+#include <math.h>
 #include <SDL3/SDL.h>
+
+#include "Position.h"
 
 #include "Hud.h"
 #include "Map.h"
 #include "Player.h"
 
-class Game
+#include "HudRender.h"
+#include "MapRender.h"
+#include "PlayerRender.h"
+
+typedef struct Game
 {
-private:
-	std::unique_ptr<Hud> hud;
-	std::unique_ptr<Map> map;
-	std::unique_ptr<Player> player;
+	Map* map;
+	Player* player;
 
-	SDL_FPoint pointed = { 0 };
-	SDL_FPoint selected = { 0 };
+	Position pointed;
+	Position selected;
 
-	int tileSelected = -1;
-	int grid = 0;
-	int mode = 0;
+	int tileSelected;
+	int grid;
+	int mode;
+} Game;
 
-	void SetPointed(SDL_FPoint mouse);
+Game* Game_Create();
 
-public:
-	Game();
+void Game_SetPointed(Game* game, Position mouse);
 
-	void Update(bool* events, SDL_FPoint mouse, Uint8* keyboard);
-	void Draw(SDL_Renderer* renderer, SDL_Texture** textures);
-};
+void Game_Update(Game* game, bool* events, Position mouse, Uint8* keyboard);
+void Game_Draw(Game* game, SDL_Renderer* renderer, SDL_Texture** textures);
+
+void Game_Free(Game* game);

@@ -1,15 +1,17 @@
 #pragma once
 
+#include <stdlib.h>
 #include <SDL3/SDL.h>
 
-class Player
+#include "Position.h"
+
+typedef struct Player
 {
-private:
-	SDL_FPoint pos = { 0 };
+	Position pos;
+} Player;
 
-public:
-	void Update(Uint8* keyboard);
-	void Draw(SDL_Renderer* renderer);
+Player* Player_Create();
 
-	float GetY() const;
-};
+void Player_Update(Player* player, Uint8* keyboard);
+
+void Player_Free(Player* player);

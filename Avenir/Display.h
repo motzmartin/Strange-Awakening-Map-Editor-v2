@@ -1,28 +1,21 @@
 #pragma once
 
-#include <memory>
+#include <stdlib.h>
 #include <SDL3/SDL.h>
 
 #include "TextureLoader.h"
 
-class Display
+typedef struct Display
 {
-private:
-	SDL_Window* window = nullptr;
-	SDL_Renderer* renderer = nullptr;
+	SDL_Window* window;
+	SDL_Renderer* renderer;
 
-	std::unique_ptr<TextureLoader> textureLoader;
+	TextureLoader* textureLoader;
+} Display;
 
-	bool initialized = false;
+Display* Display_Create(int windowWidth, int windowHeight, int texturesNumber);
 
-public:
-	Display(int windowWidth, int windowHeight, int texturesNumber);
-	~Display();
+void Display_Clear(Display* display, Uint8 r, Uint8 g, Uint8 b);
+void Display_Render(Display* display);
 
-	void Clear(Uint8 r, Uint8 g, Uint8 b);
-	void Render();
-
-	SDL_Renderer* GetRenderer() const;
-	TextureLoader* GetTextureLoader() const;
-	bool IsInitialized() const;
-};
+void Display_Free(Display* display);

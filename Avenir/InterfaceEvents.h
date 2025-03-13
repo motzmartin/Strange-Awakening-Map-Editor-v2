@@ -1,25 +1,23 @@
 #pragma once
 
+#include <stdlib.h>
+#include <stdbool.h>
 #include <SDL3/SDL.h>
 
-class InterfaceEvents
+#include "Position.h"
+
+typedef struct InterfaceEvents
 {
-private:
-	Uint8* keyboard = nullptr;
+	Uint8* keyboard;
+	Position mouse;
 
-	SDL_FPoint mouse = { 0 };
+	bool* events;
+	int eventsNumber;
+} InterfaceEvents;
 
-	bool* events = nullptr;
-	int eventsNumber = 0;
+InterfaceEvents* InterfaceEvents_Create(int eventsNumber);
 
-public:
-	InterfaceEvents(int eventsNumber);
-	~InterfaceEvents();
+bool InterfaceEvents_Poll(InterfaceEvents* interfaceEvents);
+void InterfaceEvents_Clear(InterfaceEvents* interfaceEvents);
 
-	bool Poll();
-	void Clear();
-
-	Uint8* GetKeyboard() const;
-	SDL_FPoint GetMouse() const;
-	bool* GetEvents() const;
-};
+void InterfaceEvents_Free(InterfaceEvents* interfaceEvents);

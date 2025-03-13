@@ -1,10 +1,9 @@
-#include "Hud.h"
+#include "HudRender.h"
 
-void Hud::Draw(SDL_Renderer* renderer,
+void HudRender_Draw(SDL_Renderer* renderer,
     SDL_Texture* sprites,
-    SDL_FPoint pointed,
-    SDL_FPoint selected,
-    std::vector<SDL_FPoint>* frontTiles,
+    Position pointed,
+    Position selected,
     int mode,
     int grid,
     bool isTileSelected)
@@ -13,7 +12,7 @@ void Hud::Draw(SDL_Renderer* renderer,
     {
         SDL_SetTextureAlphaMod(sprites, 255);
 
-        DrawInventory(renderer, sprites, pointed, selected);
+        HudRender_DrawInventory(renderer, sprites, pointed, selected);
     }
     else if (mode == 2 || mode == 3)
     {
@@ -30,8 +29,6 @@ void Hud::Draw(SDL_Renderer* renderer,
             }
             SDL_RenderRect(renderer, &hoveredRect);
         }
-
-        DrawFrontTiles(renderer, frontTiles, pointed, isTileSelected);
     }
     else
     {
@@ -47,13 +44,13 @@ void Hud::Draw(SDL_Renderer* renderer,
 
             for (int i = 0; i < 40; i++)
             {
-                SDL_FRect rect = { static_cast<float>(i) * 16.f, 0.f, 1.f, 384.f };
+                SDL_FRect rect = { (float)i * 16.f, 0.f, 1.f, 384.f };
                 SDL_RenderRect(renderer, &rect);
             }
 
             for (int i = 0; i < 24; i++)
             {
-                SDL_FRect rect = { 0.f, static_cast<float>(i) * 16.f, 640.f, 1.f };
+                SDL_FRect rect = { 0.f, (float)i * 16.f, 640.f, 1.f };
                 SDL_RenderRect(renderer, &rect);
             }
 
@@ -61,13 +58,13 @@ void Hud::Draw(SDL_Renderer* renderer,
             {
                 for (int i = 0; i < 160; i++)
                 {
-                    SDL_FRect rect = { static_cast<float>(i) * 4.f, 0.f, 1.f, 384.f };
+                    SDL_FRect rect = { (float)i * 4.f, 0.f, 1.f, 384.f };
                     SDL_RenderRect(renderer, &rect);
                 }
 
                 for (int i = 0; i < 96; i++)
                 {
-                    SDL_FRect rect = { 0.f, static_cast<float>(i) * 4.f, 640.f, 1.f };
+                    SDL_FRect rect = { 0.f, (float)i * 4.f, 640.f, 1.f };
                     SDL_RenderRect(renderer, &rect);
                 }
             }
@@ -75,17 +72,17 @@ void Hud::Draw(SDL_Renderer* renderer,
     }
 }
 
-void Hud::DrawInventory(SDL_Renderer* renderer,
+void HudRender_DrawInventory(SDL_Renderer* renderer,
     SDL_Texture* sprites,
-    SDL_FPoint pointed,
-    SDL_FPoint selected)
+    Position pointed,
+    Position selected)
 {
     SDL_FRect backgroundRect = { 0.f, 0.f, 640.f, 384.f };
     SDL_SetRenderDrawColor(renderer, 63, 63, 63, 255);
     SDL_RenderFillRect(renderer, &backgroundRect);
 
     SDL_FRect inventoryRect = { 256.f, 128.f, 128.f, 128.f };
-    SDL_RenderTexture(renderer, sprites, nullptr, &inventoryRect);
+    SDL_RenderTexture(renderer, sprites, NULL, &inventoryRect);
 
     SDL_FRect pointedRect = { pointed.x * 16.f, pointed.y * 16.f, 16.f, 16.f };
     SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
@@ -99,18 +96,22 @@ void Hud::DrawInventory(SDL_Renderer* renderer,
     }
 }
 
-void Hud::DrawFrontTiles(SDL_Renderer* renderer,
-    std::vector<SDL_FPoint>* frontTiles,
-    SDL_FPoint pointed,
+void HudRender_DrawFrontTiles(SDL_Renderer* renderer,
+    Position** frontTiles,
+    Position pointed,
     bool isTileSelected)
 {
-    for (int i = 0; i < frontTiles->size(); i++)
+    int index = 0;
+
+    while (frontTiles[index])
     {
-        if (!isTileSelected || (pointed.x != (*frontTiles)[i].x || pointed.y != (*frontTiles)[i].y))
+        if (!isTileSelected || (pointed.x != frontTiles[index]->x || pointed.y != frontTiles[index]->y))
         {
-            SDL_FRect frontRect = { (*frontTiles)[i].x * 4.f, (*frontTiles)[i].y * 4.f, 16.f, 16.f };
+            SDL_FRect frontRect = { frontTiles[index]->x * 4.f, frontTiles[index]->y * 4.f, 16.f, 16.f };
             SDL_SetRenderDrawColor(renderer, 255, 255, 0, 255);
             SDL_RenderRect(renderer, &frontRect);
         }
+
+        index++;
     }
 }

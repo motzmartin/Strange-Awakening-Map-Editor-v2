@@ -1,27 +1,27 @@
 #pragma once
 
-#include <memory>
+#include <stdlib.h>
+#include <stdbool.h>
 
 #include "Display.h"
 #include "InterfaceEvents.h"
 #include "Game.h"
 
-class Engine
+typedef struct Engine
 {
-private:
-	std::unique_ptr<Display> display;
-	std::unique_ptr<InterfaceEvents> interfaceEvents;
-	std::unique_ptr<Game> game;
+	Display* display;
+	InterfaceEvents* interfaceEvents;
+	Game* game;
 
-	bool running = true;
-	bool initialized = false;
+	bool running;
+} Engine;
 
-public:
-	Engine(int windowWidth, int windowHeight, int eventsNumber, int texturesNumber);
+Engine* Engine_Create(int windowWidth,
+	int windowHeight,
+	int eventsNumber,
+	int texturesNumber);
 
-	void Update();
-	void Render();
+void Engine_Update(Engine* engine);
+void Engine_Render(Engine* engine);
 
-	bool IsRunning() const;
-	bool IsInitialized() const;
-};
+void Engine_Free(Engine* engine);

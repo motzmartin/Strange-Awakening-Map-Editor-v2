@@ -1,20 +1,18 @@
 #pragma once
 
+#include <stdlib.h>
+#include <stdbool.h>
 #include <SDL3/SDL.h>
 #include <SDL3_image/SDL_image.h>
 
-class TextureLoader
+typedef struct TextureLoader
 {
-private:
-	SDL_Texture** textures = nullptr;
+	SDL_Texture** textures;
+	int current;
+} TextureLoader;
 
-	int currentIndex = 0;
+TextureLoader* TextureLoader_Create(int texturesNumber);
 
-public:
-	TextureLoader(int texturesNumber);
-	~TextureLoader();
+bool TextureLoader_Load(TextureLoader* textureLoader, SDL_Renderer* renderer, const char* path);
 
-	bool Load(SDL_Renderer* renderer, const char* path);
-
-	SDL_Texture** GetTextures() const;
-};
+void TextureLoader_Free(TextureLoader* textureLoader);

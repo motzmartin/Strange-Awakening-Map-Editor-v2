@@ -1,27 +1,32 @@
 #pragma once
 
-#include <vector>
+#include <stdlib.h>
+#include <stdbool.h>
 #include <SDL3/SDL.h>
 
-struct Tile
+#include "Position.h"
+
+typedef struct Tile
 {
-	SDL_FPoint pos;
-	SDL_FPoint sprite;
+	Position pos;
+	Position sprite;
+
 	bool front;
-};
+} Tile;
 
-class Map
+typedef struct Map
 {
-private:
-	std::vector<Tile> tiles;
+	Tile** tiles;
+} Map;
 
-public:
-	void Draw(SDL_Renderer* renderer, SDL_Texture* sprites, bool behind, float playerY);
+Map* Map_Create();
 
-	void AddTile(SDL_FPoint position, SDL_FPoint sprite, bool front);
-	void RemoveTile(int index);
-	void SwitchFrontTile(int index);
+void Map_AddTile(Map* map, Position position, Position sprite, bool front);
+void Map_RemoveTile(Map* map, int index);
+void Map_SwitchFrontTile(Map* map, int index);
 
-	int GetTile(SDL_FPoint pos, SDL_FPoint* tilePos);
-	void GetFrontTiles(std::vector<SDL_FPoint>* frontTiles);
-};
+int Map_GetTile(Map* map, Position pos, Position* tilePos);
+Position** Map_GetFrontTiles(Map* map);
+void Map_FreeFrontTiles(Position** frontTiles);
+
+void Map_Free(Map* map);
