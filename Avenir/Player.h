@@ -4,10 +4,11 @@
 #include <SDL3/SDL.h>
 
 #include "Vector.h"
+#include "VectorF.h"
 
 typedef struct Player
 {
-	Vector pos;
+	VectorF pos;
 	Vector sprite;
 
 	Uint64 count;

@@ -3,15 +3,15 @@
 void PlayerRender_Draw(Player* player,
 	SDL_Renderer* renderer,
 	SDL_Texture* sprite,
-	Vector cameraPos)
+	Vector cameraCentered)
 {
-	SDL_FRect srcRect = { player->sprite.x, player->sprite.y, 16.f, 16.f };
-	SDL_FRect dstRect =
+	SDL_Rect srcRect = { player->sprite.x * 16, player->sprite.y * 16, 16, 16 };
+	SDL_Rect dstRect =
 	{
-		floorf(player->pos.x) - cameraPos.x,
-		floorf(player->pos.y) - cameraPos.y,
-		48.f,
-		48.f
+		(int)floorf(player->pos.x) - cameraCentered.x,
+		(int)floorf(player->pos.y) - cameraCentered.y,
+		48,
+		48
 	};
-	SDL_RenderTexture(renderer, sprite, &srcRect, &dstRect);
+	IntegerRender_DrawSprite(renderer, sprite, srcRect, dstRect);
 }

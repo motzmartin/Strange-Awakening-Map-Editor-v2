@@ -8,22 +8,24 @@ Camera* Camera_Create()
 	return camera;
 }
 
-void Camera_Update(Camera* camera, Vector playerPos, Uint64 elapsed)
+void Camera_Update(Camera* camera, VectorF playerPos, Uint64 elapsed)
 {
-	Vector target = playerPos;
-	Vector diff = Vector_Sub(target, camera->pos);
+	VectorF target = playerPos;
+	VectorF diff = VectorF_Sub(target, camera->pos);
 
 	float distance = sqrtf(powf(diff.x, 2.f) + powf(diff.y, 2.f));
 	if (distance > 8.f)
 	{
-		camera->pos = Vector_Add(camera->pos, Vector_Scale(diff, distance * elapsed * 1E-10F));
+		camera->pos = VectorF_Add(camera->pos, VectorF_Scale(diff, distance * elapsed * 1e-10f));
 	}
 }
 
 Vector Camera_GetCentered(Camera* camera)
 {
-	Vector center = { 576.f - 24.f, 384.f - 24.f };
-	return Vector_Sub(Vector_Floor(camera->pos), center);
+	Vector cameraPos = Vector_New((int)floorf(camera->pos.x), (int)floorf(camera->pos.y));
+	Vector center = Vector_New(576 - 24, 384 - 24);
+
+	return Vector_Sub(cameraPos, center);
 }
 
 void Camera_Free(Camera* camera)

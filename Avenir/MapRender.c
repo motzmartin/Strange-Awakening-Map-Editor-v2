@@ -3,7 +3,7 @@
 void MapRender_Draw(Map* map,
     SDL_Renderer* renderer,
     SDL_Texture* sprites,
-    Vector cameraPos,
+    Vector cameraCentered,
     float playerY,
     bool behind)
 {
@@ -13,11 +13,17 @@ void MapRender_Draw(Map* map,
     {
         Tile* tile = map->tiles[i];
 
-        if (behind == (!tile->front || tile->pos.y < playerY))
+        if (behind == (!tile->front || tile->pos.y * 12 < (int)floorf(playerY)))
         {
-            SDL_FRect srcRect = { tile->sprite.x, tile->sprite.y, 16.f, 16.f };
-            SDL_FRect dstRect = { tile->pos.x - cameraPos.x, tile->pos.y - cameraPos.y, 48.f, 48.f };
-            SDL_RenderTexture(renderer, sprites, &srcRect, &dstRect);
+            SDL_Rect srcRect = { tile->sprite.x * 16, tile->sprite.y * 16, 16, 16 };
+            SDL_Rect dstRect =
+            {
+                tile->pos.x * 12 - cameraCentered.x,
+                tile->pos.y * 12 - cameraCentered.y,
+                48,
+                48
+            };
+            IntegerRender_DrawSprite(renderer, sprites, srcRect, dstRect);
         }
     }
 }

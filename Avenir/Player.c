@@ -12,7 +12,7 @@ void Player_Update(Player* player, Uint8* keyboard, Uint64 elapsed)
 {
 	player->count += elapsed;
 
-	Vector acceleration = { 0 };
+	VectorF acceleration = { 0 };
 
 	if (keyboard[SDL_SCANCODE_A] != keyboard[SDL_SCANCODE_D])
 	{
@@ -24,23 +24,23 @@ void Player_Update(Player* player, Uint8* keyboard, Uint64 elapsed)
 		acceleration.y = keyboard[SDL_SCANCODE_W] ? -1.f : 1.f;
 	}
 
-	acceleration = Vector_Scale(Vector_Normalize(acceleration), elapsed * 1.5E-7F);
+	acceleration = VectorF_Scale(VectorF_Normalize(acceleration), elapsed * 1.5e-7f);
 
-	Vector prevPos = player->pos;
-	player->pos = Vector_Add(player->pos, acceleration);
+	VectorF prevPos = player->pos;
+	player->pos = VectorF_Add(player->pos, acceleration);
 
 	if (prevPos.x == player->pos.x && prevPos.y == player->pos.y)
 	{
-		player->sprite.x = 0.f;
+		player->sprite.x = 0;
 	}
 	else
 	{
-		player->sprite.x = (float)(player->count / 125000000 % 4 + 1) * 16.f;
+		player->sprite.x = player->count / 125000000 % 4 + 1;
 
-		if (player->pos.x > prevPos.x) player->sprite.y = 48.f;
-		else if (player->pos.x < prevPos.x) player->sprite.y = 16.f;
-		else if (player->pos.y > prevPos.y) player->sprite.y = 0.f;
-		else if (player->pos.y < prevPos.y) player->sprite.y = 32.f;
+		if (player->pos.x > prevPos.x) player->sprite.y = 3;
+		else if (player->pos.x < prevPos.x) player->sprite.y = 1;
+		else if (player->pos.y > prevPos.y) player->sprite.y = 0;
+		else if (player->pos.y < prevPos.y) player->sprite.y = 2;
 	}
 }
 

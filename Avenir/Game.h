@@ -7,7 +7,6 @@
 
 #include "Vector.h"
 
-#include "Hud.h"
 #include "Map.h"
 #include "Player.h"
 #include "Camera.h"

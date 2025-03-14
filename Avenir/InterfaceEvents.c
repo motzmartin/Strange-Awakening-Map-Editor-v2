@@ -40,7 +40,12 @@ bool InterfaceEvents_Poll(InterfaceEvents* interfaceEvents)
         }
     }
 
-    SDL_GetMouseState(&interfaceEvents->mouse.x, &interfaceEvents->mouse.y);
+    float mouseX = 0;
+    float mouseY = 0;
+
+    SDL_GetMouseState(&mouseX, &mouseY);
+
+    interfaceEvents->mouse = Vector_New((int)mouseX, (int)mouseY);
 
     return true;
 }

@@ -1,24 +1,26 @@
 #include "Map.h"
 
-Map* Map_Create()
+Map* Map_Create(int size)
 {
     Map* map = calloc(1, sizeof(Map));
     if (!map) return NULL;
 
-    map->tiles = calloc(4096, sizeof(Tile*));
+    map->tiles = calloc(size, sizeof(Tile*));
     if (!map->tiles) return NULL;
+
+    map->size = size;
 
     return map;
 }
 
 void Map_AddTile(Map* map, Vector position, Vector selected, bool front)
 {
-    if (map->cursor == 4096) return;
+    if (map->cursor == map->size) return;
 
     map->tiles[map->cursor] = calloc(1, sizeof(Tile));
     if (!map->tiles[map->cursor]) return;
 
-    Tile newTile = { position, Vector_Scale(selected, 1.f / 3.f), front };
+    Tile newTile = { position, selected, front };
     *map->tiles[map->cursor++] = newTile;
 }
 
@@ -42,7 +44,7 @@ int Map_GetTileIndex(Map* map, Vector position)
         Tile* tile = map->tiles[i];
 
         if (position.x >= tile->pos.x && position.y >= tile->pos.y &&
-            position.x < tile->pos.x + 48.f && position.y < tile->pos.y + 48.f)
+            position.x < tile->pos.x + 4 && position.y < tile->pos.y + 4)
         {
             return i;
         }
@@ -58,7 +60,7 @@ Vector Map_GetTilePosition(Map* map, int index)
 
 Vector* Map_GetFrontTiles(Map* map, int* frontTilesNumber)
 {
-    Vector* frontTiles = calloc(4096, sizeof(Vector));
+    Vector* frontTiles = calloc(map->size, sizeof(Vector));
     if (!frontTiles) return NULL;
 
     int index = 0;

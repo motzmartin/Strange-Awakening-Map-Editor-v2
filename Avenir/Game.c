@@ -5,7 +5,7 @@ Game* Game_Create()
     Game* game = calloc(1, sizeof(Game));
     if (!game) return NULL;
 
-    game->map = Map_Create();
+    game->map = Map_Create(4096);
     if (!game->map) return NULL;
 
     game->player = Player_Create();
@@ -14,7 +14,7 @@ Game* Game_Create()
     game->camera = Camera_Create();
     if (!game->camera) return NULL;
 
-    game->timer = SDL_GetTicks();
+    game->timer = SDL_GetTicksNS();
 
     return game;
 }
@@ -23,25 +23,30 @@ void Game_UpdateCursor(Game* game, Vector mouse)
 {
     if (game->mode == 1)
     {
-        Vector sub = { 384.f, 192.f };
-        game->cursor = Vector_Square(Vector_Sub(mouse, sub), 48.f);
+        Vector min = Vector_New(0, 0);
+        Vector max = Vector_New(7, 7);
 
-        Vector min = { 0 };
-        Vector max = { 7.f * 48.f, 7.f * 48.f };
-        game->cursor = Vector_Constrain(game->cursor, min, max);
-    }
-    else if (game->mode == 2 || game->mode == 3)
-    {
-        game->tilePointed = Map_GetTileIndex(game->map, Vector_Add(mouse, Camera_GetCentered(game->camera)));
+        Vector cursorPos = Vector_Sub(Vector_Div(mouse, 48), Vector_New(8, 4));
 
-        if (game->tilePointed != -1)
-        {
-            game->cursor = Map_GetTilePosition(game->map, game->tilePointed);
-        }
+        game->cursor = Vector_Constrain(cursorPos, min, max);
     }
     else
     {
-        game->cursor = Vector_Square(Vector_Add(mouse, Camera_GetCentered(game->camera)), 12.f);
+        Vector cursorPos = Vector_Div(Vector_Add(mouse, Camera_GetCentered(game->camera)), 12);
+
+        if (game->mode == 2 || game->mode == 3)
+        {
+            game->tilePointed = Map_GetTileIndex(game->map, cursorPos);
+
+            if (game->tilePointed != -1)
+            {
+                game->cursor = Map_GetTilePosition(game->map, game->tilePointed);
+            }
+        }
+        else
+        {
+            game->cursor = cursorPos;
+        }
     }
 }
 

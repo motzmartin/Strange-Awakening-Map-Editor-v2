@@ -8,7 +8,7 @@
 typedef struct TextureLoader
 {
 	SDL_Texture** textures;
-	int current;
+	int cursor;
 } TextureLoader;
 
 TextureLoader* TextureLoader_Create(int texturesNumber);

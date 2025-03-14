@@ -17,10 +17,11 @@ typedef struct Tile
 typedef struct Map
 {
 	Tile** tiles;
+	int size;
 	int cursor;
 } Map;
 
-Map* Map_Create();
+Map* Map_Create(int size);
 
 void Map_AddTile(Map* map, Vector position, Vector selected, bool front);
 void Map_RemoveTile(Map* map, int index);

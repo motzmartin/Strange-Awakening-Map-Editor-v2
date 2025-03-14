@@ -1,9 +1,16 @@
 #include "Vector.h"
 
-Vector Vector_Square(Vector vector, float size)
+Vector Vector_New(int x, int y)
 {
-    vector.x = floorf(vector.x / size) * size;
-    vector.y = floorf(vector.y / size) * size;
+    Vector vector = { x, y };
+
+    return vector;
+}
+
+Vector Vector_Square(Vector vector, int size)
+{
+    vector.x = (vector.x / size) * size;
+    vector.y = (vector.y / size) * size;
 
     return vector;
 }
@@ -24,10 +31,21 @@ Vector Vector_Sub(Vector vector1, Vector vector2)
     return vector1;
 }
 
-Vector Vector_Scale(Vector vector, float factor)
+Vector Vector_Scale(Vector vector, int factor)
 {
     vector.x *= factor;
     vector.y *= factor;
+
+    return vector;
+}
+
+Vector Vector_Div(Vector vector, int factor)
+{
+    if (vector.x < 0) vector.x = (vector.x - (factor - 1)) / factor;
+    else vector.x /= factor;
+
+    if (vector.y < 0) vector.y = (vector.y - (factor - 1)) / factor;
+    else vector.y /= factor;
 
     return vector;
 }
@@ -39,29 +57,6 @@ Vector Vector_Constrain(Vector vector, Vector min, Vector max)
 
     if (vector.y < min.y) vector.y = min.y;
     else if (vector.y > max.y) vector.y = max.y;
-
-    return vector;
-}
-
-Vector Vector_Normalize(Vector vector)
-{
-    Vector result = { 0 };
-
-    float magnitude = sqrtf(powf(vector.x, 2.f) + powf(vector.y, 2.f));
-    if (!magnitude) {
-        return result;
-    }
-
-    result.x = vector.x / magnitude;
-    result.y = vector.y / magnitude;
-
-    return result;
-}
-
-Vector Vector_Floor(Vector vector)
-{
-    vector.x = floorf(vector.x);
-    vector.y = floorf(vector.y);
 
     return vector;
 }

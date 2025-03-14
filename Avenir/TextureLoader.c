@@ -21,14 +21,14 @@ bool TextureLoader_Load(TextureLoader* textureLoader, SDL_Renderer* renderer, co
 
     SDL_SetTextureScaleMode(texture, SDL_SCALEMODE_NEAREST);
 
-    textureLoader->textures[textureLoader->current++] = texture;
+    textureLoader->textures[textureLoader->cursor++] = texture;
 
     return true;
 }
 
 void TextureLoader_Free(TextureLoader* textureLoader)
 {
-    for (int i = 0; i < textureLoader->current; i++)
+    for (int i = 0; i < textureLoader->cursor; i++)
     {
         SDL_DestroyTexture(textureLoader->textures[i]);
     }
