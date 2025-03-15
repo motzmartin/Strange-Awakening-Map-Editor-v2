@@ -17,10 +17,10 @@ typedef struct Camera
 Camera* Camera_Create();
 
 void Camera_Update(Camera* camera,
-	Uint64 elapsed,
 	VectorF playerPos,
 	Box** rooms,
-	int roomsCursor);
+	int roomsCursor,
+	float elapsed);
 
 Vector Camera_GetCentered(Camera* camera);
 

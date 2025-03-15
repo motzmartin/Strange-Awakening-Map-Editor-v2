@@ -35,7 +35,7 @@ typedef struct Game
 	int mode;
 	bool grid;
 
-	Uint64 timer;
+	Uint64 counter;
 } Game;
 
 Game* Game_Create();

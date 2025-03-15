@@ -16,16 +16,16 @@ typedef struct Player
 
 	Vector sprite;
 
-	Uint64 count;
+	float count;
 } Player;
 
 Player* Player_Create();
 
 void Player_Update(Player* player,
-	Uint64 elapsed,
 	Uint8* keyboard,
 	Box** collisions,
-	int collisionsCursor);
+	int collisionsCursor,
+	float elapsed);
 
 Box* Player_IsColliding(Player* player, Box** collisions, int collisionsCursor);
 

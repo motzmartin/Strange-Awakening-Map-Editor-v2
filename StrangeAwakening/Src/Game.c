@@ -14,13 +14,13 @@ Game* Game_Create()
     game->camera = Camera_Create();
     if (!game->camera) return NULL;
 
-    game->timer = SDL_GetTicksNS();
-
     game->collisionSize.x = 1;
     game->collisionSize.y = 1;
 
     game->roomSize.x = 4;
     game->roomSize.y = 4;
+
+    game->counter = SDL_GetPerformanceCounter();
 
     return game;
 }
@@ -59,10 +59,9 @@ void Game_UpdateCursor(Game* game, Vector mouse)
 
 void Game_Update(Game* game, bool* events, Vector mouse, Uint8* keyboard)
 {
-    Uint64 now = SDL_GetTicksNS();
-    Uint64 elapsed = now - game->timer;
-
-    game->timer = now;
+    Uint64 now = SDL_GetPerformanceCounter();
+    float elapsed = (float)(now - game->counter) / (float)SDL_GetPerformanceFrequency();
+    game->counter = now;
 
     if (keyboard[SDL_SCANCODE_E]) game->mode = 1;
     else if (keyboard[SDL_SCANCODE_F]) game->mode = 2;
@@ -171,16 +170,16 @@ void Game_Update(Game* game, bool* events, Vector mouse, Uint8* keyboard)
     if (game->mode == 0)
     {
         Player_Update(game->player,
-            elapsed,
             keyboard,
             game->map->collisions,
-            game->map->collisionsCursor);
+            game->map->collisionsCursor,
+            elapsed);
 
         Camera_Update(game->camera,
-            elapsed,
             game->player->pos,
             game->map->rooms,
-            game->map->roomsCursor);
+            game->map->roomsCursor,
+            elapsed);
     }
 }
 

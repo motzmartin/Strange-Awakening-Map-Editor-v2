@@ -9,10 +9,10 @@ Player* Player_Create()
 }
 
 void Player_Update(Player* player,
-	Uint64 elapsed,
 	Uint8* keyboard,
 	Box** collisions,
-	int collisionsCursor)
+	int collisionsCursor,
+	float elapsed)
 {
 	player->count += elapsed;
 
@@ -28,7 +28,7 @@ void Player_Update(Player* player,
 		player->acc.y = keyboard[SDL_SCANCODE_W] ? -1.f : 1.f;
 	}
 
-	player->acc = VectorF_Scale(VectorF_Normalize(player->acc), elapsed * 1.5e-7f);
+	player->acc = VectorF_Scale(VectorF_Normalize(player->acc), elapsed * 150.f);
 
 	VectorF prevPos = player->pos;
 
@@ -44,7 +44,7 @@ void Player_Update(Player* player,
 	}
 	else
 	{
-		player->sprite.x = (player->count / 125000000) % 4 + 1;
+		player->sprite.x = (int)(player->count * 6.f) % 4 + 1;
 
 		if (player->pos.x > prevPos.x) player->sprite.y = 3;
 		else if (player->pos.x < prevPos.x) player->sprite.y = 1;

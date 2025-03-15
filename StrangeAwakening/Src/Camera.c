@@ -9,10 +9,10 @@ Camera* Camera_Create()
 }
 
 void Camera_Update(Camera* camera,
-	Uint64 elapsed,
 	VectorF playerPos,
 	Box** rooms,
-	int roomsCursor)
+	int roomsCursor,
+	float elapsed)
 {
 	VectorF target = VectorF_Add(playerPos, VectorF_New(24.f, 24.f));
 
@@ -33,7 +33,7 @@ void Camera_Update(Camera* camera,
 
 	VectorF diff = VectorF_Sub(target, camera->pos);
 
-	float factor = 1.f - expf(-(float)elapsed * 5e-9f);
+	float factor = 1.f - expf(-elapsed * 7.f);
 	camera->pos = VectorF_Add(camera->pos, VectorF_Scale(diff, factor));
 }
 

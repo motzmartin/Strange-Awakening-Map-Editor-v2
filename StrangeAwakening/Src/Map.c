@@ -19,76 +19,67 @@ Map* Map_Create(int size)
     return map;
 }
 
+void* Map_ArrayAdd(Map* map, void** arr, int* cursor, size_t size)
+{
+    if (*cursor == map->size) return NULL;
+
+    arr[*cursor] = calloc(1, size);
+    if (!arr[*cursor]) return NULL;
+
+    return arr[(*cursor)++];
+}
+
 void Map_AddTile(Map* map, Vector position, Vector selected, bool front)
 {
-    if (map->tilesCursor == map->size) return;
+    Tile* tile = Map_ArrayAdd(map, map->tiles, &map->tilesCursor, sizeof(Tile));
+    if (!tile) return;
 
-    map->tiles[map->tilesCursor] = calloc(1, sizeof(Tile));
-    if (!map->tiles[map->tilesCursor]) return;
-
-    Tile newTile = { position, selected, front };
-    *map->tiles[map->tilesCursor++] = newTile;
+    tile->pos = position;
+    tile->sprite = selected;
+    tile->front = front;
 }
 
 void Map_AddCollision(Map* map, Vector position, Vector size)
 {
-    if (map->collisionsCursor == map->size) return;
+    Box* collision = Map_ArrayAdd(map, map->collisions, &map->collisionsCursor, sizeof(Box));
+    if (!collision) return;
 
-    map->collisions[map->collisionsCursor] = calloc(1, sizeof(Box));
-    if (!map->collisions[map->collisionsCursor]) return;
-
-    Box newCollision = { position, size };
-    *map->collisions[map->collisionsCursor++] = newCollision;
+    collision->pos = position;
+    collision->size = size;
 }
 
 void Map_AddRoom(Map* map, Vector position, Vector size)
 {
-    if (map->roomsCursor == map->size) return;
+    Box* room = Map_ArrayAdd(map, map->rooms, &map->roomsCursor, sizeof(Box));
+    if (!room) return;
 
-    map->rooms[map->roomsCursor] = calloc(1, sizeof(Box));
-    if (!map->rooms[map->roomsCursor]) return;
+    room->pos = position;
+    room->size = size;
+}
 
-    Box newRoom = { position, size };
-    *map->rooms[map->roomsCursor++] = newRoom;
+void Map_ArrayRemove(void** arr, int* cursor, int index)
+{
+    free(arr[index]);
+    arr[index] = NULL;
+
+    for (int i = index; i < *cursor - 1; i++) arr[i] = arr[i + 1];
+
+    arr[--(*cursor)] = NULL;
 }
 
 void Map_RemoveTile(Map* map, int index)
 {
-    free(map->tiles[index]);
-    map->tiles[index] = NULL;
-
-    for (int i = index; i < map->tilesCursor - 1; i++)
-    {
-        map->tiles[i] = map->tiles[i + 1];
-    }
-
-    map->tiles[--map->tilesCursor] = NULL;
+    Map_ArrayRemove(map->tiles, &map->tilesCursor, index);
 }
 
 void Map_RemoveCollision(Map* map, int index)
 {
-    free(map->collisions[index]);
-    map->collisions[index] = NULL;
-
-    for (int i = index; i < map->collisionsCursor - 1; i++)
-    {
-        map->collisions[i] = map->collisions[i + 1];
-    }
-
-    map->collisions[--map->collisionsCursor] = NULL;
+    Map_ArrayRemove(map->collisions, &map->collisionsCursor, index);
 }
 
 void Map_RemoveRoom(Map* map, int index)
 {
-    free(map->rooms[index]);
-    map->rooms[index] = NULL;
-
-    for (int i = index; i < map->roomsCursor - 1; i++)
-    {
-        map->rooms[i] = map->rooms[i + 1];
-    }
-
-    map->rooms[--map->roomsCursor] = NULL;
+    Map_ArrayRemove(map->rooms, &map->roomsCursor, index);
 }
 
 int Map_GetTileIndex(Map* map, Vector position)
@@ -97,8 +88,10 @@ int Map_GetTileIndex(Map* map, Vector position)
     {
         Tile* tile = map->tiles[i];
 
-        if (position.x >= tile->pos.x && position.y >= tile->pos.y &&
-            position.x < tile->pos.x + 4 && position.y < tile->pos.y + 4)
+        if (position.x >= tile->pos.x &&
+            position.y >= tile->pos.y &&
+            position.x < tile->pos.x + 4 &&
+            position.y < tile->pos.y + 4)
         {
             return i;
         }
@@ -113,8 +106,10 @@ int Map_GetCollisionIndex(Map* map, Vector position)
     {
         Box* box = map->collisions[i];
 
-        if (position.x >= box->pos.x && position.y >= box->pos.y &&
-            position.x < box->pos.x + box->size.x && position.y < box->pos.y + box->size.y)
+        if (position.x >= box->pos.x &&
+            position.y >= box->pos.y &&
+            position.x < box->pos.x + box->size.x &&
+            position.y < box->pos.y + box->size.y)
         {
             return i;
         }
@@ -129,8 +124,10 @@ int Map_GetRoomIndex(Map* map, Vector position)
     {
         Box* box = map->rooms[i];
 
-        if (position.x >= box->pos.x && position.y >= box->pos.y &&
-            position.x < box->pos.x + box->size.x && position.y < box->pos.y + box->size.y)
+        if (position.x >= box->pos.x &&
+            position.y >= box->pos.y &&
+            position.x < box->pos.x + box->size.x &&
+            position.y < box->pos.y + box->size.y)
         {
             return i;
         }

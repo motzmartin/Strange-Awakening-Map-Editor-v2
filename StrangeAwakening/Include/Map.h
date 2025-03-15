@@ -24,9 +24,13 @@ typedef struct Map
 
 Map* Map_Create(int size);
 
+void* Map_ArrayAdd(Map* map, void** arr, int* cursor, size_t size);
+
 void Map_AddTile(Map* map, Vector position, Vector selected, bool front);
 void Map_AddCollision(Map* map, Vector position, Vector size);
 void Map_AddRoom(Map* map, Vector position, Vector size);
+
+void Map_ArrayRemove(void** arr, int* cursor, int index);
 
 void Map_RemoveTile(Map* map, int index);
 void Map_RemoveCollision(Map* map, int index);
