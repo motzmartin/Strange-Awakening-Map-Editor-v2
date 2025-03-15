@@ -188,14 +188,34 @@ void HudRender_DrawGrid(SDL_Renderer* renderer, Vector cameraCentered)
 {
     for (int i = 0; i < 24 + 1; i++)
     {
-        SDL_Rect rect = { i * 48 - HudRender_TrueMod(cameraCentered.x, 48), 0, 3, 768 };
-        IntegerRender_FillRect(renderer, rect, 255, 255, 255, 63);
+        int mod = HudRender_TrueMod(cameraCentered.x, 48);
+
+        SDL_Rect rect = { i * 48 - mod, 0, 3, 768 };
+        
+        if (rect.x + cameraCentered.x == 0)
+        {
+            IntegerRender_FillRect(renderer, rect, 0, 255, 0, 127);
+        }
+        else
+        {
+            IntegerRender_FillRect(renderer, rect, 255, 255, 255, 63);
+        }
     }
 
     for (int i = 0; i < 16 + 1; i++)
     {
-        SDL_Rect rect = { 0, i * 48 - HudRender_TrueMod(cameraCentered.y, 48), 1152, 3 };
-        IntegerRender_FillRect(renderer, rect, 255, 255, 255, 63);
+        int mod = HudRender_TrueMod(cameraCentered.y, 48);
+
+        SDL_Rect rect = { 0, i * 48 - mod, 1152, 3 };
+
+        if (rect.y + cameraCentered.y == 0)
+        {
+            IntegerRender_FillRect(renderer, rect, 255, 0, 0, 127);
+        }
+        else
+        {
+            IntegerRender_FillRect(renderer, rect, 255, 255, 255, 63);
+        }
     }
 }
 

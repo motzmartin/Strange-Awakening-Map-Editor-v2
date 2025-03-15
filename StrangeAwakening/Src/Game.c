@@ -147,24 +147,24 @@ void Game_Update(Game* game, bool* events, Vector mouse, Uint8* keyboard)
 
     if (events[6])
     {
-        LevelLoader_Save(game->map->tiles,
+        LevelLoader_Save(game->player->pos,
+            game->map->tiles,
             game->map->collisions,
             game->map->rooms,
             game->map->tilesCursor,
             game->map->collisionsCursor,
-            game->map->roomsCursor,
-            game->player->pos);
+            game->map->roomsCursor);
     }
 
     if (events[7])
     {
-        LevelLoader_Load(game->map->tiles,
+        LevelLoader_Load(&game->player->pos,
+            game->map->tiles,
             game->map->collisions,
             game->map->rooms,
             &game->map->tilesCursor,
             &game->map->collisionsCursor,
-            &game->map->roomsCursor,
-            &game->player->pos);
+            &game->map->roomsCursor);
     }
 
     if (game->mode == 0)
@@ -185,28 +185,30 @@ void Game_Update(Game* game, bool* events, Vector mouse, Uint8* keyboard)
 
 void Game_Draw(Game* game, SDL_Renderer* renderer, SDL_Texture** textures)
 {
+    Vector cameraCentered = Camera_GetCentered(game->camera);
+
     MapRender_Draw(game->map,
         renderer,
         textures[0],
-        Camera_GetCentered(game->camera),
+        cameraCentered,
         game->player->pos.y,
         true);
 
     PlayerRender_Draw(game->player,
         renderer,
         textures[1],
-        Camera_GetCentered(game->camera));
+        cameraCentered);
 
     MapRender_Draw(game->map,
         renderer,
         textures[0],
-        Camera_GetCentered(game->camera),
+        cameraCentered,
         game->player->pos.y,
         false);
 
     HudRender_Draw(renderer,
         textures[0],
-        Camera_GetCentered(game->camera),
+        cameraCentered,
         game->cursor,
         game->selected,
         game->collisionSize,
