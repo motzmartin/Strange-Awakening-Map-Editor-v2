@@ -5,7 +5,7 @@
 
 int main(int argc, char* argv[])
 {
-    Engine* engine = Engine_Create(1152, 768, 8, 2);
+    Engine* engine = Engine_Create(1152, 768, 9, 2);
     if (!engine) return EXIT_FAILURE;
 
     while (engine->running)

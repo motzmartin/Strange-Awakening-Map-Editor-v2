@@ -20,6 +20,9 @@ Game* Game_Create()
     game->roomSize.x = 4;
     game->roomSize.y = 4;
 
+    game->lightSize.x = 1;
+    game->lightSize.y = 1;
+
     game->counter = SDL_GetPerformanceCounter();
 
     return game;
@@ -54,10 +57,14 @@ void Game_UpdateCursor(Game* game, Vector mouse)
         {
             game->roomPointed = Map_GetRoomIndex(game->map, cursorPos);
         }
+        else if (game->mode == 6)
+        {
+            game->lightPointed = Map_GetLightIndex(game->map, cursorPos);
+        }
     }
 }
 
-void Game_Update(Game* game, bool* events, Vector mouse, Uint8* keyboard)
+void Game_Update(Game* game, SDL_Renderer* renderer, bool* events, Vector mouse, Uint8* keyboard)
 {
     Uint64 now = SDL_GetPerformanceCounter();
     float elapsed = (float)(now - game->counter) / (float)SDL_GetPerformanceFrequency();
@@ -68,6 +75,7 @@ void Game_Update(Game* game, bool* events, Vector mouse, Uint8* keyboard)
     else if (keyboard[SDL_SCANCODE_R]) game->mode = 3;
     else if (keyboard[SDL_SCANCODE_C]) game->mode = 4;
     else if (keyboard[SDL_SCANCODE_T]) game->mode = 5;
+    else if (keyboard[SDL_SCANCODE_I]) game->mode = 6;
     else game->mode = 0;
 
     Game_UpdateCursor(game, mouse);
@@ -114,57 +122,90 @@ void Game_Update(Game* game, bool* events, Vector mouse, Uint8* keyboard)
                 Map_AddRoom(game->map, game->cursor, game->roomSize);
             }
             break;
+        case 6:
+            if (game->lightPointed != -1)
+            {
+                Map_RemoveLight(game->map, game->lightPointed);
+                game->lightPointed = -1;
+            }
+            else
+            {
+                Map_AddLight(game->map, game->cursor, game->lightSize, false);
+            }
+
+            Map_ProcessLights(game->map, renderer);
+            break;
         default:
             Map_AddTile(game->map, game->cursor, game->selected, false);
         }
     }
 
-    if (events[1]) game->grid = !game->grid;
+    if (events[1])
+    {
+        if (game->mode == 6)
+        {
+            Map_AddLight(game->map, game->cursor, game->lightSize, true);
+            Map_ProcessLights(game->map, renderer);
+        }
+    }
 
     if (events[2])
     {
         if (game->mode == 4) game->collisionSize.x--;
         else if (game->mode == 5) game->roomSize.x--;
+        else if (game->mode == 6) game->lightSize.x--;
     }
     else if (events[3])
     {
         if (game->mode == 4) game->collisionSize.y--;
         else if (game->mode == 5) game->roomSize.y--;
+        else if (game->mode == 6) game->lightSize.y--;
     }
     else if (events[4])
     {
         if (game->mode == 4) game->collisionSize.x++;
         else if (game->mode == 5) game->roomSize.x++;
+        else if (game->mode == 6) game->lightSize.x++;
     }
     else if (events[5])
     {
         if (game->mode == 4) game->collisionSize.y++;
         else if (game->mode == 5) game->roomSize.y++;
+        else if (game->mode == 6) game->lightSize.y++;
     }
 
     game->collisionSize = Vector_Constrain(game->collisionSize, Vector_New(1, 1), Vector_New(256, 256));
     game->roomSize = Vector_Constrain(game->roomSize, Vector_New(1, 1), Vector_New(256, 256));
+    game->lightSize = Vector_Constrain(game->lightSize, Vector_New(1, 1), Vector_New(256, 256));
 
-    if (events[6])
+    if (events[6]) game->grid = !game->grid;
+
+    if (events[7])
     {
         LevelLoader_Save(game->player->pos,
             game->map->tiles,
             game->map->collisions,
             game->map->rooms,
+            game->map->lights,
             game->map->tilesCursor,
             game->map->collisionsCursor,
-            game->map->roomsCursor);
+            game->map->roomsCursor,
+            game->map->lightsCursor);
     }
 
-    if (events[7])
+    if (events[8])
     {
         LevelLoader_Load(&game->player->pos,
             game->map->tiles,
             game->map->collisions,
             game->map->rooms,
+            game->map->lights,
             &game->map->tilesCursor,
             &game->map->collisionsCursor,
-            &game->map->roomsCursor);
+            &game->map->roomsCursor,
+            &game->map->lightsCursor);
+
+        Map_ProcessLights(game->map, renderer);
     }
 
     if (game->mode == 0)
@@ -206,6 +247,8 @@ void Game_Draw(Game* game, SDL_Renderer* renderer, SDL_Texture** textures)
         game->player->pos.y,
         false);
 
+    MapRender_DrawLights(game->map, renderer, cameraCentered);
+
     HudRender_Draw(renderer,
         textures[0],
         cameraCentered,
@@ -213,15 +256,19 @@ void Game_Draw(Game* game, SDL_Renderer* renderer, SDL_Texture** textures)
         game->selected,
         game->collisionSize,
         game->roomSize,
+        game->lightSize,
         game->map->tiles,
         game->map->collisions,
         game->map->rooms,
+        game->map->lights,
         game->map->tilesCursor,
         game->map->collisionsCursor,
         game->map->roomsCursor,
+        game->map->lightsCursor,
         game->tilePointed,
         game->collisionPointed,
         game->roomPointed,
+        game->lightPointed,
         game->mode,
         game->grid);
 }

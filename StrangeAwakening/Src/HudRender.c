@@ -7,15 +7,19 @@ void HudRender_Draw(SDL_Renderer* renderer,
     Vector selected,
     Vector collisionSize,
     Vector roomSize,
+    Vector lightSize,
     Tile** tiles,
     Box** collisions,
     Box** rooms,
+    Light** lights,
     int tilesCursor,
     int collisionsCursor,
     int roomsCursor,
+    int lightsCursor,
     int tilePointed,
     int collisionPointed,
     int roomPointed,
+    int lightPointed,
     int mode,
     bool grid)
 {
@@ -38,14 +42,17 @@ void HudRender_Draw(SDL_Renderer* renderer,
 
                 Vector tilePos = { tile->pos.x * 12 - cameraCentered.x, tile->pos.y * 12 - cameraCentered.y };
 
-                if (mode == 2)
+                Uint8 r = 255;
+                Uint8 g = 255;
+                Uint8 b = 255;
+
+                if (mode == 3)
                 {
-                    HudRender_DrawRect(renderer, tilePos, Vector_New(48, 48), 255, 255, 255, 255);
+                    g = 0;
+                    b = 0;
                 }
-                else if (mode == 3)
-                {
-                    HudRender_DrawRect(renderer, tilePos, Vector_New(48, 48), 255, 0, 0, 255);
-                }
+
+                HudRender_DrawRect(renderer, tilePos, Vector_New(48, 48), r, g, b, 255);
             }
 
             if (mode == 2)
@@ -57,35 +64,49 @@ void HudRender_Draw(SDL_Renderer* renderer,
                     tilePointed);
             }
         }
-        else if (mode == 4)
+        else if (mode == 4 || mode == 5 || mode == 6)
         {
-            if (collisionPointed == -1)
+            Vector cursorPos = { cursor.x * 12 - cameraCentered.x, cursor.y * 12 - cameraCentered.y };
+
+            if (mode == 4)
             {
-                Vector cursorPos = { cursor.x * 12 - cameraCentered.x, cursor.y * 12 - cameraCentered.y };
+                if (collisionPointed == -1)
+                {
+                    HudRender_DrawRect(renderer, cursorPos, Vector_Scale(collisionSize, 12), 0, 0, 255, 255);
+                }
 
-                HudRender_DrawRect(renderer, cursorPos, Vector_Scale(collisionSize, 12), 0, 0, 255, 255);
+                HudRender_DrawCollisions(renderer,
+                    cameraCentered,
+                    collisions,
+                    collisionsCursor,
+                    collisionPointed);
             }
-
-            HudRender_DrawCollisions(renderer,
-                cameraCentered,
-                collisions,
-                collisionsCursor,
-                collisionPointed);
-        }
-        else if (mode == 5)
-        {
-            if (roomPointed == -1)
+            else if (mode == 5)
             {
-                Vector cursorPos = { cursor.x * 12 - cameraCentered.x, cursor.y * 12 - cameraCentered.y };
+                if (roomPointed == -1)
+                {
+                    HudRender_DrawRect(renderer, cursorPos, Vector_Scale(roomSize, 12), 255, 0, 255, 255);
+                }
 
-                HudRender_DrawRect(renderer, cursorPos, Vector_Scale(roomSize, 12), 255, 0, 255, 255);
+                HudRender_DrawRooms(renderer,
+                    cameraCentered,
+                    rooms,
+                    roomsCursor,
+                    roomPointed);
             }
+            else if (mode == 6)
+            {
+                if (lightPointed == -1)
+                {
+                    HudRender_DrawRect(renderer, cursorPos, Vector_Scale(lightSize, 12), 0, 255, 255, 255);
+                }
 
-            HudRender_DrawRooms(renderer,
-                cameraCentered,
-                rooms,
-                roomsCursor,
-                roomPointed);
+                HudRender_DrawLights(renderer,
+                    cameraCentered,
+                    lights,
+                    lightsCursor,
+                    lightPointed);
+            }
         }
         else
         {
@@ -149,15 +170,17 @@ void HudRender_DrawCollisions(SDL_Renderer* renderer,
         Box* box = collisions[i];
 
         Vector collisionPos = { box->pos.x * 12 - cameraCentered.x, box->pos.y * 12 - cameraCentered.y };
+        
+        Uint8 r = 0;
+        Uint8 b = 255;
 
         if (i == collisionPointed)
         {
-            HudRender_DrawRect(renderer, collisionPos, Vector_Scale(box->size, 12), 255, 0, 0, 255);
+            r = 255;
+            b = 0;
         }
-        else
-        {
-            HudRender_DrawRect(renderer, collisionPos, Vector_Scale(box->size, 12), 0, 0, 255, 255);
-        }
+
+        HudRender_DrawRect(renderer, collisionPos, Vector_Scale(box->size, 12), r, 0, b, 255);
     }
 }
 
@@ -173,13 +196,50 @@ void HudRender_DrawRooms(SDL_Renderer* renderer,
 
         Vector roomPos = { box->pos.x * 12 - cameraCentered.x, box->pos.y * 12 - cameraCentered.y };
 
+        Uint8 r = 255;
+        Uint8 b = 255;
+
         if (i == roomPointed)
         {
-            HudRender_DrawRect(renderer, roomPos, Vector_Scale(box->size, 12), 255, 0, 0, 255);
+            b = 0;
+        }
+
+        HudRender_DrawRect(renderer, roomPos, Vector_Scale(box->size, 12), r, 0, b, 255);
+    }
+}
+
+void HudRender_DrawLights(SDL_Renderer* renderer,
+    Vector cameraCentered,
+    Light** lights,
+    int lightsCursor,
+    int lightPointed)
+{
+    for (int i = 0; i < lightsCursor; i++)
+    {
+        Light* light = lights[i];
+
+        Vector roomPos = { light->pos.x * 12 - cameraCentered.x, light->pos.y * 12 - cameraCentered.y };
+        Vector roomSize = Vector_Scale(light->size, 12);
+
+        Uint8 r = 0;
+        Uint8 g = 255;
+        Uint8 b = 255;
+
+        if (i == lightPointed)
+        {
+            r = 255;
+            g = 0;
+            b = 0;
+        }
+
+        if (light->emit)
+        {
+            SDL_Rect rect = { roomPos.x, roomPos.y, roomSize.x, roomSize.y };
+            IntegerRender_FillRect(renderer, rect, r, g, b, 255);
         }
         else
         {
-            HudRender_DrawRect(renderer, roomPos, Vector_Scale(box->size, 12), 255, 0, 255, 255);
+            HudRender_DrawRect(renderer, roomPos, roomSize, r, g, b, 255);
         }
     }
 }
@@ -191,15 +251,20 @@ void HudRender_DrawGrid(SDL_Renderer* renderer, Vector cameraCentered)
         int mod = HudRender_TrueMod(cameraCentered.x, 48);
 
         SDL_Rect rect = { i * 48 - mod, 0, 3, 768 };
-        
+
+        Uint8 r = 255;
+        Uint8 g = 255;
+        Uint8 b = 255;
+        Uint8 a = 63;
+
         if (rect.x + cameraCentered.x == 0)
         {
-            IntegerRender_FillRect(renderer, rect, 0, 255, 0, 127);
+            r = 0;
+            b = 0;
+            a = 127;
         }
-        else
-        {
-            IntegerRender_FillRect(renderer, rect, 255, 255, 255, 63);
-        }
+
+        IntegerRender_FillRect(renderer, rect, r, g, b, a);
     }
 
     for (int i = 0; i < 16 + 1; i++)
@@ -208,14 +273,19 @@ void HudRender_DrawGrid(SDL_Renderer* renderer, Vector cameraCentered)
 
         SDL_Rect rect = { 0, i * 48 - mod, 1152, 3 };
 
+        Uint8 r = 255;
+        Uint8 g = 255;
+        Uint8 b = 255;
+        Uint8 a = 63;
+
         if (rect.y + cameraCentered.y == 0)
         {
-            IntegerRender_FillRect(renderer, rect, 255, 0, 0, 127);
+            g = 0;
+            b = 0;
+            a = 127;
         }
-        else
-        {
-            IntegerRender_FillRect(renderer, rect, 255, 255, 255, 63);
-        }
+
+        IntegerRender_FillRect(renderer, rect, r, g, b, a);
     }
 }
 

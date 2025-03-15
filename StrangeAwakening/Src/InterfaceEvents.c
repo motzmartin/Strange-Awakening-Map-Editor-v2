@@ -28,14 +28,15 @@ bool InterfaceEvents_Poll(InterfaceEvents* interfaceEvents)
             {
                 interfaceEvents->events[0] = true;
             }
+            else if (event.button.button == SDL_BUTTON_RIGHT)
+            {
+                interfaceEvents->events[1] = true;
+            }
             break;
 
         case SDL_EVENT_KEY_DOWN:
             switch (event.key.scancode)
             {
-            case SDL_SCANCODE_G:
-                interfaceEvents->events[1] = true;
-                break;
             case SDL_SCANCODE_LEFT:
                 interfaceEvents->events[2] = true;
                 break;
@@ -48,11 +49,14 @@ bool InterfaceEvents_Poll(InterfaceEvents* interfaceEvents)
             case SDL_SCANCODE_DOWN:
                 interfaceEvents->events[5] = true;
                 break;
-            case SDL_SCANCODE_X:
+            case SDL_SCANCODE_G:
                 interfaceEvents->events[6] = true;
                 break;
-            case SDL_SCANCODE_L:
+            case SDL_SCANCODE_X:
                 interfaceEvents->events[7] = true;
+                break;
+            case SDL_SCANCODE_L:
+                interfaceEvents->events[8] = true;
             }
             break;
 

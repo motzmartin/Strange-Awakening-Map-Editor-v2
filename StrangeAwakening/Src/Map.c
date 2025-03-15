@@ -14,6 +14,9 @@ Map* Map_Create(int size)
     map->rooms = calloc(size, sizeof(Box*));
     if (!map->rooms) return NULL;
 
+    map->lights = calloc(size, sizeof(Light*));
+    if (!map->lights) return NULL;
+
     map->size = size;
 
     return map;
@@ -57,6 +60,16 @@ void Map_AddRoom(Map* map, Vector position, Vector size)
     room->size = size;
 }
 
+void Map_AddLight(Map* map, Vector position, Vector size, bool emit)
+{
+    Light* light = Map_ArrayAdd(map, map->lights, &map->lightsCursor, sizeof(Light));
+    if (!light) return;
+
+    light->pos = position;
+    light->size = size;
+    light->emit = emit;
+}
+
 void Map_ArrayRemove(void** arr, int* cursor, int index)
 {
     free(arr[index]);
@@ -80,6 +93,11 @@ void Map_RemoveCollision(Map* map, int index)
 void Map_RemoveRoom(Map* map, int index)
 {
     Map_ArrayRemove(map->rooms, &map->roomsCursor, index);
+}
+
+void Map_RemoveLight(Map* map, int index)
+{
+    Map_ArrayRemove(map->lights, &map->lightsCursor, index);
 }
 
 int Map_GetTileIndex(Map* map, Vector position)
@@ -136,6 +154,24 @@ int Map_GetRoomIndex(Map* map, Vector position)
     return -1;
 }
 
+int Map_GetLightIndex(Map* map, Vector position)
+{
+    for (int i = map->lightsCursor - 1; i >= 0; i--)
+    {
+        Light* light = map->lights[i];
+
+        if (position.x >= light->pos.x &&
+            position.y >= light->pos.y &&
+            position.x < light->pos.x + light->size.x &&
+            position.y < light->pos.y + light->size.y)
+        {
+            return i;
+        }
+    }
+
+    return -1;
+}
+
 void Map_SwitchFrontTile(Map* map, int index)
 {
     map->tiles[index]->front = !map->tiles[index]->front;
@@ -162,5 +198,148 @@ void Map_Free(Map* map)
     free(map->collisions);
     free(map->rooms);
 
+    if (map->lightsTexture)
+    {
+        SDL_DestroyTexture(map->lightsTexture);
+    }
+
     free(map);
+}
+
+void Map_ProcessLights(Map* map, SDL_Renderer* renderer)
+{
+    if (!map->lightsCursor)
+    {
+        SDL_DestroyTexture(map->lightsTexture);
+        map->lightsTexture = NULL;
+        return;
+    }
+
+    Vector min = map->lights[0]->pos;
+    Vector max = map->lights[0]->pos;
+
+    for (int i = 0; i < map->lightsCursor; i++)
+    {
+        Light* light = map->lights[i];
+
+        if (light->pos.x < min.x) min.x = light->pos.x;
+        if (light->pos.y < min.y) min.y = light->pos.y;
+
+        if (light->pos.x + light->size.x > max.x) max.x = light->pos.x + light->size.x;
+        if (light->pos.y + light->size.y > max.y) max.y = light->pos.y + light->size.y;
+    }
+
+    map->lightsPos = min;
+
+    Vector size = Vector_Sub(max, min);
+
+    map->lightsSize = size;
+
+    float** lights = calloc(size.y, sizeof(float*));
+    if (!lights) return;
+
+    for (int i = 0; i < size.y; i++)
+    {
+        lights[i] = calloc(size.x, sizeof(float));
+        if (!lights[i]) return;
+    }
+
+    float intensity = 1.0f;
+
+    for (int i = 0; i < map->lightsCursor; i++)
+    {
+        Light* light = map->lights[i];
+
+        if (light->emit)
+        {
+            for (int j = 0; j < light->size.y; j++)
+            {
+                for (int k = 0; k < light->size.x; k++)
+                {
+                    lights[j - min.y + light->pos.y][k - min.x + light->pos.x] = intensity;
+                }
+            }
+        }
+    }
+
+    intensity -= 0.02f;
+
+    while (intensity > 0.f)
+    {
+        float** temp = calloc(size.y, sizeof(float*));
+        if (!temp) return;
+
+        for (int i = 0; i < size.y; i++)
+        {
+            temp[i] = calloc(size.x, sizeof(float));
+            if (!temp[i]) return;
+
+            for (int j = 0; j < size.x; j++)
+            {
+                temp[i][j] = lights[i][j];
+            }
+        }
+
+        for (int i = 0; i < size.y; i++)
+        {
+            for (int j = 0; j < size.x; j++)
+            {
+                int lightIndex = Map_GetLightIndex(map, Vector_New(min.x + j, min.y + i));
+
+                if (temp[i][j] == 0 && lightIndex != -1)
+                {
+                    if ((j > 0 && temp[i][j - 1] > 0) ||
+                        (i > 0 && temp[i - 1][j] > 0) ||
+                        (j < size.x - 1 && temp[i][j + 1] > 0) ||
+                        (i < size.y - 1 && temp[i + 1][j] > 0))
+                    {
+                        lights[i][j] = intensity;
+                    }
+                }
+            }
+        }
+
+        intensity -= 0.02f;
+
+        for (int i = 0; i < size.y; i++)
+        {
+            free(temp[i]);
+        }
+
+        free(temp);
+    }
+
+    Uint32* pixels = NULL;
+    const SDL_PixelFormatDetails* format = NULL;
+    int pitch = 0;
+
+    SDL_Texture* texture = SDL_CreateTexture(renderer,
+        SDL_PIXELFORMAT_RGBA8888,
+        SDL_TEXTUREACCESS_STREAMING,
+        size.x,
+        size.y);
+    if (!texture) return;
+
+    format = SDL_GetPixelFormatDetails(SDL_PIXELFORMAT_RGBA8888);
+
+    SDL_LockTexture(texture, NULL, &pixels, &pitch);
+
+    for (int i = 0; i < size.y; i++)
+    {
+        for (int j = 0; j < size.x; j++)
+        {
+            pixels[i * size.x + j] = SDL_MapRGBA(format, NULL, 0, 0, 0, 255 - (Uint8)(lights[i][j] * 255.f));
+        }
+    }
+
+    SDL_UnlockTexture(texture);
+
+    map->lightsTexture = texture;
+
+    for (int i = 0; i < size.y; i++)
+    {
+        free(lights[i]);
+    }
+
+    free(lights);
 }

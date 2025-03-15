@@ -157,7 +157,6 @@
     <ClInclude Include="Include\Display.h" />
     <ClInclude Include="Include\Engine.h" />
     <ClInclude Include="Include\Game.h" />
-    <ClInclude Include="Include\Hud.h" />
     <ClInclude Include="Include\HudRender.h" />
     <ClInclude Include="Include\IntegerRender.h" />
     <ClInclude Include="Include\InterfaceEvents.h" />
@@ -170,13 +169,13 @@
     <ClInclude Include="Include\Tile.h" />
     <ClInclude Include="Include\Vector.h" />
     <ClInclude Include="Include\VectorF.h" />
+    <ClInclude Include="Include\Light.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Src\Camera.c" />
     <ClCompile Include="Src\Display.c" />
     <ClCompile Include="Src\Engine.c" />
     <ClCompile Include="Src\Game.c" />
-    <ClCompile Include="Src\Hud.c" />
     <ClCompile Include="Src\HudRender.c" />
     <ClCompile Include="Src\IntegerRender.c" />
     <ClCompile Include="Src\InterfaceEvents.c" />

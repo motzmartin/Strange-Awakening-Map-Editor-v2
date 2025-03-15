@@ -14,3 +14,5 @@ void MapRender_Draw(Map* map,
     Vector cameraCentered,
     float playerY,
     bool behind);
+
+void MapRender_DrawLights(Map* map, SDL_Renderer* renderer, Vector cameraCentered);

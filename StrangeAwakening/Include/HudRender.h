@@ -9,6 +9,7 @@
 
 #include "Tile.h"
 #include "Box.h"
+#include "Light.h"
 
 void HudRender_Draw(SDL_Renderer* renderer,
     SDL_Texture* sprites,
@@ -17,15 +18,19 @@ void HudRender_Draw(SDL_Renderer* renderer,
     Vector selected,
     Vector collisionSize,
     Vector roomSize,
+    Vector lightSize,
     Tile** tiles,
     Box** collisions,
     Box** rooms,
+    Light** lights,
     int tilesCursor,
     int collisionsCursor,
     int roomsCursor,
+    int lightsCursor,
     int tilePointed,
     int collisionPointed,
     int roomPointed,
+    int lightPointed,
     int mode,
     bool grid);
 
@@ -51,6 +56,12 @@ void HudRender_DrawRooms(SDL_Renderer* renderer,
     Box** rooms,
     int roomsCursor,
     int roomPointed);
+
+void HudRender_DrawLights(SDL_Renderer* renderer,
+    Vector cameraCentered,
+    Light** lights,
+    int lightsCursor,
+    int lightPointed);
 
 void HudRender_DrawGrid(SDL_Renderer* renderer, Vector cameraCentered);
 

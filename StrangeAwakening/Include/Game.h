@@ -27,10 +27,12 @@ typedef struct Game
 
 	Vector collisionSize;
 	Vector roomSize;
+	Vector lightSize;
 
 	int tilePointed;
 	int collisionPointed;
 	int roomPointed;
+	int lightPointed;
 
 	int mode;
 	bool grid;
@@ -42,7 +44,7 @@ Game* Game_Create();
 
 void Game_UpdateCursor(Game* game, Vector mouse);
 
-void Game_Update(Game* game, bool* events, Vector mouse, Uint8* keyboard);
+void Game_Update(Game* game, SDL_Renderer* renderer, bool* events, Vector mouse, Uint8* keyboard);
 void Game_Draw(Game* game, SDL_Renderer* renderer, SDL_Texture** textures);
 
 void Game_Free(Game* game);

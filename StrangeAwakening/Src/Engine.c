@@ -33,6 +33,7 @@ void Engine_Update(Engine* engine)
     }
 
     Game_Update(engine->game,
+        engine->display->renderer,
         engine->interfaceEvents->events,
         engine->interfaceEvents->mouse,
         engine->interfaceEvents->keyboard);
