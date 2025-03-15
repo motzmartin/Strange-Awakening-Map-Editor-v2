@@ -7,7 +7,7 @@ Display* Display_Create(int windowWidth, int windowHeight, int texturesNumber)
 
     if (!SDL_Init(SDL_INIT_VIDEO)) return NULL;
 
-    display->window = SDL_CreateWindow("Avenir", windowWidth, windowHeight, 0);
+    display->window = SDL_CreateWindow("SA Map Editor", windowWidth, windowHeight, 0);
     if (!display->window) return NULL;
 
     display->renderer = SDL_CreateRenderer(display->window, NULL);

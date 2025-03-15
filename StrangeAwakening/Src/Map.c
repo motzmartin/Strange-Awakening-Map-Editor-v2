@@ -208,10 +208,14 @@ void Map_Free(Map* map)
 
 void Map_ProcessLights(Map* map, SDL_Renderer* renderer)
 {
-    if (!map->lightsCursor)
+    if (map->lightsTexture)
     {
         SDL_DestroyTexture(map->lightsTexture);
         map->lightsTexture = NULL;
+    }
+
+    if (!map->lightsCursor)
+    {
         return;
     }
 
@@ -235,12 +239,14 @@ void Map_ProcessLights(Map* map, SDL_Renderer* renderer)
 
     map->lightsSize = size;
 
-    float** lights = calloc(size.y, sizeof(float*));
+    // LIGHTS ALLOCATION
+
+    float** lights = calloc(size.y * 2, sizeof(float*));
     if (!lights) return;
 
-    for (int i = 0; i < size.y; i++)
+    for (int i = 0; i < size.y * 2; i++)
     {
-        lights[i] = calloc(size.x, sizeof(float));
+        lights[i] = calloc(size.x * 2, sizeof(float));
         if (!lights[i]) return;
     }
 
@@ -256,42 +262,47 @@ void Map_ProcessLights(Map* map, SDL_Renderer* renderer)
             {
                 for (int k = 0; k < light->size.x; k++)
                 {
-                    lights[j - min.y + light->pos.y][k - min.x + light->pos.x] = intensity;
+                    lights[(j + light->pos.y - min.y) * 2][(k + light->pos.x - min.x) * 2] = intensity;
+                    lights[(j + light->pos.y - min.y) * 2][(k + light->pos.x - min.x) * 2 + 1] = intensity;
+                    lights[(j + light->pos.y - min.y) * 2 + 1][(k + light->pos.x - min.x) * 2] = intensity;
+                    lights[(j + light->pos.y - min.y) * 2 + 1][(k + light->pos.x - min.x) * 2 + 1] = intensity;
                 }
             }
         }
     }
 
-    intensity -= 0.02f;
+    intensity -= 0.01f;
+
+    // LIGHTS PROCESS
 
     while (intensity > 0.f)
     {
-        float** temp = calloc(size.y, sizeof(float*));
+        float** temp = calloc(size.y * 2, sizeof(float*));
         if (!temp) return;
 
-        for (int i = 0; i < size.y; i++)
+        for (int i = 0; i < size.y * 2; i++)
         {
-            temp[i] = calloc(size.x, sizeof(float));
+            temp[i] = calloc(size.x * 2, sizeof(float));
             if (!temp[i]) return;
 
-            for (int j = 0; j < size.x; j++)
+            for (int j = 0; j < size.x * 2; j++)
             {
                 temp[i][j] = lights[i][j];
             }
         }
 
-        for (int i = 0; i < size.y; i++)
+        for (int i = 0; i < size.y * 2; i++)
         {
-            for (int j = 0; j < size.x; j++)
+            for (int j = 0; j < size.x * 2; j++)
             {
-                int lightIndex = Map_GetLightIndex(map, Vector_New(min.x + j, min.y + i));
+                int lightIndex = Map_GetLightIndex(map, Vector_New(min.x + j / 2, min.y + i / 2));
 
                 if (temp[i][j] == 0 && lightIndex != -1)
                 {
                     if ((j > 0 && temp[i][j - 1] > 0) ||
                         (i > 0 && temp[i - 1][j] > 0) ||
-                        (j < size.x - 1 && temp[i][j + 1] > 0) ||
-                        (i < size.y - 1 && temp[i + 1][j] > 0))
+                        (j < size.x * 2 - 1 && temp[i][j + 1] > 0) ||
+                        (i < size.y * 2 - 1 && temp[i + 1][j] > 0))
                     {
                         lights[i][j] = intensity;
                     }
@@ -299,9 +310,9 @@ void Map_ProcessLights(Map* map, SDL_Renderer* renderer)
             }
         }
 
-        intensity -= 0.02f;
+        intensity -= 0.01f;
 
-        for (int i = 0; i < size.y; i++)
+        for (int i = 0; i < size.y * 2; i++)
         {
             free(temp[i]);
         }
@@ -309,34 +320,35 @@ void Map_ProcessLights(Map* map, SDL_Renderer* renderer)
         free(temp);
     }
 
-    Uint32* pixels = NULL;
-    const SDL_PixelFormatDetails* format = NULL;
-    int pitch = 0;
+    // TEXTURE CREATION
 
-    SDL_Texture* texture = SDL_CreateTexture(renderer,
+    map->lightsTexture = SDL_CreateTexture(renderer,
         SDL_PIXELFORMAT_RGBA8888,
         SDL_TEXTUREACCESS_STREAMING,
-        size.x,
-        size.y);
-    if (!texture) return;
+        size.x * 2,
+        size.y * 2);
+    if (!map->lightsTexture) return;
 
-    format = SDL_GetPixelFormatDetails(SDL_PIXELFORMAT_RGBA8888);
+    SDL_SetTextureScaleMode(map->lightsTexture, SDL_SCALEMODE_NEAREST);
 
-    SDL_LockTexture(texture, NULL, &pixels, &pitch);
+    const SDL_PixelFormatDetails* format = SDL_GetPixelFormatDetails(SDL_PIXELFORMAT_RGBA8888);
 
-    for (int i = 0; i < size.y; i++)
+    Uint32* pixels = NULL;
+    int pitch = 0;
+
+    SDL_LockTexture(map->lightsTexture, NULL, &pixels, &pitch);
+
+    for (int i = 0; i < size.y * 2; i++)
     {
-        for (int j = 0; j < size.x; j++)
+        for (int j = 0; j < size.x * 2; j++)
         {
-            pixels[i * size.x + j] = SDL_MapRGBA(format, NULL, 0, 0, 0, 255 - (Uint8)(lights[i][j] * 255.f));
+            pixels[i * size.x * 2 + j] = SDL_MapRGBA(format, NULL, 0, 0, 0, 255 - (Uint8)(lights[i][j] * 255.f));
         }
     }
 
-    SDL_UnlockTexture(texture);
+    SDL_UnlockTexture(map->lightsTexture);
 
-    map->lightsTexture = texture;
-
-    for (int i = 0; i < size.y; i++)
+    for (int i = 0; i < size.y * 2; i++)
     {
         free(lights[i]);
     }

@@ -30,7 +30,7 @@ void MapRender_DrawLights(Map* map, SDL_Renderer* renderer, Vector cameraCentere
 {
     if (map->lightsTexture)
     {
-        SDL_Rect lightsSrc = { 0, 0, map->lightsSize.x, map->lightsSize.y };
+        SDL_Rect lightsSrc = { 0, 0, map->lightsSize.x * 2, map->lightsSize.y * 2 };
         SDL_Rect lightsDst =
         {
             map->lightsPos.x * 12 - cameraCentered.x,
