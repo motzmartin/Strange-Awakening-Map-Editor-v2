@@ -6,7 +6,7 @@
 
 | Key | Action |
 |-----|--------|
-| `ZQSD` | Move |
+| `Z` `Q` `S` `D` | Move |
 | `E` | Select tile |
 | `F` | Enable front tile editor mode |
 | `C` | Enable collision editor mode |
