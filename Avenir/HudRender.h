@@ -7,14 +7,23 @@
 #include "Vector.h"
 #include "IntegerRender.h"
 
+#include "Tile.h"
+#include "Box.h"
+
 void HudRender_Draw(SDL_Renderer* renderer,
     SDL_Texture* sprites,
+    Vector cameraCentered,
     Vector cursor,
     Vector selected,
-    Vector cameraCentered,
+    Vector collisionSize,
+    Tile** tiles,
+    Box** collisions,
+    int tilesCursor,
+    int collisionsCursor,
+    int tilePointed,
+    int collisionPointed,
     int mode,
-    bool grid,
-    bool isTileSelected);
+    bool grid);
 
 void HudRender_DrawInventory(SDL_Renderer* renderer,
     SDL_Texture* sprites,
@@ -22,17 +31,25 @@ void HudRender_DrawInventory(SDL_Renderer* renderer,
     Vector selected);
 
 void HudRender_DrawFrontTiles(SDL_Renderer* renderer,
-    Vector cursor,
     Vector cameraCentered,
-    Vector* frontTiles,
-    int frontTilesNumber,
-    bool isTileSelected);
+    Tile** tiles,
+    int tilesCursor,
+    int tilePointed);
+
+void HudRender_DrawCollisions(SDL_Renderer* renderer,
+    Vector cameraCentered,
+    Box** collisions,
+    int collisionsCursor,
+    int collisionPointed);
 
 void HudRender_DrawGrid(SDL_Renderer* renderer, Vector cameraCentered);
 
 void HudRender_DrawRect(SDL_Renderer* renderer,
     Vector position,
-    int size,
+    Vector size,
     Uint8 r,
     Uint8 g,
-    Uint8 b);
+    Uint8 b,
+    Uint8 a);
+
+int HudRender_TrueMod(int a, int b);

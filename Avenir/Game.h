@@ -6,6 +6,7 @@
 #include <SDL3/SDL.h>
 
 #include "Vector.h"
+#include "LevelLoader.h"
 
 #include "Map.h"
 #include "Player.h"
@@ -24,7 +25,11 @@ typedef struct Game
 	Vector cursor;
 	Vector selected;
 
+	Vector collisionSize;
+
 	int tilePointed;
+	int collisionPointed;
+
 	int mode;
 
 	bool grid;

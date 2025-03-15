@@ -16,6 +16,9 @@ Game* Game_Create()
 
     game->timer = SDL_GetTicksNS();
 
+    game->collisionSize.x = 1;
+    game->collisionSize.y = 1;
+
     return game;
 }
 
@@ -34,18 +37,15 @@ void Game_UpdateCursor(Game* game, Vector mouse)
     {
         Vector cursorPos = Vector_Div(Vector_Add(mouse, Camera_GetCentered(game->camera)), 12);
 
+        game->cursor = cursorPos;
+
         if (game->mode == 2 || game->mode == 3)
         {
             game->tilePointed = Map_GetTileIndex(game->map, cursorPos);
-
-            if (game->tilePointed != -1)
-            {
-                game->cursor = Map_GetTilePosition(game->map, game->tilePointed);
-            }
         }
-        else
+        else if (game->mode == 4)
         {
-            game->cursor = cursorPos;
+            game->collisionPointed = Map_GetCollisionIndex(game->map, cursorPos);
         }
     }
 }
@@ -56,44 +56,84 @@ void Game_Update(Game* game, bool* events, Vector mouse, Uint8* keyboard)
     game->timer = SDL_GetTicksNS();
     Uint64 elapsed = game->timer - prevTimer;
 
-    int prevMode = game->mode;
-
     if (keyboard[SDL_SCANCODE_E]) game->mode = 1;
     else if (keyboard[SDL_SCANCODE_F]) game->mode = 2;
     else if (keyboard[SDL_SCANCODE_R]) game->mode = 3;
+    else if (keyboard[SDL_SCANCODE_C]) game->mode = 4;
     else game->mode = 0;
-
-    if (game->mode != prevMode)
-    {
-        if (prevMode == 1)
-        {
-            game->selected = game->cursor;
-        }
-        else if (prevMode == 2 && game->tilePointed != -1)
-        {
-            Map_SwitchFrontTile(game->map, game->tilePointed);
-        }
-        else if (prevMode == 3 && game->tilePointed != -1)
-        {
-            Map_RemoveTile(game->map, game->tilePointed);
-        }
-    }
 
     Game_UpdateCursor(game, mouse);
 
     if (events[0])
     {
-        Map_AddTile(game->map, game->cursor, game->selected, false);
+        switch (game->mode)
+        {
+        case 1:
+            game->selected = game->cursor;
+            break;
+        case 2:
+            if (game->tilePointed != -1)
+            {
+                Map_SwitchFrontTile(game->map, game->tilePointed);
+            }
+            break;
+        case 3:
+            if (game->tilePointed != -1)
+            {
+                Map_RemoveTile(game->map, game->tilePointed);
+                game->tilePointed = -1;
+            }
+            break;
+        case 4:
+            if (game->collisionPointed != -1)
+            {
+                Map_RemoveCollision(game->map, game->collisionPointed);
+                game->collisionPointed = -1;
+            }
+            else
+            {
+                Map_AddCollision(game->map, game->cursor, game->collisionSize);
+            }
+            break;
+        default:
+            Map_AddTile(game->map, game->cursor, game->selected, false);
+        }
     }
 
-    if (events[1])
+    if (events[1]) game->grid = !game->grid;
+
+    if (events[2]) game->collisionSize.x--;
+    if (events[3]) game->collisionSize.y--;
+    if (events[4]) game->collisionSize.x++;
+    if (events[5]) game->collisionSize.y++;
+
+    if (events[6])
     {
-        game->grid = !game->grid;
+        LevelLoader_Save(game->map->tiles,
+            game->map->collisions,
+            game->map->tilesCursor,
+            game->map->collisionsCursor,
+            game->player->pos);
     }
+
+    if (events[7])
+    {
+        LevelLoader_Load(game->map->tiles,
+            game->map->collisions,
+            &game->map->tilesCursor,
+            &game->map->collisionsCursor,
+            &game->player->pos);
+    }
+
+    game->collisionSize = Vector_Constrain(game->collisionSize, Vector_New(1, 1), Vector_New(256, 256));
 
     if (game->mode == 0)
     {
-        Player_Update(game->player, keyboard, elapsed);
+        Player_Update(game->player,
+            game->map->collisions,
+            game->map->collisionsCursor,
+            keyboard,
+            elapsed);
         Camera_Update(game->camera, game->player->pos, elapsed);
     }
 }
@@ -121,27 +161,18 @@ void Game_Draw(Game* game, SDL_Renderer* renderer, SDL_Texture** textures)
 
     HudRender_Draw(renderer,
         textures[0],
+        Camera_GetCentered(game->camera),
         game->cursor,
         game->selected,
-        Camera_GetCentered(game->camera),
+        game->collisionSize,
+        game->map->tiles,
+        game->map->collisions,
+        game->map->tilesCursor,
+        game->map->collisionsCursor,
+        game->tilePointed,
+        game->collisionPointed,
         game->mode,
-        game->grid,
-        game->tilePointed != -1);
-
-    if (game->mode == 2)
-    {
-        int frontTilesNumber = 0;
-        Vector* frontTiles = Map_GetFrontTiles(game->map, &frontTilesNumber);
-
-        HudRender_DrawFrontTiles(renderer,
-            game->cursor,
-            Camera_GetCentered(game->camera),
-            frontTiles,
-            frontTilesNumber,
-            game->tilePointed != -1);
-
-        Map_FreeFrontTiles(frontTiles);
-    }
+        game->grid);
 }
 
 void Game_Free(Game* game)

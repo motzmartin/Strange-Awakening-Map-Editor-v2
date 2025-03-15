@@ -4,12 +4,13 @@ void IntegerRender_FillRect(SDL_Renderer* renderer,
     SDL_Rect rect,
     Uint8 r,
     Uint8 g,
-    Uint8 b)
+    Uint8 b,
+    Uint8 a)
 {
     SDL_FRect fRect = { 0 };
     SDL_RectToFRect(&rect, &fRect);
 
-    SDL_SetRenderDrawColor(renderer, r, g, b, 255);
+    SDL_SetRenderDrawColor(renderer, r, g, b, a);
     SDL_RenderFillRect(renderer, &fRect);
 }
 

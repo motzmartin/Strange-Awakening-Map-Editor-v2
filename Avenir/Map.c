@@ -8,6 +8,9 @@ Map* Map_Create(int size)
     map->tiles = calloc(size, sizeof(Tile*));
     if (!map->tiles) return NULL;
 
+    map->collisions = calloc(size, sizeof(Box*));
+    if (!map->collisions) return NULL;
+
     map->size = size;
 
     return map;
@@ -15,13 +18,13 @@ Map* Map_Create(int size)
 
 void Map_AddTile(Map* map, Vector position, Vector selected, bool front)
 {
-    if (map->cursor == map->size) return;
+    if (map->tilesCursor == map->size) return;
 
-    map->tiles[map->cursor] = calloc(1, sizeof(Tile));
-    if (!map->tiles[map->cursor]) return;
+    map->tiles[map->tilesCursor] = calloc(1, sizeof(Tile));
+    if (!map->tiles[map->tilesCursor]) return;
 
     Tile newTile = { position, selected, front };
-    *map->tiles[map->cursor++] = newTile;
+    *map->tiles[map->tilesCursor++] = newTile;
 }
 
 void Map_RemoveTile(Map* map, int index)
@@ -29,17 +32,41 @@ void Map_RemoveTile(Map* map, int index)
     free(map->tiles[index]);
     map->tiles[index] = NULL;
 
-    for (int i = index; i < map->cursor - 1; i++)
+    for (int i = index; i < map->tilesCursor - 1; i++)
     {
         map->tiles[i] = map->tiles[i + 1];
     }
 
-    map->tiles[--map->cursor] = NULL;
+    map->tiles[--map->tilesCursor] = NULL;
+}
+
+void Map_AddCollision(Map* map, Vector position, Vector size)
+{
+    if (map->collisionsCursor == map->size) return;
+
+    map->collisions[map->collisionsCursor] = calloc(1, sizeof(Box));
+    if (!map->collisions[map->collisionsCursor]) return;
+
+    Box newCollision = { position, size };
+    *map->collisions[map->collisionsCursor++] = newCollision;
+}
+
+void Map_RemoveCollision(Map* map, int index)
+{
+    free(map->collisions[index]);
+    map->collisions[index] = NULL;
+
+    for (int i = index; i < map->collisionsCursor - 1; i++)
+    {
+        map->collisions[i] = map->collisions[i + 1];
+    }
+
+    map->collisions[--map->collisionsCursor] = NULL;
 }
 
 int Map_GetTileIndex(Map* map, Vector position)
 {
-    for (int i = map->cursor - 1; i >= 0; i--)
+    for (int i = map->tilesCursor - 1; i >= 0; i--)
     {
         Tile* tile = map->tiles[i];
 
@@ -58,24 +85,25 @@ Vector Map_GetTilePosition(Map* map, int index)
     return map->tiles[index]->pos;
 }
 
-Vector* Map_GetFrontTiles(Map* map, int* frontTilesNumber)
+int Map_GetCollisionIndex(Map* map, Vector position)
 {
-    Vector* frontTiles = calloc(map->size, sizeof(Vector));
-    if (!frontTiles) return NULL;
-
-    int index = 0;
-
-    for (int i = 0; i < map->cursor; i++)
+    for (int i = map->collisionsCursor - 1; i >= 0; i--)
     {
-        if (map->tiles[i]->front)
+        Box* box = map->collisions[i];
+
+        if (position.x >= box->pos.x && position.y >= box->pos.y &&
+            position.x < box->pos.x + box->size.x && position.y < box->pos.y + box->size.y)
         {
-            frontTiles[index++] = map->tiles[i]->pos;
+            return i;
         }
     }
 
-    *frontTilesNumber = index;
+    return -1;
+}
 
-    return frontTiles;
+Vector Map_GetCollisionPosition(Map* map, int index)
+{
+    return map->collisions[index]->pos;
 }
 
 void Map_SwitchFrontTile(Map* map, int index)
@@ -83,18 +111,19 @@ void Map_SwitchFrontTile(Map* map, int index)
     map->tiles[index]->front = !map->tiles[index]->front;
 }
 
-void Map_FreeFrontTiles(Vector* frontTiles)
-{
-    free(frontTiles);
-}
-
 void Map_Free(Map* map)
 {
-    for (int i = 0; i < map->cursor; i++)
+    for (int i = 0; i < map->tilesCursor; i++)
     {
         free(map->tiles[i]);
     }
     free(map->tiles);
+
+    for (int i = 0; i < map->collisionsCursor; i++)
+    {
+        free(map->collisions[i]);
+    }
+    free(map->collisions);
 
     free(map);
 }

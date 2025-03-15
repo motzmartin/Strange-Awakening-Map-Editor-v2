@@ -9,7 +9,7 @@ void MapRender_Draw(Map* map,
 {
     SDL_SetTextureAlphaMod(sprites, 255);
 
-    for (int i = 0; i < map->cursor; i++)
+    for (int i = 0; i < map->tilesCursor; i++)
     {
         Tile* tile = map->tiles[i];
 

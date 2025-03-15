@@ -8,26 +8,35 @@ Player* Player_Create()
 	return player;
 }
 
-void Player_Update(Player* player, Uint8* keyboard, Uint64 elapsed)
+void Player_Update(Player* player,
+	Box** collisions,
+	int collisionsCursor,
+	Uint8* keyboard,
+	Uint64 elapsed)
 {
 	player->count += elapsed;
 
-	VectorF acceleration = { 0 };
+	player->acc = VectorF_New(0.f, 0.f);
 
 	if (keyboard[SDL_SCANCODE_A] != keyboard[SDL_SCANCODE_D])
 	{
-		acceleration.x = keyboard[SDL_SCANCODE_A] ? -1.f : 1.f;
+		player->acc.x = keyboard[SDL_SCANCODE_A] ? -1.f : 1.f;
 	}
 
 	if (keyboard[SDL_SCANCODE_W] != keyboard[SDL_SCANCODE_S])
 	{
-		acceleration.y = keyboard[SDL_SCANCODE_W] ? -1.f : 1.f;
+		player->acc.y = keyboard[SDL_SCANCODE_W] ? -1.f : 1.f;
 	}
 
-	acceleration = VectorF_Scale(VectorF_Normalize(acceleration), elapsed * 1.5e-7f);
+	player->acc = VectorF_Scale(VectorF_Normalize(player->acc), elapsed * 1.5e-7f);
 
 	VectorF prevPos = player->pos;
-	player->pos = VectorF_Add(player->pos, acceleration);
+
+	player->pos.x += player->acc.x;
+	Player_ProcessCollisionsX(player, collisions, collisionsCursor);
+
+	player->pos.y += player->acc.y;
+	Player_ProcessCollisionsY(player, collisions, collisionsCursor);
 
 	if (prevPos.x == player->pos.x && prevPos.y == player->pos.y)
 	{
@@ -41,6 +50,58 @@ void Player_Update(Player* player, Uint8* keyboard, Uint64 elapsed)
 		else if (player->pos.x < prevPos.x) player->sprite.y = 1;
 		else if (player->pos.y > prevPos.y) player->sprite.y = 0;
 		else if (player->pos.y < prevPos.y) player->sprite.y = 2;
+	}
+}
+
+Box* Player_IsColliding(Player* player, Box** collisions, int collisionsCursor)
+{
+	for (int i = 0; i < collisionsCursor; i++)
+	{
+		Box* collision = collisions[i];
+
+		if (player->pos.x > (float)collision->pos.x * 12.f - 48.f &&
+			player->pos.x < (float)(collision->pos.x + collision->size.x) * 12.f &&
+			player->pos.y > (float)collision->pos.y * 12.f - 48.f &&
+			player->pos.y < (float)(collision->pos.y + collision->size.y) * 12.f - 36.f)
+		{
+			return collision;
+		}
+	}
+
+	return NULL;
+}
+
+void Player_ProcessCollisionsX(Player* player, Box** collisions, int collisionsCursor)
+{
+	Box* collision = Player_IsColliding(player, collisions, collisionsCursor);
+
+	if (collision)
+	{
+		if (player->acc.x < 0.f)
+		{
+			player->pos.x = (float)(collision->pos.x + collision->size.x) * 12.f;
+		}
+		else if (player->acc.x > 0.f)
+		{
+			player->pos.x = (float)collision->pos.x * 12.f - 48.f;
+		}
+	}
+}
+
+void Player_ProcessCollisionsY(Player* player, Box** collisions, int collisionsCursor)
+{
+	Box* collision = Player_IsColliding(player, collisions, collisionsCursor);
+
+	if (collision)
+	{
+		if (player->acc.y < 0.f)
+		{
+			player->pos.y = (float)(collision->pos.y + collision->size.y) * 12.f - 36.f;
+		}
+		else if (player->acc.y > 0.f)
+		{
+			player->pos.y = (float)collision->pos.y * 12.f - 48.f;
+		}
 	}
 }
 

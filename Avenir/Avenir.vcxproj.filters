@@ -90,6 +90,12 @@
     <ClCompile Include="IntegerRender.c">
       <Filter>Source Files\Render</Filter>
     </ClCompile>
+    <ClCompile Include="LevelLoader.c">
+      <Filter>Source Files\Game</Filter>
+    </ClCompile>
+    <ClCompile Include="Hud.c">
+      <Filter>Source Files\Game</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine.h">
@@ -133,6 +139,18 @@
     </ClInclude>
     <ClInclude Include="IntegerRender.h">
       <Filter>Header Files\Render</Filter>
+    </ClInclude>
+    <ClInclude Include="Box.h">
+      <Filter>Header Files\Game</Filter>
+    </ClInclude>
+    <ClInclude Include="Tile.h">
+      <Filter>Header Files\Game</Filter>
+    </ClInclude>
+    <ClInclude Include="LevelLoader.h">
+      <Filter>Header Files\Game</Filter>
+    </ClInclude>
+    <ClInclude Include="Hud.h">
+      <Filter>Header Files\Game</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

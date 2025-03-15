@@ -32,6 +32,24 @@ bool InterfaceEvents_Poll(InterfaceEvents* interfaceEvents)
             {
             case SDL_SCANCODE_G:
                 interfaceEvents->events[1] = true;
+                break;
+            case SDL_SCANCODE_LEFT:
+                interfaceEvents->events[2] = true;
+                break;
+            case SDL_SCANCODE_UP:
+                interfaceEvents->events[3] = true;
+                break;
+            case SDL_SCANCODE_RIGHT:
+                interfaceEvents->events[4] = true;
+                break;
+            case SDL_SCANCODE_DOWN:
+                interfaceEvents->events[5] = true;
+                break;
+            case SDL_SCANCODE_X:
+                interfaceEvents->events[6] = true;
+                break;
+            case SDL_SCANCODE_L:
+                interfaceEvents->events[7] = true;
             }
             break;
 
