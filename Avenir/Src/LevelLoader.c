@@ -6,7 +6,7 @@ void LevelLoader_Save(Tile** tiles,
 	int collisionsCursor,
 	VectorF spawnPoint)
 {
-	FILE* file = fopen("levels/level1.dat", "wb");
+	FILE* file = fopen("Assets/Levels/Bedroom.lev", "wb");
 
 	fwrite(&tilesCursor, sizeof(int), 1, file);
 
@@ -33,7 +33,7 @@ void LevelLoader_Load(Tile** oldTiles,
 	int* oldCollisionsCursor,
 	VectorF* spawnPoint)
 {
-	FILE* file = fopen("levels/level1.dat", "rb");
+	FILE* file = fopen("Assets/Levels/Bedroom.lev", "rb");
 
 	int tilesCursor = 0;
 	fread(&tilesCursor, sizeof(int), 1, file);

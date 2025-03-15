@@ -43,114 +43,140 @@
     <Filter Include="Source Files\Utils">
       <UniqueIdentifier>{40850012-ab7b-4158-abd8-82afef99976f}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Resource Files\Textures">
+      <UniqueIdentifier>{41b05e56-3b80-40e0-8c38-e7fa4c3dd7fa}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files\DLLs">
+      <UniqueIdentifier>{407c7a5a-98b6-4a4b-8291-3e89976a6d31}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files\Levels">
+      <UniqueIdentifier>{b8c478e6-bf35-4840-b08a-0be572ca9037}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Source.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="PlayerRender.c">
-      <Filter>Source Files\Render</Filter>
-    </ClCompile>
-    <ClCompile Include="MapRender.c">
-      <Filter>Source Files\Render</Filter>
-    </ClCompile>
-    <ClCompile Include="HudRender.c">
-      <Filter>Source Files\Render</Filter>
-    </ClCompile>
-    <ClCompile Include="Game.c">
-      <Filter>Source Files\Game</Filter>
-    </ClCompile>
-    <ClCompile Include="Map.c">
-      <Filter>Source Files\Game</Filter>
-    </ClCompile>
-    <ClCompile Include="Player.c">
-      <Filter>Source Files\Game</Filter>
-    </ClCompile>
-    <ClCompile Include="Engine.c">
-      <Filter>Source Files\Controller</Filter>
-    </ClCompile>
-    <ClCompile Include="TextureLoader.c">
-      <Filter>Source Files\Interface</Filter>
-    </ClCompile>
-    <ClCompile Include="Display.c">
-      <Filter>Source Files\Interface</Filter>
-    </ClCompile>
-    <ClCompile Include="InterfaceEvents.c">
-      <Filter>Source Files\Interface</Filter>
-    </ClCompile>
-    <ClCompile Include="Camera.c">
-      <Filter>Source Files\Game</Filter>
-    </ClCompile>
-    <ClCompile Include="VectorF.c">
-      <Filter>Source Files\Utils</Filter>
-    </ClCompile>
-    <ClCompile Include="Vector.c">
-      <Filter>Source Files\Utils</Filter>
-    </ClCompile>
-    <ClCompile Include="IntegerRender.c">
-      <Filter>Source Files\Render</Filter>
-    </ClCompile>
-    <ClCompile Include="LevelLoader.c">
-      <Filter>Source Files\Game</Filter>
-    </ClCompile>
-    <ClCompile Include="Hud.c">
-      <Filter>Source Files\Game</Filter>
-    </ClCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="Engine.h">
+    <ClInclude Include="Include\HudRender.h">
+      <Filter>Header Files\Render</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\IntegerRender.h">
+      <Filter>Header Files\Render</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\PlayerRender.h">
+      <Filter>Header Files\Render</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\MapRender.h">
+      <Filter>Header Files\Render</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\Vector.h">
+      <Filter>Header Files\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\VectorF.h">
+      <Filter>Header Files\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\Camera.h">
+      <Filter>Header Files\Game</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\Game.h">
+      <Filter>Header Files\Game</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\Hud.h">
+      <Filter>Header Files\Game</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\Map.h">
+      <Filter>Header Files\Game</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\Player.h">
+      <Filter>Header Files\Game</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\InterfaceEvents.h">
+      <Filter>Header Files\Interface</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\Engine.h">
       <Filter>Header Files\Controller</Filter>
     </ClInclude>
-    <ClInclude Include="Game.h">
-      <Filter>Header Files\Game</Filter>
-    </ClInclude>
-    <ClInclude Include="Map.h">
-      <Filter>Header Files\Game</Filter>
-    </ClInclude>
-    <ClInclude Include="Display.h">
+    <ClInclude Include="Include\Display.h">
       <Filter>Header Files\Interface</Filter>
     </ClInclude>
-    <ClInclude Include="InterfaceEvents.h">
+    <ClInclude Include="Include\LevelLoader.h">
       <Filter>Header Files\Interface</Filter>
     </ClInclude>
-    <ClInclude Include="TextureLoader.h">
+    <ClInclude Include="Include\TextureLoader.h">
       <Filter>Header Files\Interface</Filter>
     </ClInclude>
-    <ClInclude Include="Player.h">
+    <ClInclude Include="Include\Tile.h">
       <Filter>Header Files\Game</Filter>
     </ClInclude>
-    <ClInclude Include="PlayerRender.h">
-      <Filter>Header Files\Render</Filter>
-    </ClInclude>
-    <ClInclude Include="HudRender.h">
-      <Filter>Header Files\Render</Filter>
-    </ClInclude>
-    <ClInclude Include="MapRender.h">
-      <Filter>Header Files\Render</Filter>
-    </ClInclude>
-    <ClInclude Include="Camera.h">
+    <ClInclude Include="Include\Box.h">
       <Filter>Header Files\Game</Filter>
     </ClInclude>
-    <ClInclude Include="VectorF.h">
-      <Filter>Header Files\Utils</Filter>
-    </ClInclude>
-    <ClInclude Include="Vector.h">
-      <Filter>Header Files\Utils</Filter>
-    </ClInclude>
-    <ClInclude Include="IntegerRender.h">
-      <Filter>Header Files\Render</Filter>
-    </ClInclude>
-    <ClInclude Include="Box.h">
-      <Filter>Header Files\Game</Filter>
-    </ClInclude>
-    <ClInclude Include="Tile.h">
-      <Filter>Header Files\Game</Filter>
-    </ClInclude>
-    <ClInclude Include="LevelLoader.h">
-      <Filter>Header Files\Game</Filter>
-    </ClInclude>
-    <ClInclude Include="Hud.h">
-      <Filter>Header Files\Game</Filter>
-    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Src\Source.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\HudRender.c">
+      <Filter>Source Files\Render</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\IntegerRender.c">
+      <Filter>Source Files\Render</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\MapRender.c">
+      <Filter>Source Files\Render</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\PlayerRender.c">
+      <Filter>Source Files\Render</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\VectorF.c">
+      <Filter>Source Files\Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Vector.c">
+      <Filter>Source Files\Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Camera.c">
+      <Filter>Source Files\Game</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Game.c">
+      <Filter>Source Files\Game</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Hud.c">
+      <Filter>Source Files\Game</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Map.c">
+      <Filter>Source Files\Game</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Player.c">
+      <Filter>Source Files\Game</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Engine.c">
+      <Filter>Source Files\Controller</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Display.c">
+      <Filter>Source Files\Interface</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\InterfaceEvents.c">
+      <Filter>Source Files\Interface</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\LevelLoader.c">
+      <Filter>Source Files\Interface</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\TextureLoader.c">
+      <Filter>Source Files\Interface</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <CopyFileToFolders Include="Assets\DLLs\SDL3.dll">
+      <Filter>Resource Files\DLLs</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="Assets\DLLs\SDL3_image.dll">
+      <Filter>Resource Files\DLLs</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="Assets\Textures\PlayerSprite.png">
+      <Filter>Resource Files\Textures</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="Assets\Textures\sprites.png">
+      <Filter>Resource Files\Textures</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="Assets\Levels\Bedroom.lev">
+      <Filter>Resource Files\Levels</Filter>
+    </CopyFileToFolders>
   </ItemGroup>
 </Project>
