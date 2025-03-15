@@ -10,12 +10,16 @@
 
 void LevelLoader_Save(Tile** tiles,
 	Box** collisions,
+	Box** rooms,
 	int tilesCursor,
 	int collisionsCursor,
+	int roomsCursor,
 	VectorF spawnPoint);
 
-void LevelLoader_Load(Tile** tiles,
-	Box** collisions,
+void LevelLoader_Load(Tile** oldTiles,
+	Box** oldCollisions,
+	Box** oldRooms,
 	int* oldTilesCursor,
 	int* oldCollisionsCursor,
+	int* oldRoomsCursor,
 	VectorF* spawnPoint);

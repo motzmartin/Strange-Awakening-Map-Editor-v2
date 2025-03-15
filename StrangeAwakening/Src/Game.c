@@ -19,6 +19,9 @@ Game* Game_Create()
     game->collisionSize.x = 1;
     game->collisionSize.y = 1;
 
+    game->roomSize.x = 4;
+    game->roomSize.y = 4;
+
     return game;
 }
 
@@ -47,19 +50,25 @@ void Game_UpdateCursor(Game* game, Vector mouse)
         {
             game->collisionPointed = Map_GetCollisionIndex(game->map, cursorPos);
         }
+        else if (game->mode == 5)
+        {
+            game->roomPointed = Map_GetRoomIndex(game->map, cursorPos);
+        }
     }
 }
 
 void Game_Update(Game* game, bool* events, Vector mouse, Uint8* keyboard)
 {
-    Uint64 prevTimer = game->timer;
-    game->timer = SDL_GetTicksNS();
-    Uint64 elapsed = game->timer - prevTimer;
+    Uint64 now = SDL_GetTicksNS();
+    Uint64 elapsed = now - game->timer;
+
+    game->timer = now;
 
     if (keyboard[SDL_SCANCODE_E]) game->mode = 1;
     else if (keyboard[SDL_SCANCODE_F]) game->mode = 2;
     else if (keyboard[SDL_SCANCODE_R]) game->mode = 3;
     else if (keyboard[SDL_SCANCODE_C]) game->mode = 4;
+    else if (keyboard[SDL_SCANCODE_T]) game->mode = 5;
     else game->mode = 0;
 
     Game_UpdateCursor(game, mouse);
@@ -95,6 +104,17 @@ void Game_Update(Game* game, bool* events, Vector mouse, Uint8* keyboard)
                 Map_AddCollision(game->map, game->cursor, game->collisionSize);
             }
             break;
+        case 5:
+            if (game->roomPointed != -1)
+            {
+                Map_RemoveRoom(game->map, game->roomPointed);
+                game->roomPointed = -1;
+            }
+            else
+            {
+                Map_AddRoom(game->map, game->cursor, game->roomSize);
+            }
+            break;
         default:
             Map_AddTile(game->map, game->cursor, game->selected, false);
         }
@@ -102,17 +122,38 @@ void Game_Update(Game* game, bool* events, Vector mouse, Uint8* keyboard)
 
     if (events[1]) game->grid = !game->grid;
 
-    if (events[2]) game->collisionSize.x--;
-    if (events[3]) game->collisionSize.y--;
-    if (events[4]) game->collisionSize.x++;
-    if (events[5]) game->collisionSize.y++;
+    if (events[2])
+    {
+        if (game->mode == 4) game->collisionSize.x--;
+        else if (game->mode == 5) game->roomSize.x--;
+    }
+    else if (events[3])
+    {
+        if (game->mode == 4) game->collisionSize.y--;
+        else if (game->mode == 5) game->roomSize.y--;
+    }
+    else if (events[4])
+    {
+        if (game->mode == 4) game->collisionSize.x++;
+        else if (game->mode == 5) game->roomSize.x++;
+    }
+    else if (events[5])
+    {
+        if (game->mode == 4) game->collisionSize.y++;
+        else if (game->mode == 5) game->roomSize.y++;
+    }
+
+    game->collisionSize = Vector_Constrain(game->collisionSize, Vector_New(1, 1), Vector_New(256, 256));
+    game->roomSize = Vector_Constrain(game->roomSize, Vector_New(1, 1), Vector_New(256, 256));
 
     if (events[6])
     {
         LevelLoader_Save(game->map->tiles,
             game->map->collisions,
+            game->map->rooms,
             game->map->tilesCursor,
             game->map->collisionsCursor,
+            game->map->roomsCursor,
             game->player->pos);
     }
 
@@ -120,21 +161,26 @@ void Game_Update(Game* game, bool* events, Vector mouse, Uint8* keyboard)
     {
         LevelLoader_Load(game->map->tiles,
             game->map->collisions,
+            game->map->rooms,
             &game->map->tilesCursor,
             &game->map->collisionsCursor,
+            &game->map->roomsCursor,
             &game->player->pos);
     }
-
-    game->collisionSize = Vector_Constrain(game->collisionSize, Vector_New(1, 1), Vector_New(256, 256));
 
     if (game->mode == 0)
     {
         Player_Update(game->player,
-            game->map->collisions,
-            game->map->collisionsCursor,
+            elapsed,
             keyboard,
-            elapsed);
-        Camera_Update(game->camera, game->player->pos, elapsed);
+            game->map->collisions,
+            game->map->collisionsCursor);
+
+        Camera_Update(game->camera,
+            elapsed,
+            game->player->pos,
+            game->map->rooms,
+            game->map->roomsCursor);
     }
 }
 
@@ -165,12 +211,16 @@ void Game_Draw(Game* game, SDL_Renderer* renderer, SDL_Texture** textures)
         game->cursor,
         game->selected,
         game->collisionSize,
+        game->roomSize,
         game->map->tiles,
         game->map->collisions,
+        game->map->rooms,
         game->map->tilesCursor,
         game->map->collisionsCursor,
+        game->map->roomsCursor,
         game->tilePointed,
         game->collisionPointed,
+        game->roomPointed,
         game->mode,
         game->grid);
 }

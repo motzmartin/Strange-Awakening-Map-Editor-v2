@@ -18,21 +18,24 @@ typedef struct Map
 
 	Box** collisions;
 	int collisionsCursor;
+
+	Box** rooms;
+	int roomsCursor;
 } Map;
 
 Map* Map_Create(int size);
 
 void Map_AddTile(Map* map, Vector position, Vector selected, bool front);
 void Map_RemoveTile(Map* map, int index);
+int Map_GetTileIndex(Map* map, Vector position);
 
 void Map_AddCollision(Map* map, Vector position, Vector size);
 void Map_RemoveCollision(Map* map, int index);
-
-int Map_GetTileIndex(Map* map, Vector position);
-Vector Map_GetTilePosition(Map* map, int index);
-
 int Map_GetCollisionIndex(Map* map, Vector position);
-Vector Map_GetCollisionPosition(Map* map, int index);
+
+void Map_AddRoom(Map* map, Vector position, Vector size);
+void Map_RemoveRoom(Map* map, int index);
+int Map_GetRoomIndex(Map* map, Vector position);
 
 void Map_SwitchFrontTile(Map* map, int index);
 

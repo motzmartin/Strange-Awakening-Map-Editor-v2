@@ -8,22 +8,39 @@ Camera* Camera_Create()
 	return camera;
 }
 
-void Camera_Update(Camera* camera, VectorF playerPos, Uint64 elapsed)
+void Camera_Update(Camera* camera,
+	Uint64 elapsed,
+	VectorF playerPos,
+	Box** rooms,
+	int roomsCursor)
 {
-	VectorF target = playerPos;
+	VectorF target = VectorF_Add(playerPos, VectorF_New(24.f, 24.f));
+
+	for (int i = 0; i < roomsCursor; i++)
+	{
+		Box* room = rooms[i];
+
+		if (playerPos.x > (float)room->pos.x * 12.f - 48.f &&
+			playerPos.x < (float)(room->pos.x + room->size.x) * 12.f &&
+			playerPos.y > (float)room->pos.y * 12.f - 48.f &&
+			playerPos.y < (float)(room->pos.y + room->size.y) * 12.f - 36.f)
+		{
+			target = VectorF_Scale(VectorF_FromVector(Vector_Add(room->pos, Vector_Div(room->size, 2))), 12.f);
+
+			break;
+		}
+	}
+
 	VectorF diff = VectorF_Sub(target, camera->pos);
 
-	float distance = sqrtf(powf(diff.x, 2.f) + powf(diff.y, 2.f));
-	if (distance > 8.f)
-	{
-		camera->pos = VectorF_Add(camera->pos, VectorF_Scale(diff, distance * elapsed * 1e-10f));
-	}
+	float factor = 1.f - expf(-(float)elapsed * 5e-9f);
+	camera->pos = VectorF_Add(camera->pos, VectorF_Scale(diff, factor));
 }
 
 Vector Camera_GetCentered(Camera* camera)
 {
 	Vector cameraPos = Vector_New((int)floorf(camera->pos.x), (int)floorf(camera->pos.y));
-	Vector center = Vector_New(576 - 24, 384 - 24);
+	Vector center = Vector_New(576, 384);
 
 	return Vector_Sub(cameraPos, center);
 }

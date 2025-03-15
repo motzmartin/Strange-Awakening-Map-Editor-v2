@@ -11,6 +11,9 @@ Map* Map_Create(int size)
     map->collisions = calloc(size, sizeof(Box*));
     if (!map->collisions) return NULL;
 
+    map->rooms = calloc(size, sizeof(Box*));
+    if (!map->rooms) return NULL;
+
     map->size = size;
 
     return map;
@@ -40,6 +43,22 @@ void Map_RemoveTile(Map* map, int index)
     map->tiles[--map->tilesCursor] = NULL;
 }
 
+int Map_GetTileIndex(Map* map, Vector position)
+{
+    for (int i = map->tilesCursor - 1; i >= 0; i--)
+    {
+        Tile* tile = map->tiles[i];
+
+        if (position.x >= tile->pos.x && position.y >= tile->pos.y &&
+            position.x < tile->pos.x + 4 && position.y < tile->pos.y + 4)
+        {
+            return i;
+        }
+    }
+
+    return -1;
+}
+
 void Map_AddCollision(Map* map, Vector position, Vector size)
 {
     if (map->collisionsCursor == map->size) return;
@@ -64,27 +83,6 @@ void Map_RemoveCollision(Map* map, int index)
     map->collisions[--map->collisionsCursor] = NULL;
 }
 
-int Map_GetTileIndex(Map* map, Vector position)
-{
-    for (int i = map->tilesCursor - 1; i >= 0; i--)
-    {
-        Tile* tile = map->tiles[i];
-
-        if (position.x >= tile->pos.x && position.y >= tile->pos.y &&
-            position.x < tile->pos.x + 4 && position.y < tile->pos.y + 4)
-        {
-            return i;
-        }
-    }
-
-    return -1;
-}
-
-Vector Map_GetTilePosition(Map* map, int index)
-{
-    return map->tiles[index]->pos;
-}
-
 int Map_GetCollisionIndex(Map* map, Vector position)
 {
     for (int i = map->collisionsCursor - 1; i >= 0; i--)
@@ -101,9 +99,44 @@ int Map_GetCollisionIndex(Map* map, Vector position)
     return -1;
 }
 
-Vector Map_GetCollisionPosition(Map* map, int index)
+void Map_AddRoom(Map* map, Vector position, Vector size)
 {
-    return map->collisions[index]->pos;
+    if (map->roomsCursor == map->size) return;
+
+    map->rooms[map->roomsCursor] = calloc(1, sizeof(Box));
+    if (!map->rooms[map->roomsCursor]) return;
+
+    Box newRoom = { position, size };
+    *map->rooms[map->roomsCursor++] = newRoom;
+}
+
+void Map_RemoveRoom(Map* map, int index)
+{
+    free(map->rooms[index]);
+    map->rooms[index] = NULL;
+
+    for (int i = index; i < map->roomsCursor - 1; i++)
+    {
+        map->rooms[i] = map->rooms[i + 1];
+    }
+
+    map->rooms[--map->roomsCursor] = NULL;
+}
+
+int Map_GetRoomIndex(Map* map, Vector position)
+{
+    for (int i = map->roomsCursor - 1; i >= 0; i--)
+    {
+        Box* box = map->rooms[i];
+
+        if (position.x >= box->pos.x && position.y >= box->pos.y &&
+            position.x < box->pos.x + box->size.x && position.y < box->pos.y + box->size.y)
+        {
+            return i;
+        }
+    }
+
+    return -1;
 }
 
 void Map_SwitchFrontTile(Map* map, int index)
@@ -124,6 +157,12 @@ void Map_Free(Map* map)
         free(map->collisions[i]);
     }
     free(map->collisions);
+
+    for (int i = 0; i < map->roomsCursor; i++)
+    {
+        free(map->rooms[i]);
+    }
+    free(map->rooms);
 
     free(map);
 }

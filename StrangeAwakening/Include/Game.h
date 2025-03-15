@@ -24,14 +24,14 @@ typedef struct Game
 
 	Vector cursor;
 	Vector selected;
-
 	Vector collisionSize;
+	Vector roomSize;
 
 	int tilePointed;
 	int collisionPointed;
+	int roomPointed;
 
 	int mode;
-
 	bool grid;
 
 	Uint64 timer;

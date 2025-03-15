@@ -7,6 +7,8 @@
 #include "Vector.h"
 #include "VectorF.h"
 
+#include "Box.h"
+
 typedef struct Camera
 {
 	VectorF pos;
@@ -14,7 +16,11 @@ typedef struct Camera
 
 Camera* Camera_Create();
 
-void Camera_Update(Camera* camera, VectorF playerPos, Uint64 elapsed);
+void Camera_Update(Camera* camera,
+	Uint64 elapsed,
+	VectorF playerPos,
+	Box** rooms,
+	int roomsCursor);
 Vector Camera_GetCentered(Camera* camera);
 
 void Camera_Free(Camera* camera);

@@ -52,7 +52,7 @@ VectorF VectorF_Constrain(VectorF vector, VectorF min, VectorF max)
 
 VectorF VectorF_Normalize(VectorF vector)
 {
-    VectorF result = { 0 };
+    VectorF result = VectorF_New(0.f, 0.f);
 
     float magnitude = sqrtf(powf(vector.x, 2.f) + powf(vector.y, 2.f));
     if (!magnitude) {
@@ -63,4 +63,9 @@ VectorF VectorF_Normalize(VectorF vector)
     result.y = vector.y / magnitude;
 
     return result;
+}
+
+VectorF VectorF_FromVector(Vector vector)
+{
+    return VectorF_New((int)floorf(vector.x), (int)floorf(vector.y));
 }

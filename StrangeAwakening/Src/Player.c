@@ -9,10 +9,10 @@ Player* Player_Create()
 }
 
 void Player_Update(Player* player,
-	Box** collisions,
-	int collisionsCursor,
+	Uint64 elapsed,
 	Uint8* keyboard,
-	Uint64 elapsed)
+	Box** collisions,
+	int collisionsCursor)
 {
 	player->count += elapsed;
 

@@ -6,12 +6,16 @@ void HudRender_Draw(SDL_Renderer* renderer,
     Vector cursor,
     Vector selected,
     Vector collisionSize,
+    Vector roomSize,
     Tile** tiles,
     Box** collisions,
+    Box** rooms,
     int tilesCursor,
     int collisionsCursor,
+    int roomsCursor,
     int tilePointed,
     int collisionPointed,
+    int roomPointed,
     int mode,
     bool grid)
 {
@@ -67,6 +71,21 @@ void HudRender_Draw(SDL_Renderer* renderer,
                 collisions,
                 collisionsCursor,
                 collisionPointed);
+        }
+        else if (mode == 5)
+        {
+            if (roomPointed == -1)
+            {
+                Vector cursorPos = { cursor.x * 12 - cameraCentered.x, cursor.y * 12 - cameraCentered.y };
+
+                HudRender_DrawRect(renderer, cursorPos, Vector_Scale(roomSize, 12), 255, 0, 255, 255);
+            }
+
+            HudRender_DrawRooms(renderer,
+                cameraCentered,
+                rooms,
+                roomsCursor,
+                roomPointed);
         }
         else
         {
@@ -129,15 +148,38 @@ void HudRender_DrawCollisions(SDL_Renderer* renderer,
     {
         Box* box = collisions[i];
 
-        Vector frontPos = { box->pos.x * 12 - cameraCentered.x, box->pos.y * 12 - cameraCentered.y };
+        Vector collisionPos = { box->pos.x * 12 - cameraCentered.x, box->pos.y * 12 - cameraCentered.y };
 
         if (i == collisionPointed)
         {
-            HudRender_DrawRect(renderer, frontPos, Vector_Scale(box->size, 12), 255, 0, 0, 255);
+            HudRender_DrawRect(renderer, collisionPos, Vector_Scale(box->size, 12), 255, 0, 0, 255);
         }
         else
         {
-            HudRender_DrawRect(renderer, frontPos, Vector_Scale(box->size, 12), 0, 0, 255, 255);
+            HudRender_DrawRect(renderer, collisionPos, Vector_Scale(box->size, 12), 0, 0, 255, 255);
+        }
+    }
+}
+
+void HudRender_DrawRooms(SDL_Renderer* renderer,
+    Vector cameraCentered,
+    Box** rooms,
+    int roomsCursor,
+    int roomPointed)
+{
+    for (int i = 0; i < roomsCursor; i++)
+    {
+        Box* box = rooms[i];
+
+        Vector roomPos = { box->pos.x * 12 - cameraCentered.x, box->pos.y * 12 - cameraCentered.y };
+
+        if (i == roomPointed)
+        {
+            HudRender_DrawRect(renderer, roomPos, Vector_Scale(box->size, 12), 255, 0, 0, 255);
+        }
+        else
+        {
+            HudRender_DrawRect(renderer, roomPos, Vector_Scale(box->size, 12), 255, 0, 255, 255);
         }
     }
 }

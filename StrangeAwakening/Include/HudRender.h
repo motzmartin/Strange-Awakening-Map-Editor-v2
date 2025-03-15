@@ -16,12 +16,16 @@ void HudRender_Draw(SDL_Renderer* renderer,
     Vector cursor,
     Vector selected,
     Vector collisionSize,
+    Vector roomSize,
     Tile** tiles,
     Box** collisions,
+    Box** rooms,
     int tilesCursor,
     int collisionsCursor,
+    int roomsCursor,
     int tilePointed,
     int collisionPointed,
+    int roomPointed,
     int mode,
     bool grid);
 
@@ -41,6 +45,12 @@ void HudRender_DrawCollisions(SDL_Renderer* renderer,
     Box** collisions,
     int collisionsCursor,
     int collisionPointed);
+
+void HudRender_DrawRooms(SDL_Renderer* renderer,
+    Vector cameraCentered,
+    Box** rooms,
+    int roomsCursor,
+    int roomPointed);
 
 void HudRender_DrawGrid(SDL_Renderer* renderer, Vector cameraCentered);
 
