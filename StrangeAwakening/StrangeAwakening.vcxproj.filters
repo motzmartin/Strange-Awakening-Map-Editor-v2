@@ -52,6 +52,9 @@
     <Filter Include="Resource Files\Levels">
       <UniqueIdentifier>{b8c478e6-bf35-4840-b08a-0be572ca9037}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Resource Files\Icon">
+      <UniqueIdentifier>{e42c5480-29c0-490f-972a-08eeb13d5d49}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Include\HudRender.h">
@@ -107,6 +110,9 @@
     </ClInclude>
     <ClInclude Include="Include\Box.h">
       <Filter>Header Files\Game</Filter>
+    </ClInclude>
+    <ClInclude Include="Assets\Icon\resource.h">
+      <Filter>Resource Files\Icon</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -178,5 +184,15 @@
     <CopyFileToFolders Include="Assets\Levels\Bedroom.lev">
       <Filter>Resource Files\Levels</Filter>
     </CopyFileToFolders>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="Assets\Icon\Icon.ico">
+      <Filter>Resource Files\Icon</Filter>
+    </Image>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="Assets\Icon\StrangeAwakening.rc">
+      <Filter>Resource Files\Icon</Filter>
+    </ResourceCompile>
   </ItemGroup>
 </Project>

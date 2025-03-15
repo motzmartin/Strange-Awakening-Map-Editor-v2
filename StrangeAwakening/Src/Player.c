@@ -38,13 +38,13 @@ void Player_Update(Player* player,
 	player->pos.y += player->acc.y;
 	Player_ProcessCollisionsY(player, collisions, collisionsCursor);
 
-	if (prevPos.x == player->pos.x && prevPos.y == player->pos.y)
+	if (VectorF_AreEqual(player->pos, prevPos))
 	{
 		player->sprite.x = 0;
 	}
 	else
 	{
-		player->sprite.x = player->count / 125000000 % 4 + 1;
+		player->sprite.x = (player->count / 125000000) % 4 + 1;
 
 		if (player->pos.x > prevPos.x) player->sprite.y = 3;
 		else if (player->pos.x < prevPos.x) player->sprite.y = 1;
@@ -59,10 +59,10 @@ Box* Player_IsColliding(Player* player, Box** collisions, int collisionsCursor)
 	{
 		Box* collision = collisions[i];
 
-		if (player->pos.x > (float)collision->pos.x * 12.f - 48.f &&
-			player->pos.x < (float)(collision->pos.x + collision->size.x) * 12.f &&
-			player->pos.y > (float)collision->pos.y * 12.f - 48.f &&
-			player->pos.y < (float)(collision->pos.y + collision->size.y) * 12.f - 36.f)
+		if (player->pos.x + 45.f > (float)collision->pos.x * 12.f &&
+			player->pos.x + 3.f < (float)(collision->pos.x + collision->size.x) * 12.f &&
+			player->pos.y + 48.f > (float)collision->pos.y * 12.f &&
+			player->pos.y + 48.f < (float)(collision->pos.y + collision->size.y) * 12.f)
 		{
 			return collision;
 		}
@@ -79,11 +79,11 @@ void Player_ProcessCollisionsX(Player* player, Box** collisions, int collisionsC
 	{
 		if (player->acc.x < 0.f)
 		{
-			player->pos.x = (float)(collision->pos.x + collision->size.x) * 12.f;
+			player->pos.x = (float)(collision->pos.x + collision->size.x) * 12.f - 3.f;
 		}
 		else if (player->acc.x > 0.f)
 		{
-			player->pos.x = (float)collision->pos.x * 12.f - 48.f;
+			player->pos.x = (float)collision->pos.x * 12.f - 45.f;
 		}
 	}
 }
@@ -96,7 +96,7 @@ void Player_ProcessCollisionsY(Player* player, Box** collisions, int collisionsC
 	{
 		if (player->acc.y < 0.f)
 		{
-			player->pos.y = (float)(collision->pos.y + collision->size.y) * 12.f - 36.f;
+			player->pos.y = (float)(collision->pos.y + collision->size.y) * 12.f - 48.f;
 		}
 		else if (player->acc.y > 0.f)
 		{

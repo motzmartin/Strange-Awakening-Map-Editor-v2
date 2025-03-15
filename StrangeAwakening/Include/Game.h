@@ -24,6 +24,7 @@ typedef struct Game
 
 	Vector cursor;
 	Vector selected;
+
 	Vector collisionSize;
 	Vector roomSize;
 

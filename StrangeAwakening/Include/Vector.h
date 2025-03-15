@@ -1,5 +1,7 @@
 #pragma once
 
+#include <stdbool.h>
+
 typedef struct Vector
 {
 	int x;
@@ -7,6 +9,8 @@ typedef struct Vector
 } Vector;
 
 Vector Vector_New(int x, int y);
+
+bool Vector_AreEqual(Vector vector1, Vector vector2);
 
 Vector Vector_Square(Vector vector, int size);
 

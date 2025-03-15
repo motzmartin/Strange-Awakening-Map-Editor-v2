@@ -7,6 +7,11 @@ VectorF VectorF_New(float x, float y)
     return vector;
 }
 
+bool VectorF_AreEqual(VectorF vector1, VectorF vector2)
+{
+    return vector1.x == vector2.x && vector1.y == vector2.y;
+}
+
 VectorF VectorF_Add(VectorF vector1, VectorF vector2)
 {
     vector1.x += vector2.x;

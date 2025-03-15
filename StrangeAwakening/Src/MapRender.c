@@ -11,7 +11,7 @@ void MapRender_Draw(Map* map,
     {
         Tile* tile = map->tiles[i];
 
-        if (behind == (!tile->front || tile->pos.y * 12 < (int)floorf(playerY)))
+        if (behind == (!tile->front || (float)tile->pos.y * 12.f < playerY))
         {
             SDL_Rect srcRect = { tile->sprite.x * 16, tile->sprite.y * 16, 16, 16 };
             SDL_Rect dstRect =

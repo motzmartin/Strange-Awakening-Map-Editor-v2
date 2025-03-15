@@ -21,6 +21,7 @@ void Camera_Update(Camera* camera,
 	VectorF playerPos,
 	Box** rooms,
 	int roomsCursor);
+
 Vector Camera_GetCentered(Camera* camera);
 
 void Camera_Free(Camera* camera);

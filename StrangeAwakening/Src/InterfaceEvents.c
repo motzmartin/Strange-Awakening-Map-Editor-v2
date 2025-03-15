@@ -24,7 +24,10 @@ bool InterfaceEvents_Poll(InterfaceEvents* interfaceEvents)
         switch (event.type)
         {
         case SDL_EVENT_MOUSE_BUTTON_DOWN:
-            interfaceEvents->events[0] = true;
+            if (event.button.button == SDL_BUTTON_LEFT)
+            {
+                interfaceEvents->events[0] = true;
+            }
             break;
 
         case SDL_EVENT_KEY_DOWN:

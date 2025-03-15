@@ -20,10 +20,10 @@ void Camera_Update(Camera* camera,
 	{
 		Box* room = rooms[i];
 
-		if (playerPos.x > (float)room->pos.x * 12.f - 48.f &&
-			playerPos.x < (float)(room->pos.x + room->size.x) * 12.f &&
-			playerPos.y > (float)room->pos.y * 12.f - 48.f &&
-			playerPos.y < (float)(room->pos.y + room->size.y) * 12.f - 36.f)
+		if (playerPos.x + 24.f > (float)room->pos.x * 12.f &&
+			playerPos.x + 24.f < (float)(room->pos.x + room->size.x) * 12.f &&
+			playerPos.y + 47.f > (float)room->pos.y * 12.f &&
+			playerPos.y + 47.f < (float)(room->pos.y + room->size.y) * 12.f)
 		{
 			target = VectorF_Scale(VectorF_FromVector(Vector_Add(room->pos, Vector_Div(room->size, 2))), 12.f);
 
