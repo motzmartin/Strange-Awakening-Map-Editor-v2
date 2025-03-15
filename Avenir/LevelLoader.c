@@ -55,6 +55,8 @@ void LevelLoader_Load(Tile** oldTiles,
 		*oldTiles[i] = tiles[i];
 	}
 
+	free(tiles);
+
 	*oldTilesCursor = tilesCursor;
 
 	int collisionsCursor = 0;
@@ -76,6 +78,8 @@ void LevelLoader_Load(Tile** oldTiles,
 
 		*oldCollisions[i] = collisions[i];
 	}
+
+	free(collisions);
 
 	*oldCollisionsCursor = collisionsCursor;
 

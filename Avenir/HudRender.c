@@ -17,8 +17,6 @@ void HudRender_Draw(SDL_Renderer* renderer,
 {
     if (mode == 1)
     {
-        SDL_SetTextureAlphaMod(sprites, 255);
-
         HudRender_DrawInventory(renderer, sprites, cursor, selected);
     }
     else
