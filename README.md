@@ -15,6 +15,6 @@
 | `C` | Enable collision editor mode |
 | `T` | Enable room editor mode |
 | `R` | Enable remove mode |
-| `X` | Export current map to `levels/level1.dat` |
-| `L` | Load `levels/level1.dat` |
+| `X` | Export current map to `Assets/Levels/Bedroom.dat` |
+| `L` | Load `Assets/Levels/Bedroom.dat` |
 | `G` | Enable/disable grid |
