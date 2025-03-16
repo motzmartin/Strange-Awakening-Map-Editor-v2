@@ -1,6 +1,6 @@
 # Overview
 
-![image](https://github.com/user-attachments/assets/3651b11b-d5ce-423f-9fbf-0fdaf89d838b)
+![image](https://github.com/user-attachments/assets/0fb2bf66-47a1-43fe-a85f-23cec207b999)
 
 # Controls  
 
