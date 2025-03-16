@@ -8,4 +8,6 @@
 
 bool TextureLoader_Load(DynamicArray* textures, SDL_Renderer* renderer, const char* path);
 
+SDL_Texture* TextureLoader_Get(DynamicArray* textures, int index);
+
 void TextureLoader_Free(DynamicArray* textures);

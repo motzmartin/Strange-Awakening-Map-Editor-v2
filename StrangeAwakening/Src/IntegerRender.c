@@ -1,16 +1,11 @@
 #include "IntegerRender.h"
 
-void IntegerRender_FillRect(SDL_Renderer* renderer,
-    SDL_Rect rect,
-    Uint8 r,
-    Uint8 g,
-    Uint8 b,
-    Uint8 a)
+void IntegerRender_FillRect(SDL_Renderer* renderer, SDL_Rect rect, SDL_Color color)
 {
     SDL_FRect fRect = { 0 };
     SDL_RectToFRect(&rect, &fRect);
 
-    SDL_SetRenderDrawColor(renderer, r, g, b, a);
+    SDL_SetRenderDrawColor(renderer, color.r, color.g, color.b, color.a);
     SDL_RenderFillRect(renderer, &fRect);
 }
 

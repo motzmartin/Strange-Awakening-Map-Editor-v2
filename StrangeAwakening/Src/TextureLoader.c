@@ -16,11 +16,16 @@ bool TextureLoader_Load(DynamicArray* textures, SDL_Renderer* renderer, const ch
     return true;
 }
 
+SDL_Texture* TextureLoader_Get(DynamicArray* textures, int index)
+{
+    return *(SDL_Texture**)DynamicArray_Get(textures, index);
+}
+
 void TextureLoader_Free(DynamicArray* textures)
 {
     for (int i = 0; i < DynamicArray_GetSize(textures); i++)
     {
-        SDL_Texture* texture = *(SDL_Texture**)DynamicArray_Get(textures, i);
+        SDL_Texture* texture = TextureLoader_Get(textures, i);
         SDL_DestroyTexture(texture);
     }
 }

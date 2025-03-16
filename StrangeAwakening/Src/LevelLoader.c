@@ -14,7 +14,7 @@ void LevelLoader_Save(VectorF spawnPoint, DynamicArray* tiles, DynamicArray** bo
 		fwrite(tile, sizeof(Tile), 1, file);
 	}
 
-	for (int i = 0; i < SIZE; i++)
+	for (int i = 0; i < TYPES_NUMBER; i++)
 	{
 		fwrite(&boxes[i]->cursor, sizeof(int), 1, file);
 
@@ -52,7 +52,7 @@ void LevelLoader_Load(VectorF* spawnPoint, DynamicArray* oldTiles, DynamicArray*
 
 	free(tiles);
 
-	for (int i = 0; i < SIZE; i++)
+	for (int i = 0; i < TYPES_NUMBER; i++)
 	{
 		int boxesCursor = 0;
 		fread(&boxesCursor, sizeof(int), 1, file);

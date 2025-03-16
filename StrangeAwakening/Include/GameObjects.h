@@ -10,7 +10,7 @@ typedef enum BoxType
 	ROOMS,
 	LIGHTS,
 	EMIT_LIGHTS,
-	SIZE
+	TYPES_NUMBER
 } BoxType;
 
 typedef struct Box

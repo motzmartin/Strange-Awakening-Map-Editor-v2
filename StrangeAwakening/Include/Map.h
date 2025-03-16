@@ -14,7 +14,7 @@ typedef struct Map
 	int size;
 
 	DynamicArray* tiles;
-	DynamicArray* boxes[SIZE];
+	DynamicArray* boxes[TYPES_NUMBER];
 } Map;
 
 Map* Map_Create(int size);

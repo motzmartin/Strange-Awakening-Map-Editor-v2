@@ -10,6 +10,7 @@
 #include "Camera.h"
 #include "Lights.h"
 #include "LevelLoader.h"
+#include "TextureLoader.h"
 
 #include "HudRender.h"
 #include "MapRender.h"

@@ -8,7 +8,7 @@ Map* Map_Create(int size)
     map->tiles = DynamicArray_Create(size, sizeof(Tile));
     if (!map->tiles) return NULL;
 
-    for (int i = 0; i < SIZE; i++)
+    for (int i = 0; i < TYPES_NUMBER; i++)
     {
         map->boxes[i] = DynamicArray_Create(size, sizeof(Box));
         if (!map->boxes[i]) return NULL;
@@ -91,7 +91,7 @@ void Map_SwitchFrontTile(Map* map, int index)
 
 void Map_Free(Map* map)
 {
-    for (int i = 0; i < SIZE; i++)
+    for (int i = 0; i < TYPES_NUMBER; i++)
     {
         DynamicArray_Free(map->boxes[i]);
     }

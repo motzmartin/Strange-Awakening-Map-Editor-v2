@@ -17,7 +17,7 @@ Game* Game_Create()
     game->lights = Lights_Create(2);
     if (!game->lights) return NULL;
 
-    for (int i = 0; i < SIZE; i++)
+    for (int i = 0; i < TYPES_NUMBER; i++)
     {
         game->sizes[i].x = 1;
         game->sizes[i].y = 1;
@@ -142,19 +142,19 @@ void Game_Draw(Game* game, SDL_Renderer* renderer, DynamicArray* textures)
 
     MapRender_Draw(game->map,
         renderer,
-        *(SDL_Texture**)DynamicArray_Get(textures, 0),
+        TextureLoader_Get(textures, 0),
         cameraCentered,
         game->player->pos.y,
         true);
 
     PlayerRender_Draw(game->player,
         renderer,
-        *(SDL_Texture**)DynamicArray_Get(textures, 1),
+        TextureLoader_Get(textures, 1),
         cameraCentered);
 
     MapRender_Draw(game->map,
         renderer,
-        *(SDL_Texture**)DynamicArray_Get(textures, 0),
+        TextureLoader_Get(textures, 0),
         cameraCentered,
         game->player->pos.y,
         false);
@@ -162,7 +162,7 @@ void Game_Draw(Game* game, SDL_Renderer* renderer, DynamicArray* textures)
     LightsRender_Draw(game->lights, renderer, cameraCentered);
 
     HudRender_Draw(renderer,
-        *(SDL_Texture**)DynamicArray_Get(textures, 0),
+        TextureLoader_Get(textures, 0),
         cameraCentered,
         game->cursor,
         game->selected,

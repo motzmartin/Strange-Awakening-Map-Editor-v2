@@ -36,16 +36,8 @@ void HudRender_DrawBoxes(SDL_Renderer* renderer,
     Vector cameraCentered,
     DynamicArray* boxes,
     int pointed,
-    Uint8 baseR,
-    Uint8 baseG,
-    Uint8 baseB);
+    SDL_Color baseColor);
 
 void HudRender_DrawGrid(SDL_Renderer* renderer, Vector cameraCentered);
 
-void HudRender_DrawRect(SDL_Renderer* renderer,
-    Vector pos,
-    Vector size,
-    Uint8 r,
-    Uint8 g,
-    Uint8 b,
-    Uint8 a);
+void HudRender_DrawRect(SDL_Renderer* renderer, Vector pos, Vector size, SDL_Color color);
