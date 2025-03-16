@@ -37,8 +37,7 @@ void HudRender_Draw(SDL_Renderer* renderer,
 
                 if (mode == 3)
                 {
-                    g = 0;
-                    b = 0;
+                    g = b = 0;
                 }
 
                 HudRender_DrawRect(renderer, tilePos, Vector_New(48, 48), r, g, b, 255);
@@ -150,11 +149,11 @@ void HudRender_DrawBoxes(SDL_Renderer* renderer,
 
 void HudRender_DrawGrid(SDL_Renderer* renderer, Vector cameraCentered)
 {
+    Vector mod = Vector_Mod(cameraCentered, Vector_New(48, 48));
+
     for (int i = 0; i < 24 + 1; i++)
     {
-        int mod = HudRender_TrueMod(cameraCentered.x, 48);
-
-        SDL_Rect rect = { i * 48 - mod, 0, 3, 768 };
+        SDL_Rect rect = { i * 48 - mod.x, 0, 3, 768 };
 
         Uint8 r = 255;
         Uint8 g = 255;
@@ -172,9 +171,7 @@ void HudRender_DrawGrid(SDL_Renderer* renderer, Vector cameraCentered)
 
     for (int i = 0; i < 16 + 1; i++)
     {
-        int mod = HudRender_TrueMod(cameraCentered.y, 48);
-
-        SDL_Rect rect = { 0, i * 48 - mod, 1152, 3 };
+        SDL_Rect rect = { 0, i * 48 - mod.y, 1152, 3 };
 
         Uint8 r = 255;
         Uint8 g = 255;
@@ -209,11 +206,4 @@ void HudRender_DrawRect(SDL_Renderer* renderer,
     IntegerRender_FillRect(renderer, rightSide, r, g, b, a);
     IntegerRender_FillRect(renderer, topSide, r, g, b, a);
     IntegerRender_FillRect(renderer, bottomSide, r, g, b, a);
-}
-
-int HudRender_TrueMod(int a, int b)
-{
-    int r = a % b;
-
-    return (r < 0) ? r + abs(b) : r;
 }

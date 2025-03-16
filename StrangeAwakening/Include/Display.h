@@ -3,8 +3,9 @@
 #include <stdlib.h>
 #include <SDL3/SDL.h>
 
-#include "DynamicArray.h"
 #include "TextureLoader.h"
+
+#include "DynamicArray.h"
 
 typedef struct Display
 {

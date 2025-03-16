@@ -5,6 +5,7 @@
 #include <SDL3/SDL.h>
 
 #include "GameObjects.h"
+
 #include "DynamicArray.h"
 #include "Vector.h"
 #include "VectorF.h"

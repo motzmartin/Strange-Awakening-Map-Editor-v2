@@ -1,5 +1,6 @@
 #pragma once
 
+#include <stdlib.h>
 #include <stdbool.h>
 
 typedef struct Vector
@@ -20,5 +21,7 @@ Vector Vector_Sub(Vector vector1, Vector vector2);
 
 Vector Vector_Scale(Vector vector, int factor);
 Vector Vector_Div(Vector vector, int factor);
+
+Vector Vector_Mod(Vector vector1, Vector vector2);
 
 Vector Vector_Constrain(Vector vector, Vector min, Vector max);

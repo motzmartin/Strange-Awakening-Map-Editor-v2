@@ -28,32 +28,6 @@ Game* Game_Create()
     return game;
 }
 
-void Game_UpdateCursor(Game* game, Vector mouse)
-{
-    if (game->mode == 1)
-    {
-        Vector min = Vector_New(0, 0);
-        Vector max = Vector_New(7, 7);
-
-        Vector cursorPos = Vector_Sub(Vector_Div(mouse, 48), Vector_New(8, 4));
-        game->cursor = Vector_Constrain(cursorPos, min, max);
-    }
-    else
-    {
-        Vector cursorPos = Vector_Div(Vector_Add(mouse, Camera_GetCentered(game->camera)), 12);
-        game->cursor = cursorPos;
-
-        if (game->mode == 2 || game->mode == 3)
-        {
-            game->pointed = Map_GetTileIndexByPos(game->map, cursorPos);
-        }
-        else if (game->mode >= 4 && game->mode <= 7)
-        {
-            game->pointed = Map_GetBoxIndexByPos(game->map, game->mode - 4, cursorPos);
-        }
-    }
-}
-
 void Game_Update(Game* game, SDL_Renderer* renderer, bool* events, Vector mouse, Uint8* keyboard)
 {
     Uint64 now = SDL_GetPerformanceCounter();
@@ -133,6 +107,32 @@ void Game_Update(Game* game, SDL_Renderer* renderer, bool* events, Vector mouse,
     {
         Player_Update(game->player, keyboard, game->map->boxes[COLLISIONS], elapsed);
         Camera_Update(game->camera, game->player->pos, game->map->boxes[ROOMS], elapsed);
+    }
+}
+
+void Game_UpdateCursor(Game* game, Vector mouse)
+{
+    if (game->mode == 1)
+    {
+        Vector min = Vector_New(0, 0);
+        Vector max = Vector_New(7, 7);
+
+        Vector cursorPos = Vector_Sub(Vector_Div(mouse, 48), Vector_New(8, 4));
+        game->cursor = Vector_Constrain(cursorPos, min, max);
+    }
+    else
+    {
+        Vector cursorPos = Vector_Div(Vector_Add(mouse, Camera_GetCentered(game->camera)), 12);
+        game->cursor = cursorPos;
+
+        if (game->mode == 2 || game->mode == 3)
+        {
+            game->pointed = Map_GetTileIndexByPos(game->map, cursorPos);
+        }
+        else if (game->mode >= 4 && game->mode <= 7)
+        {
+            game->pointed = Map_GetBoxIndexByPos(game->map, game->mode - 4, cursorPos);
+        }
     }
 }
 

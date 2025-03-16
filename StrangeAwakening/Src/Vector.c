@@ -60,6 +60,17 @@ Vector Vector_Div(Vector vector, int factor)
     return vector;
 }
 
+Vector Vector_Mod(Vector vector1, Vector vector2)
+{
+    vector1.x %= vector2.x;
+    if (vector1.x < 0) vector1.x += abs(vector2.x);
+
+    vector1.y %= vector2.y;
+    if (vector1.y < 0) vector1.y += abs(vector2.y);
+
+    return vector1;
+}
+
 Vector Vector_Constrain(Vector vector, Vector min, Vector max)
 {
     if (vector.x < min.x) vector.x = min.x;

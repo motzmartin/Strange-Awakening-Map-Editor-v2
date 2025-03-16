@@ -43,12 +43,7 @@ void Display_Render(Display* display)
 
 void Display_Free(Display* display)
 {
-    for (int i = 0; i < DynamicArray_GetSize(display->textures); i++)
-    {
-        SDL_Texture* texture = *(SDL_Texture**)DynamicArray_Get(display->textures, i);
-        SDL_DestroyTexture(texture);
-    }
-
+    TextureLoader_Free(display->textures);
     DynamicArray_Free(display->textures);
 
     SDL_DestroyRenderer(display->renderer);

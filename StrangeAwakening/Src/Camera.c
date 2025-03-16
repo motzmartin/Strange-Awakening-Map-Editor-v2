@@ -10,21 +10,18 @@ Camera* Camera_Create()
 
 void Camera_Update(Camera* camera, VectorF playerPos, DynamicArray* rooms, float elapsed)
 {
-	VectorF target = VectorF_Add(playerPos, VectorF_New(24.f, 24.f));
+	VectorF target = VectorF_New(0.f, 0.f);
 
-	for (int i = 0; i < DynamicArray_GetSize(rooms); i++)
+	Box* playerRoom = Camera_GetRoomByPlayerPos(rooms, playerPos);
+
+	if (playerRoom)
 	{
-		Box* room = DynamicArray_Get(rooms, i);
-
-		if (playerPos.x + 24.f > (float)room->pos.x * 12.f &&
-			playerPos.x + 24.f < (float)(room->pos.x + room->size.x) * 12.f &&
-			playerPos.y + 47.f > (float)room->pos.y * 12.f &&
-			playerPos.y + 47.f < (float)(room->pos.y + room->size.y) * 12.f)
-		{
-			target = VectorF_Scale(VectorF_FromVector(Vector_Add(room->pos, Vector_Div(room->size, 2))), 12.f);
-
-			break;
-		}
+		Vector roomCenter = Vector_Add(playerRoom->pos, Vector_Div(playerRoom->size, 2));
+		target = VectorF_Scale(VectorF_FromVector(roomCenter), 12.f);
+	}
+	else
+	{
+		target = VectorF_Add(playerPos, VectorF_New(24.f, 24.f));
 	}
 
 	VectorF diff = VectorF_Sub(target, camera->pos);
@@ -39,6 +36,24 @@ Vector Camera_GetCentered(Camera* camera)
 	Vector center = Vector_New(576, 384);
 
 	return Vector_Sub(cameraPos, center);
+}
+
+Box* Camera_GetRoomByPlayerPos(DynamicArray* rooms, VectorF playerPos)
+{
+	for (int i = 0; i < DynamicArray_GetSize(rooms); i++)
+	{
+		Box* room = DynamicArray_Get(rooms, i);
+
+		if (playerPos.x + 24.f > (float)room->pos.x * 12.f &&
+			playerPos.x + 24.f < (float)(room->pos.x + room->size.x) * 12.f &&
+			playerPos.y + 47.f > (float)room->pos.y * 12.f &&
+			playerPos.y + 47.f < (float)(room->pos.y + room->size.y) * 12.f)
+		{
+			return room;
+		}
+	}
+
+	return NULL;
 }
 
 void Camera_Free(Camera* camera)

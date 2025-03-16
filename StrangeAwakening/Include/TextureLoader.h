@@ -7,3 +7,5 @@
 #include "DynamicArray.h"
 
 bool TextureLoader_Load(DynamicArray* textures, SDL_Renderer* renderer, const char* path);
+
+void TextureLoader_Free(DynamicArray* textures);

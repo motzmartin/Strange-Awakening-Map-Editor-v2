@@ -5,6 +5,7 @@
 #include <SDL3/SDL.h>
 
 #include "GameObjects.h"
+
 #include "DynamicArray.h"
 #include "Vector.h"
 #include "IntegerRender.h"
@@ -48,5 +49,3 @@ void HudRender_DrawRect(SDL_Renderer* renderer,
     Uint8 g,
     Uint8 b,
     Uint8 a);
-
-int HudRender_TrueMod(int a, int b);

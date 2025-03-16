@@ -45,8 +45,6 @@ void Lights_Process(Lights* lights, DynamicArray** boxes, SDL_Renderer* renderer
     lights->pos = min;
     lights->size = size;
 
-    // LIGHTS ALLOCATION
-
     float** lightsTmp = calloc(realSize.y, sizeof(float*));
     if (!lightsTmp) return;
 
@@ -82,8 +80,6 @@ void Lights_Process(Lights* lights, DynamicArray** boxes, SDL_Renderer* renderer
 
     intensity -= 0.02f / (float)lights->quality;
 
-    // LIGHTS PROCESS
-
     while (intensity > 0.f)
     {
         float** temp = calloc(realSize.y, sizeof(float*));
@@ -105,9 +101,9 @@ void Lights_Process(Lights* lights, DynamicArray** boxes, SDL_Renderer* renderer
             for (int j = 0; j < realSize.x; j++)
             {
                 Vector pos = Vector_New(min.x + j / lights->quality, min.y + i / lights->quality);
-                int lightIndex = Lights_GetLightIndexByPos(boxes[LIGHTS], pos);
+                bool canSpread = Lights_CanSpreadAtPos(boxes[LIGHTS], pos);
 
-                if (temp[i][j] == 0 && lightIndex != -1)
+                if (temp[i][j] == 0 && canSpread)
                 {
                     if ((j > 0 && temp[i][j - 1] > 0) ||
                         (i > 0 && temp[i - 1][j] > 0) ||
@@ -129,8 +125,6 @@ void Lights_Process(Lights* lights, DynamicArray** boxes, SDL_Renderer* renderer
 
         free(temp);
     }
-
-    // TEXTURE CREATION
 
     lights->texture = SDL_CreateTexture(renderer,
         SDL_PIXELFORMAT_RGBA8888,
@@ -167,7 +161,7 @@ void Lights_Process(Lights* lights, DynamicArray** boxes, SDL_Renderer* renderer
     free(lightsTmp);
 }
 
-int Lights_GetLightIndexByPos(DynamicArray* lights, Vector pos)
+bool Lights_CanSpreadAtPos(DynamicArray* lights, Vector pos)
 {
     for (int i = DynamicArray_GetSize(lights) - 1; i >= 0; i--)
     {
@@ -178,11 +172,11 @@ int Lights_GetLightIndexByPos(DynamicArray* lights, Vector pos)
             pos.x < light->pos.x + light->size.x &&
             pos.y < light->pos.y + light->size.y)
         {
-            return i;
+            return true;
         }
     }
 
-    return -1;
+    return false;
 }
 
 void Lights_Free(Lights* lights)
