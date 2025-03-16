@@ -5,34 +5,33 @@
 #include <math.h>
 #include <SDL3/SDL.h>
 
-#include "Vector.h"
 #include "LevelLoader.h"
+#include "GameObjects.h"
+#include "Vector.h"
 
 #include "Map.h"
 #include "Player.h"
 #include "Camera.h"
+#include "Lights.h"
 
 #include "HudRender.h"
 #include "MapRender.h"
 #include "PlayerRender.h"
+#include "LightsRender.h"
 
 typedef struct Game
 {
 	Map* map;
 	Player* player;
 	Camera* camera;
+	Lights* lights;
 
 	Vector cursor;
 	Vector selected;
 
-	Vector collisionSize;
-	Vector roomSize;
-	Vector lightSize;
+	Vector sizes[4];
 
-	int tilePointed;
-	int collisionPointed;
-	int roomPointed;
-	int lightPointed;
+	int pointed;
 
 	int mode;
 	bool grid;
@@ -45,6 +44,6 @@ Game* Game_Create();
 void Game_UpdateCursor(Game* game, Vector mouse);
 
 void Game_Update(Game* game, SDL_Renderer* renderer, bool* events, Vector mouse, Uint8* keyboard);
-void Game_Draw(Game* game, SDL_Renderer* renderer, SDL_Texture** textures);
+void Game_Draw(Game* game, SDL_Renderer* renderer, DynamicArray* textures);
 
 void Game_Free(Game* game);

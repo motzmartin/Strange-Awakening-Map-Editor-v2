@@ -14,8 +14,8 @@ void IntegerRender_FillRect(SDL_Renderer* renderer,
     SDL_RenderFillRect(renderer, &fRect);
 }
 
-void IntegerRender_DrawSprite(SDL_Renderer* renderer,
-    SDL_Texture* sprite,
+void IntegerRender_DrawTexture(SDL_Renderer* renderer,
+    SDL_Texture* texture,
     SDL_Rect srcRect,
     SDL_Rect dstRect)
 {
@@ -25,5 +25,5 @@ void IntegerRender_DrawSprite(SDL_Renderer* renderer,
     SDL_FRect fDstRect = { 0 };
     SDL_RectToFRect(&dstRect, &fDstRect);
 
-    SDL_RenderTexture(renderer, sprite, &fSrcRect, &fDstRect);
+    SDL_RenderTexture(renderer, texture, &fSrcRect, &fDstRect);
 }

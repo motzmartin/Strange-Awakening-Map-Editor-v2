@@ -8,13 +8,9 @@ Player* Player_Create()
 	return player;
 }
 
-void Player_Update(Player* player,
-	Uint8* keyboard,
-	Box** collisions,
-	int collisionsCursor,
-	float elapsed)
+void Player_Update(Player* player, Uint8* keyboard, DynamicArray* collisions, float elapsed)
 {
-	player->count += elapsed;
+	player->counter += elapsed;
 
 	player->acc = VectorF_New(0.f, 0.f);
 
@@ -33,18 +29,25 @@ void Player_Update(Player* player,
 	VectorF prevPos = player->pos;
 
 	player->pos.x += player->acc.x;
-	Player_ProcessCollisionsX(player, collisions, collisionsCursor);
+	Player_ProcessCollisionsX(player, collisions);
 
 	player->pos.y += player->acc.y;
-	Player_ProcessCollisionsY(player, collisions, collisionsCursor);
+	Player_ProcessCollisionsY(player, collisions);
 
 	if (VectorF_AreEqual(player->pos, prevPos))
 	{
 		player->sprite.x = 0;
+
+		if (player->acc.x > 0.f) player->sprite.y = 3;
+		else if (player->acc.x < 0.f) player->sprite.y = 1;
+		else if (player->acc.y > 0.f) player->sprite.y = 0;
+		else if (player->acc.y < 0.f) player->sprite.y = 2;
+
+		player->counter = 0.f;
 	}
 	else
 	{
-		player->sprite.x = (int)(player->count * 6.f) % 4 + 1;
+		player->sprite.x = (int)(player->counter * 6.f) % 4 + 1;
 
 		if (player->pos.x > prevPos.x) player->sprite.y = 3;
 		else if (player->pos.x < prevPos.x) player->sprite.y = 1;
@@ -53,11 +56,11 @@ void Player_Update(Player* player,
 	}
 }
 
-Box* Player_IsColliding(Player* player, Box** collisions, int collisionsCursor)
+Box* Player_IsColliding(Player* player, DynamicArray* collisions)
 {
-	for (int i = 0; i < collisionsCursor; i++)
+	for (int i = 0; i < DynamicArray_GetSize(collisions); i++)
 	{
-		Box* collision = collisions[i];
+		Box* collision = DynamicArray_Get(collisions, i);
 
 		if (player->pos.x + 45.f > (float)collision->pos.x * 12.f &&
 			player->pos.x + 3.f < (float)(collision->pos.x + collision->size.x) * 12.f &&
@@ -71,9 +74,9 @@ Box* Player_IsColliding(Player* player, Box** collisions, int collisionsCursor)
 	return NULL;
 }
 
-void Player_ProcessCollisionsX(Player* player, Box** collisions, int collisionsCursor)
+void Player_ProcessCollisionsX(Player* player, DynamicArray* collisions)
 {
-	Box* collision = Player_IsColliding(player, collisions, collisionsCursor);
+	Box* collision = Player_IsColliding(player, collisions);
 
 	if (collision)
 	{
@@ -88,9 +91,9 @@ void Player_ProcessCollisionsX(Player* player, Box** collisions, int collisionsC
 	}
 }
 
-void Player_ProcessCollisionsY(Player* player, Box** collisions, int collisionsCursor)
+void Player_ProcessCollisionsY(Player* player, DynamicArray* collisions)
 {
-	Box* collision = Player_IsColliding(player, collisions, collisionsCursor);
+	Box* collision = Player_IsColliding(player, collisions);
 
 	if (collision)
 	{

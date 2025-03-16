@@ -152,7 +152,8 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="Assets\Icon\resource.h" />
-    <ClInclude Include="Include\Box.h" />
+    <ClInclude Include="Include\GameObjects.h" />
+    <ClInclude Include="Include\DynamicArray.h" />
     <ClInclude Include="Include\Camera.h" />
     <ClInclude Include="Include\Display.h" />
     <ClInclude Include="Include\Engine.h" />
@@ -161,17 +162,19 @@
     <ClInclude Include="Include\IntegerRender.h" />
     <ClInclude Include="Include\InterfaceEvents.h" />
     <ClInclude Include="Include\LevelLoader.h" />
+    <ClInclude Include="Include\Lights.h" />
     <ClInclude Include="Include\Map.h" />
     <ClInclude Include="Include\MapRender.h" />
     <ClInclude Include="Include\Player.h" />
     <ClInclude Include="Include\PlayerRender.h" />
     <ClInclude Include="Include\TextureLoader.h" />
-    <ClInclude Include="Include\Tile.h" />
     <ClInclude Include="Include\Vector.h" />
     <ClInclude Include="Include\VectorF.h" />
-    <ClInclude Include="Include\Light.h" />
+    <ClInclude Include="Include\LightsRender.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Src\LightsRender.c" />
+    <ClCompile Include="Src\DynamicArray.c" />
     <ClCompile Include="Src\Camera.c" />
     <ClCompile Include="Src\Display.c" />
     <ClCompile Include="Src\Engine.c" />
@@ -180,6 +183,7 @@
     <ClCompile Include="Src\IntegerRender.c" />
     <ClCompile Include="Src\InterfaceEvents.c" />
     <ClCompile Include="Src\LevelLoader.c" />
+    <ClCompile Include="Src\Lights.c" />
     <ClCompile Include="Src\Map.c" />
     <ClCompile Include="Src\MapRender.c" />
     <ClCompile Include="Src\Player.c" />

@@ -12,6 +12,11 @@ bool Vector_AreEqual(Vector vector1, Vector vector2)
     return vector1.x == vector2.x && vector1.y == vector2.y;
 }
 
+bool Vector_IsZero(Vector vector)
+{
+    return Vector_AreEqual(vector, Vector_New(0, 0));
+}
+
 Vector Vector_Square(Vector vector, int size)
 {
     vector.x = (vector.x / size) * size;

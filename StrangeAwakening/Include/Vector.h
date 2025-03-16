@@ -11,6 +11,7 @@ typedef struct Vector
 Vector Vector_New(int x, int y);
 
 bool Vector_AreEqual(Vector vector1, Vector vector2);
+bool Vector_IsZero(Vector vector);
 
 Vector Vector_Square(Vector vector, int size);
 

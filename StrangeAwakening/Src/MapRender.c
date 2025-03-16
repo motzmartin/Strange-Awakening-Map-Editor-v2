@@ -7,9 +7,9 @@ void MapRender_Draw(Map* map,
     float playerY,
     bool behind)
 {
-    for (int i = 0; i < map->tilesCursor; i++)
+    for (int i = 0; i < DynamicArray_GetSize(map->tiles); i++)
     {
-        Tile* tile = map->tiles[i];
+        Tile* tile = DynamicArray_Get(map->tiles, i);
 
         if (behind == (!tile->front || (float)tile->pos.y * 12.f < playerY))
         {
@@ -21,23 +21,7 @@ void MapRender_Draw(Map* map,
                 48,
                 48
             };
-            IntegerRender_DrawSprite(renderer, sprites, srcRect, dstRect);
+            IntegerRender_DrawTexture(renderer, sprites, srcRect, dstRect);
         }
-    }
-}
-
-void MapRender_DrawLights(Map* map, SDL_Renderer* renderer, Vector cameraCentered)
-{
-    if (map->lightsTexture)
-    {
-        SDL_Rect lightsSrc = { 0, 0, map->lightsSize.x * 2, map->lightsSize.y * 2 };
-        SDL_Rect lightsDst =
-        {
-            map->lightsPos.x * 12 - cameraCentered.x,
-            map->lightsPos.y * 12 - cameraCentered.y,
-            map->lightsSize.x * 12,
-            map->lightsSize.y * 12
-        };
-        IntegerRender_DrawSprite(renderer, map->lightsTexture, lightsSrc, lightsDst);
     }
 }

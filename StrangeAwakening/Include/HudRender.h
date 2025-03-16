@@ -4,33 +4,20 @@
 #include <math.h>
 #include <SDL3/SDL.h>
 
+#include "GameObjects.h"
+#include "DynamicArray.h"
 #include "Vector.h"
 #include "IntegerRender.h"
-
-#include "Tile.h"
-#include "Box.h"
-#include "Light.h"
 
 void HudRender_Draw(SDL_Renderer* renderer,
     SDL_Texture* sprites,
     Vector cameraCentered,
     Vector cursor,
     Vector selected,
-    Vector collisionSize,
-    Vector roomSize,
-    Vector lightSize,
-    Tile** tiles,
-    Box** collisions,
-    Box** rooms,
-    Light** lights,
-    int tilesCursor,
-    int collisionsCursor,
-    int roomsCursor,
-    int lightsCursor,
-    int tilePointed,
-    int collisionPointed,
-    int roomPointed,
-    int lightPointed,
+    DynamicArray* tiles,
+    DynamicArray** boxes,
+    Vector* sizes,
+    int pointed,
     int mode,
     bool grid);
 
@@ -41,32 +28,21 @@ void HudRender_DrawInventory(SDL_Renderer* renderer,
 
 void HudRender_DrawFrontTiles(SDL_Renderer* renderer,
     Vector cameraCentered,
-    Tile** tiles,
-    int tilesCursor,
-    int tilePointed);
+    DynamicArray* tiles,
+    int pointed);
 
-void HudRender_DrawCollisions(SDL_Renderer* renderer,
+void HudRender_DrawBoxes(SDL_Renderer* renderer,
     Vector cameraCentered,
-    Box** collisions,
-    int collisionsCursor,
-    int collisionPointed);
-
-void HudRender_DrawRooms(SDL_Renderer* renderer,
-    Vector cameraCentered,
-    Box** rooms,
-    int roomsCursor,
-    int roomPointed);
-
-void HudRender_DrawLights(SDL_Renderer* renderer,
-    Vector cameraCentered,
-    Light** lights,
-    int lightsCursor,
-    int lightPointed);
+    DynamicArray* boxes,
+    int pointed,
+    Uint8 baseR,
+    Uint8 baseG,
+    Uint8 baseB);
 
 void HudRender_DrawGrid(SDL_Renderer* renderer, Vector cameraCentered);
 
 void HudRender_DrawRect(SDL_Renderer* renderer,
-    Vector position,
+    Vector pos,
     Vector size,
     Uint8 r,
     Uint8 g,

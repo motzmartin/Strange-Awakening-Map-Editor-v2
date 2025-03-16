@@ -3,6 +3,7 @@
 #include <stdlib.h>
 #include <SDL3/SDL.h>
 
+#include "DynamicArray.h"
 #include "TextureLoader.h"
 
 typedef struct Display
@@ -10,7 +11,7 @@ typedef struct Display
 	SDL_Window* window;
 	SDL_Renderer* renderer;
 
-	TextureLoader* textureLoader;
+	DynamicArray* textures;
 } Display;
 
 Display* Display_Create(int windowWidth, int windowHeight, int texturesNumber);

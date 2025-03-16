@@ -16,10 +16,7 @@ typedef struct Engine
 	bool running;
 } Engine;
 
-Engine* Engine_Create(int windowWidth,
-	int windowHeight,
-	int eventsNumber,
-	int texturesNumber);
+Engine* Engine_Create(int windowWidth, int windowHeight, int eventsNumber, int texturesNumber);
 
 void Engine_Update(Engine* engine);
 void Engine_Render(Engine* engine);

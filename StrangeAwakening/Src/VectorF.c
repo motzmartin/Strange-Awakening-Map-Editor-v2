@@ -12,6 +12,11 @@ bool VectorF_AreEqual(VectorF vector1, VectorF vector2)
     return vector1.x == vector2.x && vector1.y == vector2.y;
 }
 
+bool VectorF_IsZero(VectorF vector)
+{
+    return VectorF_AreEqual(vector, VectorF_New(0.f, 0.f));
+}
+
 VectorF VectorF_Add(VectorF vector1, VectorF vector2)
 {
     vector1.x += vector2.x;

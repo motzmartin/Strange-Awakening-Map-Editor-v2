@@ -1,9 +1,6 @@
 #include "Engine.h"
 
-Engine* Engine_Create(int windowWidth,
-    int windowHeight,
-    int eventsNumber,
-    int texturesNumber)
+Engine* Engine_Create(int windowWidth, int windowHeight, int eventsNumber, int texturesNumber)
 {
     Engine* engine = calloc(1, sizeof(Engine));
     if (!engine) return NULL;
@@ -45,7 +42,7 @@ void Engine_Render(Engine* engine)
 
     Game_Draw(engine->game,
         engine->display->renderer,
-        engine->display->textureLoader->textures);
+        engine->display->textures);
 
     Display_Render(engine->display);
 }

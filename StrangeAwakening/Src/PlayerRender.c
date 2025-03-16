@@ -13,5 +13,5 @@ void PlayerRender_Draw(Player* player,
 		48,
 		48
 	};
-	IntegerRender_DrawSprite(renderer, sprite, srcRect, dstRect);
+	IntegerRender_DrawTexture(renderer, sprite, srcRect, dstRect);
 }

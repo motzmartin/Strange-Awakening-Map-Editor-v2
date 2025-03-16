@@ -57,6 +57,9 @@ bool InterfaceEvents_Poll(InterfaceEvents* interfaceEvents)
                 break;
             case SDL_SCANCODE_L:
                 interfaceEvents->events[8] = true;
+                break;
+            case SDL_SCANCODE_P:
+                interfaceEvents->events[9] = true;
             }
             break;
 

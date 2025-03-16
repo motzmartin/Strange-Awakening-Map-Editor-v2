@@ -9,7 +9,7 @@ void IntegerRender_FillRect(SDL_Renderer* renderer,
     Uint8 b,
     Uint8 a);
 
-void IntegerRender_DrawSprite(SDL_Renderer* renderer,
-    SDL_Texture* sprite,
+void IntegerRender_DrawTexture(SDL_Renderer* renderer,
+    SDL_Texture* texture,
     SDL_Rect srcRect,
     SDL_Rect dstRect);

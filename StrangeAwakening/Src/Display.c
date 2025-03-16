@@ -13,14 +13,14 @@ Display* Display_Create(int windowWidth, int windowHeight, int texturesNumber)
     display->renderer = SDL_CreateRenderer(display->window, NULL);
     if (!display->renderer) return NULL;
 
-    display->textureLoader = TextureLoader_Create(texturesNumber);
-    if (!display->textureLoader) return NULL;
+    display->textures = DynamicArray_Create(texturesNumber, sizeof(SDL_Texture*));
+    if (!display->textures) return NULL;
 
-    if (!TextureLoader_Load(display->textureLoader,
+    if (!TextureLoader_Load(display->textures,
         display->renderer,
         "Assets/Textures/Sprites.png")) return NULL;
 
-    if (!TextureLoader_Load(display->textureLoader,
+    if (!TextureLoader_Load(display->textures,
         display->renderer,
         "Assets/Textures/PlayerSprite.png")) return NULL;
 
@@ -43,7 +43,13 @@ void Display_Render(Display* display)
 
 void Display_Free(Display* display)
 {
-    TextureLoader_Free(display->textureLoader);
+    for (int i = 0; i < DynamicArray_GetSize(display->textures); i++)
+    {
+        SDL_Texture* texture = *(SDL_Texture**)DynamicArray_Get(display->textures, i);
+        SDL_DestroyTexture(texture);
+    }
+
+    DynamicArray_Free(display->textures);
 
     SDL_DestroyRenderer(display->renderer);
     SDL_DestroyWindow(display->window);

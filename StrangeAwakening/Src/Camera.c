@@ -8,17 +8,13 @@ Camera* Camera_Create()
 	return camera;
 }
 
-void Camera_Update(Camera* camera,
-	VectorF playerPos,
-	Box** rooms,
-	int roomsCursor,
-	float elapsed)
+void Camera_Update(Camera* camera, VectorF playerPos, DynamicArray* rooms, float elapsed)
 {
 	VectorF target = VectorF_Add(playerPos, VectorF_New(24.f, 24.f));
 
-	for (int i = 0; i < roomsCursor; i++)
+	for (int i = 0; i < DynamicArray_GetSize(rooms); i++)
 	{
-		Box* room = rooms[i];
+		Box* room = DynamicArray_Get(rooms, i);
 
 		if (playerPos.x + 24.f > (float)room->pos.x * 12.f &&
 			playerPos.x + 24.f < (float)(room->pos.x + room->size.x) * 12.f &&
