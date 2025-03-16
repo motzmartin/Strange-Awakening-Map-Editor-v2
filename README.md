@@ -12,7 +12,9 @@
 | `C` | Enable collision editor mode |
 | `T` | Enable room editor mode |
 | `I` | Enable light editor mode |
+| `O` | Enable emit lights editor mode |
 | `R` | Enable remove mode |
+| `P` | Process lights |
+| `G` | Enable/disable grid |
 | `X` | Export current map to `Assets/Levels/Bedroom.lev` |
 | `L` | Load `Assets/Levels/Bedroom.lev` |
-| `G` | Enable/disable grid |
