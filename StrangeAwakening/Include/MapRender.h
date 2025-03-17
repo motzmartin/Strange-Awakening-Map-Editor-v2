@@ -6,8 +6,8 @@
 #include "Map.h"
 
 #include "DynamicArray.h"
-#include "Vector.h"
 #include "IntegerRender.h"
+#include "Vector.h"
 
 void MapRender_Draw(Map* map,
     SDL_Renderer* renderer,

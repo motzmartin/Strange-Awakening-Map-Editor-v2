@@ -13,15 +13,12 @@ void MapRender_Draw(Map* map,
 
         if (behind == (!tile->front || (float)tile->pos.y * 12.f < playerY))
         {
-            SDL_Rect srcRect = { tile->sprite.x * 16, tile->sprite.y * 16, 16, 16 };
-            SDL_Rect dstRect =
-            {
-                tile->pos.x * 12 - cameraCentered.x,
-                tile->pos.y * 12 - cameraCentered.y,
-                48,
-                48
-            };
-            IntegerRender_DrawTexture(renderer, sprites, srcRect, dstRect);
+            IntegerRender_DrawTexture(renderer,
+                sprites,
+                Vector_Scale(tile->sprite, 16),
+                Vector_New(16, 16),
+                Vector_Sub(Vector_Scale(tile->pos, 12), cameraCentered),
+                Vector_New(48, 48));
         }
     }
 }

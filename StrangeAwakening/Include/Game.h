@@ -31,11 +31,15 @@ typedef struct Game
 	Vector cursor;
 	Vector selected;
 
-	Vector sizes[4];
+	bool resizeActive;
+	Vector size;
 
 	int pointed;
 
 	int mode;
+	int modeSelected;
+
+	bool showInventory;
 	bool grid;
 
 	Uint64 counter;

@@ -5,8 +5,9 @@
 
 #include "Player.h"
 
-#include "Vector.h"
 #include "IntegerRender.h"
+#include "Vector.h"
+#include "VectorConversion.h"
 
 void PlayerRender_Draw(Player* player,
 	SDL_Renderer* renderer,

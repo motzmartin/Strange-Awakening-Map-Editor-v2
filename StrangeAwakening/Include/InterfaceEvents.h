@@ -5,6 +5,8 @@
 #include <SDL3/SDL.h>
 
 #include "Vector.h"
+#include "VectorF.h"
+#include "VectorConversion.h"
 
 typedef struct InterfaceEvents
 {

@@ -169,6 +169,7 @@
     <ClInclude Include="Include\PlayerRender.h" />
     <ClInclude Include="Include\TextureLoader.h" />
     <ClInclude Include="Include\Vector.h" />
+    <ClInclude Include="Include\VectorConversion.h" />
     <ClInclude Include="Include\VectorF.h" />
     <ClInclude Include="Include\LightsRender.h" />
   </ItemGroup>
@@ -191,6 +192,7 @@
     <ClCompile Include="Src\Source.c" />
     <ClCompile Include="Src\TextureLoader.c" />
     <ClCompile Include="Src\Vector.c" />
+    <ClCompile Include="Src\VectorConversion.c" />
     <ClCompile Include="Src\VectorF.c" />
   </ItemGroup>
   <ItemGroup>
@@ -226,6 +228,12 @@
   </ItemGroup>
   <ItemGroup>
     <Image Include="Assets\Icon\Icon.ico" />
+    <CopyFileToFolders Include="Assets\Textures\UI.png">
+      <DestinationFolders Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(OutDir)Assets\Textures</DestinationFolders>
+      <DestinationFolders Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(OutDir)Assets\Textures</DestinationFolders>
+      <DestinationFolders Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(OutDir)Assets\Textures</DestinationFolders>
+      <DestinationFolders Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(OutDir)Assets\Textures</DestinationFolders>
+    </CopyFileToFolders>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Assets\Icon\StrangeAwakening.rc" />

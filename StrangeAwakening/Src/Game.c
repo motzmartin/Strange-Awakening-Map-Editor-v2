@@ -17,11 +17,10 @@ Game* Game_Create()
     game->lights = Lights_Create(2);
     if (!game->lights) return NULL;
 
-    for (int i = 0; i < TYPES_NUMBER; i++)
-    {
-        game->sizes[i].x = 1;
-        game->sizes[i].y = 1;
-    }
+    game->size = Vector_New(1, 1);
+
+    game->pointed = -1;
+    game->modeSelected = -1;
 
     game->counter = SDL_GetPerformanceCounter();
 
@@ -34,26 +33,34 @@ void Game_Update(Game* game, SDL_Renderer* renderer, bool* events, Vector mouse,
     float elapsed = (float)(now - game->counter) / (float)SDL_GetPerformanceFrequency();
     game->counter = now;
 
-    if (keyboard[SDL_SCANCODE_E]) game->mode = 1;
-    else if (keyboard[SDL_SCANCODE_F]) game->mode = 2;
-    else if (keyboard[SDL_SCANCODE_R]) game->mode = 3;
-    else if (keyboard[SDL_SCANCODE_C]) game->mode = 4;
-    else if (keyboard[SDL_SCANCODE_T]) game->mode = 5;
-    else if (keyboard[SDL_SCANCODE_I]) game->mode = 6;
-    else if (keyboard[SDL_SCANCODE_O]) game->mode = 7;
-    else game->mode = 0;
+    game->showInventory = game->mode == 0 && keyboard[SDL_SCANCODE_E];
 
     Game_UpdateCursor(game, mouse);
 
     if (events[0])
     {
-        if (game->mode == 0)
+        if (game->modeSelected != -1)
+        {
+            game->mode = game->modeSelected;
+
+            game->resizeActive = false;
+            game->size = Vector_New(1, 1);
+        }
+        else if (game->showInventory)
+        {
+            game->selected = game->cursor;
+        }
+        else if (game->mode == 0)
         {
             Map_AddTile(game->map, game->cursor, game->selected, false);
         }
         else if (game->mode == 1)
         {
-            game->selected = game->cursor;
+            if (game->pointed != -1)
+            {
+                Map_RemoveTile(game->map, game->pointed);
+                game->pointed = -1;
+            }
         }
         else if (game->mode == 2)
         {
@@ -62,40 +69,26 @@ void Game_Update(Game* game, SDL_Renderer* renderer, bool* events, Vector mouse,
                 Map_SwitchFrontTile(game->map, game->pointed);
             }
         }
-        else if (game->mode == 3)
+        else if (game->mode >= 3 && game->mode <= 6)
         {
             if (game->pointed != -1)
             {
-                Map_RemoveTile(game->map, game->pointed);
-                game->pointed = -1;
-            }
-        }
-        else if (game->mode >= 4 && game->mode <= 7)
-        {
-            BoxType type = game->mode - 4;
-
-            if (game->pointed != -1)
-            {
-                Map_RemoveBox(game->map, type, game->pointed);
+                Map_RemoveBox(game->map, game->mode - 3, game->pointed);
                 game->pointed = -1;
             }
             else
             {
-                Map_AddBox(game->map, type, game->cursor, game->sizes[type]);
+                game->resizeActive = true;
             }
         }
     }
 
-    if (game->mode >= 4 && game->mode <= 7)
+    if (events[1] && game->resizeActive)
     {
-        BoxType type = game->mode - 4;
+        Map_AddBox(game->map, game->mode - 3, game->cursor, game->size);
 
-        if (events[2]) game->sizes[type].x--;
-        else if (events[3]) game->sizes[type].y--;
-        else if (events[4]) game->sizes[type].x++;
-        else if (events[5]) game->sizes[type].y++;
-
-        game->sizes[type] = Vector_Constrain(game->sizes[type], Vector_New(1, 1), Vector_New(256, 256));
+        game->resizeActive = false;
+        game->size = Vector_New(1, 1);
     }
 
     if (events[6]) game->grid = !game->grid;
@@ -103,16 +96,26 @@ void Game_Update(Game* game, SDL_Renderer* renderer, bool* events, Vector mouse,
     if (events[8]) LevelLoader_Load(&game->player->pos, game->map->tiles, game->map->boxes);
     if (events[8] || events[9]) Lights_Process(game->lights, game->map->boxes, renderer);
 
-    if (game->mode == 0)
-    {
-        Player_Update(game->player, keyboard, game->map->boxes[COLLISIONS], elapsed);
-        Camera_Update(game->camera, game->player->pos, game->map->boxes[ROOMS], elapsed);
-    }
+    Player_Update(game->player, keyboard, game->map->boxes[COLLISIONS], elapsed);
+    Camera_Update(game->camera, game->player->pos, game->map->boxes[ROOMS], elapsed);
 }
 
 void Game_UpdateCursor(Game* game, Vector mouse)
 {
-    if (game->mode == 1)
+    for (int i = 0; i < 8; i++)
+    {
+        Vector pos = Vector_New(i * 30 + 6, 768 - 30 - 6);
+
+        if (mouse.x >= pos.x && mouse.x < pos.x + 30 && mouse.y >= pos.y && mouse.y < pos.y + 30)
+        {
+            game->modeSelected = i;
+            return;
+        }
+    }
+
+    game->modeSelected = -1;
+
+    if (game->showInventory)
     {
         Vector min = Vector_New(0, 0);
         Vector max = Vector_New(7, 7);
@@ -123,15 +126,27 @@ void Game_UpdateCursor(Game* game, Vector mouse)
     else
     {
         Vector cursorPos = Vector_Div(Vector_Add(mouse, Camera_GetCentered(game->camera)), 12);
-        game->cursor = cursorPos;
 
-        if (game->mode == 2 || game->mode == 3)
+        if (game->resizeActive)
         {
-            game->pointed = Map_GetTileIndexByPos(game->map, cursorPos);
+            if (game->mode >= 3 && game->mode <= 6)
+            {
+                Vector size = Vector_Add(Vector_Sub(cursorPos, game->cursor), Vector_New(1, 1));
+                game->size = Vector_Constrain(size, Vector_New(1, 1), Vector_New(256, 256));
+            }
         }
-        else if (game->mode >= 4 && game->mode <= 7)
+        else
         {
-            game->pointed = Map_GetBoxIndexByPos(game->map, game->mode - 4, cursorPos);
+            game->cursor = cursorPos;
+
+            if (game->mode == 1 || game->mode == 2)
+            {
+                game->pointed = Map_GetTileIndexByPos(game->map, cursorPos);
+            }
+            else if (game->mode >= 3 && game->mode <= 6)
+            {
+                game->pointed = Map_GetBoxIndexByPos(game->map, game->mode - 3, cursorPos);
+            }
         }
     }
 }
@@ -163,14 +178,17 @@ void Game_Draw(Game* game, SDL_Renderer* renderer, DynamicArray* textures)
 
     HudRender_Draw(renderer,
         TextureLoader_Get(textures, 0),
+        TextureLoader_Get(textures, 2),
         cameraCentered,
         game->cursor,
         game->selected,
         game->map->tiles,
         game->map->boxes,
-        game->sizes,
+        game->size,
         game->pointed,
         game->mode,
+        game->modeSelected,
+        game->showInventory,
         game->grid);
 }
 

@@ -7,19 +7,22 @@
 #include "GameObjects.h"
 
 #include "DynamicArray.h"
-#include "Vector.h"
 #include "IntegerRender.h"
+#include "Vector.h"
 
 void HudRender_Draw(SDL_Renderer* renderer,
     SDL_Texture* sprites,
+    SDL_Texture* ui,
     Vector cameraCentered,
     Vector cursor,
     Vector selected,
     DynamicArray* tiles,
     DynamicArray** boxes,
-    Vector* sizes,
+    Vector size,
     int pointed,
     int mode,
+    int modeSelected,
+    bool showInventory,
     bool grid);
 
 void HudRender_DrawInventory(SDL_Renderer* renderer,

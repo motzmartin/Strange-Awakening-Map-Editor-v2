@@ -74,8 +74,3 @@ VectorF VectorF_Normalize(VectorF vector)
 
     return result;
 }
-
-VectorF VectorF_FromVector(Vector vector)
-{
-    return VectorF_New(floorf((float)vector.x), floorf((float)vector.y));
-}

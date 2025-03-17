@@ -17,7 +17,7 @@ void Camera_Update(Camera* camera, VectorF playerPos, DynamicArray* rooms, float
 	if (playerRoom)
 	{
 		Vector roomCenter = Vector_Add(playerRoom->pos, Vector_Div(playerRoom->size, 2));
-		target = VectorF_Scale(VectorF_FromVector(roomCenter), 12.f);
+		target = VectorF_Scale(VectorConversion_FromVector(roomCenter), 12.f);
 	}
 	else
 	{

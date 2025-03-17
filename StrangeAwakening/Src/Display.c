@@ -24,6 +24,10 @@ Display* Display_Create(int windowWidth, int windowHeight, int texturesNumber)
         display->renderer,
         "Assets/Textures/PlayerSprite.png")) return NULL;
 
+    if (!TextureLoader_Load(display->textures,
+        display->renderer,
+        "Assets/Textures/UI.png")) return NULL;
+
     SDL_SetRenderVSync(display->renderer, 1);
     SDL_SetRenderDrawBlendMode(display->renderer, SDL_BLENDMODE_BLEND);
 

@@ -9,6 +9,7 @@
 #include "DynamicArray.h"
 #include "Vector.h"
 #include "VectorF.h"
+#include "VectorConversion.h"
 
 typedef struct Camera
 {

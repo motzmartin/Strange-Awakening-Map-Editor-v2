@@ -28,7 +28,10 @@ bool InterfaceEvents_Poll(InterfaceEvents* interfaceEvents)
             {
                 interfaceEvents->events[0] = true;
             }
-            else if (event.button.button == SDL_BUTTON_RIGHT)
+            break;
+
+        case SDL_EVENT_MOUSE_BUTTON_UP:
+            if (event.button.button == SDL_BUTTON_LEFT)
             {
                 interfaceEvents->events[1] = true;
             }
@@ -37,18 +40,6 @@ bool InterfaceEvents_Poll(InterfaceEvents* interfaceEvents)
         case SDL_EVENT_KEY_DOWN:
             switch (event.key.scancode)
             {
-            case SDL_SCANCODE_LEFT:
-                interfaceEvents->events[2] = true;
-                break;
-            case SDL_SCANCODE_UP:
-                interfaceEvents->events[3] = true;
-                break;
-            case SDL_SCANCODE_RIGHT:
-                interfaceEvents->events[4] = true;
-                break;
-            case SDL_SCANCODE_DOWN:
-                interfaceEvents->events[5] = true;
-                break;
             case SDL_SCANCODE_G:
                 interfaceEvents->events[6] = true;
                 break;
@@ -68,12 +59,10 @@ bool InterfaceEvents_Poll(InterfaceEvents* interfaceEvents)
         }
     }
 
-    float mouseX = 0;
-    float mouseY = 0;
+    VectorF mousePos = { 0 };
+    SDL_GetMouseState(&mousePos.x, &mousePos.y);
 
-    SDL_GetMouseState(&mouseX, &mouseY);
-
-    interfaceEvents->mouse = Vector_New((int)mouseX, (int)mouseY);
+    interfaceEvents->mouse = VectorConversion_FromVectorF(mousePos);
 
     return true;
 }

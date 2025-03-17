@@ -7,6 +7,7 @@ typedef struct DynamicArray
 {
 	void** arr;
 	int cursor;
+
 	int size;
 	int elementSize;
 } DynamicArray;

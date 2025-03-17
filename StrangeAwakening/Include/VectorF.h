@@ -25,5 +25,3 @@ VectorF VectorF_Div(VectorF vector, float factor);
 VectorF VectorF_Constrain(VectorF vector, VectorF min, VectorF max);
 
 VectorF VectorF_Normalize(VectorF vector);
-
-VectorF VectorF_FromVector(Vector vector);

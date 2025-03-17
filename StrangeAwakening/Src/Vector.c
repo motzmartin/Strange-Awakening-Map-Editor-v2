@@ -17,14 +17,6 @@ bool Vector_IsZero(Vector vector)
     return Vector_AreEqual(vector, Vector_New(0, 0));
 }
 
-Vector Vector_Square(Vector vector, int size)
-{
-    vector.x = (vector.x / size) * size;
-    vector.y = (vector.y / size) * size;
-
-    return vector;
-}
-
 Vector Vector_Add(Vector vector1, Vector vector2)
 {
     vector1.x += vector2.x;
@@ -60,17 +52,6 @@ Vector Vector_Div(Vector vector, int factor)
     return vector;
 }
 
-Vector Vector_Mod(Vector vector1, Vector vector2)
-{
-    vector1.x %= vector2.x;
-    if (vector1.x < 0) vector1.x += abs(vector2.x);
-
-    vector1.y %= vector2.y;
-    if (vector1.y < 0) vector1.y += abs(vector2.y);
-
-    return vector1;
-}
-
 Vector Vector_Constrain(Vector vector, Vector min, Vector max)
 {
     if (vector.x < min.x) vector.x = min.x;
@@ -80,4 +61,15 @@ Vector Vector_Constrain(Vector vector, Vector min, Vector max)
     else if (vector.y > max.y) vector.y = max.y;
 
     return vector;
+}
+
+Vector Vector_Mod(Vector vector1, Vector vector2)
+{
+    vector1.x %= vector2.x;
+    if (vector1.x < 0) vector1.x += abs(vector2.x);
+
+    vector1.y %= vector2.y;
+    if (vector1.y < 0) vector1.y += abs(vector2.y);
+
+    return vector1;
 }

@@ -117,6 +117,9 @@
     <ClInclude Include="Include\LightsRender.h">
       <Filter>Header Files\Render</Filter>
     </ClInclude>
+    <ClInclude Include="Include\VectorConversion.h">
+      <Filter>Header Files\Utils</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Src\Source.c">
@@ -176,6 +179,9 @@
     <ClCompile Include="Src\LightsRender.c">
       <Filter>Source Files\Render</Filter>
     </ClCompile>
+    <ClCompile Include="Src\VectorConversion.c">
+      <Filter>Source Files\Utils</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CopyFileToFolders Include="Assets\DLLs\SDL3.dll">
@@ -192,6 +198,9 @@
     </CopyFileToFolders>
     <CopyFileToFolders Include="Assets\Levels\Bedroom.lev">
       <Filter>Resource Files\Levels</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="Assets\Textures\UI.png">
+      <Filter>Resource Files\Textures</Filter>
     </CopyFileToFolders>
   </ItemGroup>
   <ItemGroup>

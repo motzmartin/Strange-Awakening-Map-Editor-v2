@@ -71,7 +71,11 @@ void Lights_Process(Lights* lights, DynamicArray** boxes, SDL_Renderer* renderer
                         int y = (j + emitLight->pos.y - min.y) * lights->quality + l;
                         int x = (k + emitLight->pos.x - min.x) * lights->quality + m;
 
-                        lightsTmp[y][x] = intensity;
+                        if (x >= 0 && x < realSize.x &&
+                            y >= 0 && y < realSize.y)
+                        {
+                            lightsTmp[y][x] = intensity;
+                        }
                     }
                 }
             }
