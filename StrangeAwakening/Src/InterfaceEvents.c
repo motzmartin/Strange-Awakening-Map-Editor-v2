@@ -37,20 +37,14 @@ bool InterfaceEvents_Poll(InterfaceEvents* interfaceEvents)
             }
             break;
 
-        case SDL_EVENT_KEY_DOWN:
-            switch (event.key.scancode)
+        case SDL_EVENT_MOUSE_WHEEL:
+            if (event.wheel.y > 0.f)
             {
-            case SDL_SCANCODE_G:
-                interfaceEvents->events[6] = true;
-                break;
-            case SDL_SCANCODE_X:
-                interfaceEvents->events[7] = true;
-                break;
-            case SDL_SCANCODE_L:
-                interfaceEvents->events[8] = true;
-                break;
-            case SDL_SCANCODE_P:
-                interfaceEvents->events[9] = true;
+                interfaceEvents->events[2] = true;
+            }
+            else if (event.wheel.y < 0.f)
+            {
+                interfaceEvents->events[3] = true;
             }
             break;
 

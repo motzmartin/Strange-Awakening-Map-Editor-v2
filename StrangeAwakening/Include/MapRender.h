@@ -6,7 +6,7 @@
 #include "Map.h"
 
 #include "DynamicArray.h"
-#include "IntegerRender.h"
+#include "Render.h"
 #include "Vector.h"
 
 void MapRender_Draw(Map* map,

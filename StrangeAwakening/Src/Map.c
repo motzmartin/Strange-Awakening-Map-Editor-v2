@@ -82,6 +82,16 @@ int Map_GetBoxIndexByPos(Map* map, BoxType type, Vector pos)
     return -1;
 }
 
+void Map_Clear(Map* map)
+{
+    DynamicArray_Clear(map->tiles);
+
+    for (int i = 0; i < TYPES_NUMBER; i++)
+    {
+        DynamicArray_Clear(map->boxes[i]);
+    }
+}
+
 void Map_SwitchFrontTile(Map* map, int index)
 {
     Tile* tile = DynamicArray_Get(map->tiles, index);

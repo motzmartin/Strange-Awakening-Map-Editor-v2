@@ -13,7 +13,7 @@ void MapRender_Draw(Map* map,
 
         if (behind == (!tile->front || (float)tile->pos.y * 12.f < playerY))
         {
-            IntegerRender_DrawTexture(renderer,
+            Render_DrawTexture(renderer,
                 sprites,
                 Vector_Scale(tile->sprite, 16),
                 Vector_New(16, 16),

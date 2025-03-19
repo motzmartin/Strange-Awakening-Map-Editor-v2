@@ -4,7 +4,7 @@ void LightsRender_Draw(Lights* lights, SDL_Renderer* renderer, Vector cameraCent
 {
     if (lights->texture)
     {
-        IntegerRender_DrawTexture(renderer,
+        Render_DrawTexture(renderer,
             lights->texture,
             Vector_New(0, 0),
             Vector_Scale(lights->size, lights->quality),

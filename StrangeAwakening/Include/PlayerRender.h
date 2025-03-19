@@ -5,7 +5,7 @@
 
 #include "Player.h"
 
-#include "IntegerRender.h"
+#include "Render.h"
 #include "Vector.h"
 #include "VectorConversion.h"
 

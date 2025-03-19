@@ -5,7 +5,7 @@ void PlayerRender_Draw(Player* player,
 	SDL_Texture* sprite,
 	Vector cameraCentered)
 {
-	IntegerRender_DrawTexture(renderer,
+	Render_DrawTexture(renderer,
 		sprite,
 		Vector_Scale(player->sprite, 16),
 		Vector_New(16, 16),

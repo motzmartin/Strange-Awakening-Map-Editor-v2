@@ -28,6 +28,8 @@ void Map_RemoveBox(Map* map, BoxType type, int index);
 int Map_GetTileIndexByPos(Map* map, Vector pos);
 int Map_GetBoxIndexByPos(Map* map, BoxType type, Vector pos);
 
+void Map_Clear(Map* map);
+
 void Map_SwitchFrontTile(Map* map, int index);
 
 void Map_Free(Map* map);

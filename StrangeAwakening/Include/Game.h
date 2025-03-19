@@ -30,16 +30,14 @@ typedef struct Game
 
 	Vector cursor;
 	Vector selected;
-
-	bool resizeActive;
 	Vector size;
 
 	int pointed;
-
+	int optionPointed;
 	int mode;
-	int modeSelected;
 
 	bool showInventory;
+	bool resizeActive;
 	bool grid;
 
 	Uint64 counter;
@@ -50,5 +48,7 @@ Game* Game_Create();
 void Game_Update(Game* game, SDL_Renderer* renderer, bool* events, Vector mouse, Uint8* keyboard);
 void Game_UpdateCursor(Game* game, Vector mouse);
 void Game_Draw(Game* game, SDL_Renderer* renderer, DynamicArray* textures);
+
+int Game_GetOptionPointed(Game* game, Vector mouse);
 
 void Game_Free(Game* game);

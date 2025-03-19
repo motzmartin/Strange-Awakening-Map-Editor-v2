@@ -60,9 +60,6 @@
     <ClInclude Include="Include\HudRender.h">
       <Filter>Header Files\Render</Filter>
     </ClInclude>
-    <ClInclude Include="Include\IntegerRender.h">
-      <Filter>Header Files\Render</Filter>
-    </ClInclude>
     <ClInclude Include="Include\PlayerRender.h">
       <Filter>Header Files\Render</Filter>
     </ClInclude>
@@ -120,15 +117,15 @@
     <ClInclude Include="Include\VectorConversion.h">
       <Filter>Header Files\Utils</Filter>
     </ClInclude>
+    <ClInclude Include="Include\Render.h">
+      <Filter>Header Files\Utils</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Src\Source.c">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Src\HudRender.c">
-      <Filter>Source Files\Render</Filter>
-    </ClCompile>
-    <ClCompile Include="Src\IntegerRender.c">
       <Filter>Source Files\Render</Filter>
     </ClCompile>
     <ClCompile Include="Src\MapRender.c">
@@ -180,6 +177,9 @@
       <Filter>Source Files\Render</Filter>
     </ClCompile>
     <ClCompile Include="Src\VectorConversion.c">
+      <Filter>Source Files\Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Render.c">
       <Filter>Source Files\Utils</Filter>
     </ClCompile>
   </ItemGroup>

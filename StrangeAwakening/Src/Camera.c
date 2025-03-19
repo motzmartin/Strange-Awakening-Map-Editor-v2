@@ -16,8 +16,12 @@ void Camera_Update(Camera* camera, VectorF playerPos, DynamicArray* rooms, float
 
 	if (playerRoom)
 	{
-		Vector roomCenter = Vector_Add(playerRoom->pos, Vector_Div(playerRoom->size, 2));
-		target = VectorF_Scale(VectorConversion_FromVector(roomCenter), 12.f);
+		VectorF roomPos = VectorConversion_FromVector(playerRoom->pos);
+		VectorF roomSize = VectorConversion_FromVector(playerRoom->size);
+
+		VectorF roomCenter = VectorF_Add(roomPos, VectorF_Div(roomSize, 2.f));
+
+		target = VectorF_Scale(roomCenter, 12.f);
 	}
 	else
 	{
@@ -32,7 +36,7 @@ void Camera_Update(Camera* camera, VectorF playerPos, DynamicArray* rooms, float
 
 Vector Camera_GetCentered(Camera* camera)
 {
-	Vector cameraPos = Vector_New((int)floorf(camera->pos.x), (int)floorf(camera->pos.y));
+	Vector cameraPos = VectorConversion_FromVectorF(camera->pos);
 	Vector center = Vector_New(576, 384);
 
 	return Vector_Sub(cameraPos, center);

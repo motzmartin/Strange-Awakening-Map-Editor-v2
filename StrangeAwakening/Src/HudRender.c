@@ -10,8 +10,8 @@ void HudRender_Draw(SDL_Renderer* renderer,
     DynamicArray** boxes,
     Vector size,
     int pointed,
+    int optionPointed,
     int mode,
-    int modeSelected,
     bool showInventory,
     bool grid)
 {
@@ -26,138 +26,164 @@ void HudRender_Draw(SDL_Renderer* renderer,
             HudRender_DrawGrid(renderer, cameraCentered);
         }
 
-        if (mode == 1 || mode == 2)
+        if (mode == 1 && pointed != -1)
         {
-            if (pointed != -1 && modeSelected == -1)
-            {
-                Tile* tile = DynamicArray_Get(tiles, pointed);
-                Vector screenPos = Vector_Sub(Vector_Scale(tile->pos, 12), cameraCentered);
-
-                SDL_Color color = { 255, 255, 255, 255 };
-                if (mode == 1) color.g = color.b = 0;
-
-                HudRender_DrawRect(renderer, screenPos, Vector_New(48, 48), color);
-            }
-
-            if (mode == 2)
-            {
-                HudRender_DrawFrontTiles(renderer, cameraCentered, tiles, pointed);
-            }
+            HudRender_DrawRemoveRect(renderer, cameraCentered, tiles, pointed);
+        }
+        else if (mode == 2)
+        {
+            HudRender_DrawFrontTiles(renderer, cameraCentered, tiles, pointed);
         }
         else
         {
             Vector screenPos = Vector_Sub(Vector_Scale(cursor, 12), cameraCentered);
 
-            if (mode == 0 && modeSelected == -1)
+            if (mode == 0 && optionPointed == -1)
             {
-                IntegerRender_DrawTexture(renderer,
-                    sprites,
-                    Vector_Scale(selected, 16),
-                    Vector_New(16, 16),
-                    screenPos,
-                    Vector_New(48, 48));
+                HudRender_DrawTilePlacement(renderer, sprites, screenPos, cameraCentered, selected, size);
             }
             else if (mode >= 3 && mode <= 6)
             {
-                BoxType type = mode - 3;
-
-                SDL_Color color = { 0, 0, 0, 255 };
-                if (type == COLLISIONS) color.b = 255;
-                else if (type == ROOMS) color.r = color.b = 255;
-                else if (type == LIGHTS) color.g = color.b = 255;
-                else if (type == EMIT_LIGHTS) color.r = color.g = 255;
-
-                if (pointed == -1 && modeSelected == -1)
-                {
-                    HudRender_DrawRect(renderer, screenPos, Vector_Scale(size, 12), color);
-                }
-
-                HudRender_DrawBoxes(renderer, cameraCentered, boxes[type], pointed, color);
+                HudRender_DrawBoxes(renderer, cameraCentered, boxes, screenPos, size, pointed, optionPointed, mode);
             }
         }
-    }
 
-    for (int i = 0; i < 8; i++)
-    {
-        Vector modePos = Vector_New(i * 30 + 9, 768 - 30 - 3);
-
-        IntegerRender_DrawTexture(renderer, ui, Vector_New(i * 8, 0),Vector_New(8, 8), modePos, Vector_New(24, 24));
-
-        if (i == mode || i == modeSelected)
-        {
-            SDL_Color color = { 255, 255, 255, 255 };
-            HudRender_DrawRect(renderer, Vector_Sub(modePos, Vector_New(3, 3)), Vector_New(30, 30), color);
-        }
+        HudRender_DrawOptions(renderer, ui, optionPointed, mode, grid);
     }
 }
 
-void HudRender_DrawInventory(SDL_Renderer* renderer,
+void HudRender_DrawTilePlacement(SDL_Renderer* renderer,
     SDL_Texture* sprites,
-    Vector cursor,
-    Vector selected)
-{
-    SDL_Color backgroundColor = { 63, 63, 63, 255 };
-    IntegerRender_FillRect(renderer, Vector_New(0, 0), Vector_New(1152, 768), backgroundColor);
-
-    IntegerRender_DrawTexture(renderer,
-        sprites,
-        Vector_New(0, 0),
-        Vector_New(128, 128),
-        Vector_New(384, 192),
-        Vector_New(384, 384));
-
-    Vector cursorPos = Vector_Scale(Vector_Add(cursor, Vector_New(8, 4)), 48);
-
-    SDL_Color cursorColor = { 255, 255, 255, 255 };
-    HudRender_DrawRect(renderer, cursorPos, Vector_New(48, 48), cursorColor);
-
-    if (cursor.x != selected.x || cursor.y != selected.y)
-    {
-        Vector selectedPos = Vector_Scale(Vector_Add(selected, Vector_New(8, 4)), 48);
-
-        SDL_Color selectedColor = { 0, 255, 0, 255 };
-        HudRender_DrawRect(renderer, selectedPos, Vector_New(48, 48), selectedColor);
-    }
-}
-
-void HudRender_DrawFrontTiles(SDL_Renderer* renderer,
+    Vector screenPos,
     Vector cameraCentered,
-    DynamicArray* tiles,
-    int pointed)
+    Vector selected,
+    Vector size)
 {
-    SDL_Color color = { 255, 255, 0, 255 };
-
-    for (int i = 0; i < DynamicArray_GetSize(tiles); i++)
+    for (int i = 0; i < size.y; i++)
     {
-        Tile* tile = DynamicArray_Get(tiles, i);
-
-        if (tile->front && i != pointed)
+        for (int j = 0; j < size.x; j++)
         {
-            Vector screenPos = Vector_Sub(Vector_Scale(tile->pos, 12), cameraCentered);
-            IntegerRender_DrawSelection(renderer, screenPos, 48, color);
+            Vector spritePos = Vector_Scale(selected, 16);
+            Vector spriteSize = Vector_New(16, 16);
+            Vector tilePos = Vector_Add(screenPos, Vector_Scale(Vector_New(j, i), 48));
+            Vector tileSize = Vector_New(48, 48);
+            Render_DrawTexture(renderer, sprites, spritePos, spriteSize, tilePos, tileSize);
         }
     }
 }
 
 void HudRender_DrawBoxes(SDL_Renderer* renderer,
     Vector cameraCentered,
-    DynamicArray* boxes,
+    DynamicArray** boxes,
+    Vector screenPos,
+    Vector size,
     int pointed,
-    SDL_Color baseColor)
+    int optionPointed,
+    int mode)
 {
-    for (int i = 0; i < DynamicArray_GetSize(boxes); i++)
-    {
-        Box* box = DynamicArray_Get(boxes, i);
-        Vector screenPos = { box->pos.x * 12 - cameraCentered.x, box->pos.y * 12 - cameraCentered.y };
+    BoxType type = mode - 3;
 
-        SDL_Color color = baseColor;
+    if (pointed == -1 && optionPointed == -1)
+    {
+        Vector previewBoxSize = Vector_Scale(size, 12);
+        SDL_Color previewBoxColor = HudRender_GetBoxColor(type);
+        Render_DrawRect(renderer, screenPos, previewBoxSize, previewBoxColor);
+    }
+
+    for (int i = 0; i < DynamicArray_GetSize(boxes[type]); i++)
+    {
+        Box* box = DynamicArray_Get(boxes[type], i);
+
+        Vector boxPos = Vector_Sub(Vector_Scale(box->pos, 12), cameraCentered);
+        Vector boxSize = Vector_Scale(box->size, 12);
+        SDL_Color boxColor = HudRender_GetBoxColor(type);
         if (i == pointed)
         {
-            color.r = 255;
-            color.g = color.b = 0;
+            boxColor.r = 255;
+            boxColor.g = boxColor.b = 0;
         }
+        Render_DrawRect(renderer, boxPos, boxSize, boxColor);
+    }
+}
 
-        HudRender_DrawRect(renderer, screenPos, Vector_Scale(box->size, 12), color);
+void HudRender_DrawInventory(SDL_Renderer* renderer, SDL_Texture* sprites, Vector cursor, Vector selected)
+{
+    Vector backgroundPos = Vector_New(0, 0);
+    Vector backgroundSize = Vector_New(1152, 768);
+    SDL_Color backgroundColor = { 63, 63, 63, 255 };
+    Render_FillRect(renderer, backgroundPos, backgroundSize, backgroundColor);
+
+    Vector spritePos = Vector_New(0, 0);
+    Vector spriteSize = Vector_New(128, 128);
+    Vector inventoryPos = Vector_New(384, 192);
+    Vector inventorySize = Vector_New(384, 384);
+    Render_DrawTexture(renderer, sprites, spritePos, spriteSize, inventoryPos, inventorySize);
+
+    Vector pointedPos = Vector_Scale(Vector_Add(cursor, Vector_New(8, 4)), 48);
+    Vector pointedSize = Vector_New(48, 48);
+    SDL_Color pointedColor = { 255, 255, 255, 255 };
+    Render_DrawRect(renderer, pointedPos, pointedSize, pointedColor);
+
+    if (cursor.x != selected.x || cursor.y != selected.y)
+    {
+        Vector selectedPos = Vector_Scale(Vector_Add(selected, Vector_New(8, 4)), 48);
+        Vector selectedSize = Vector_New(48, 48);
+        SDL_Color selectedColor = { 0, 255, 0, 255 };
+        Render_DrawRect(renderer, selectedPos, selectedSize, selectedColor);
+    }
+}
+
+void HudRender_DrawOptions(SDL_Renderer* renderer, SDL_Texture* ui, int optionPointed, int mode, bool grid)
+{
+    for (int i = 0; i < 13; i++)
+    {
+        Vector spritePos = Vector_New(i * 8, 0);
+        Vector spriteSize = Vector_New(8, 8);
+        Vector optionPos = Vector_New(i < 8 ? (i * 30 + 6) : (1152 - (13 - i) * 30 - 6), 768 - 30 - 6);
+        Vector optionSize = Vector_New(24, 24);
+        Render_DrawTexture(renderer, ui, spritePos, spriteSize, optionPos, optionSize);
+
+        if (i == optionPointed || (i < 8 ? (i == mode) : (i == 8 && grid)))
+        {
+            Vector rectPos = Vector_Sub(optionPos, Vector_New(3, 3));
+            Vector rectSize = Vector_Add(optionSize, Vector_New(6, 6));
+            SDL_Color rectColor = { 255, 255, 255, 255 };
+            Render_DrawRect(renderer, rectPos, rectSize, rectColor);
+        }
+    }
+}
+
+void HudRender_DrawRemoveRect(SDL_Renderer* renderer, Vector cameraCentered, DynamicArray* tiles, int pointed)
+{
+    Tile* pointedTile = DynamicArray_Get(tiles, pointed);
+
+    Vector rectPos = Vector_Sub(Vector_Scale(pointedTile->pos, 12), cameraCentered);
+    Vector rectSize = Vector_New(48, 48);
+    SDL_Color rectColor = { 255, 0, 0, 255 };
+    Render_DrawRect(renderer, rectPos, rectSize, rectColor);
+}
+
+void HudRender_DrawFrontTiles(SDL_Renderer* renderer, Vector cameraCentered, DynamicArray* tiles, int pointed)
+{
+    for (int i = 0; i < DynamicArray_GetSize(tiles); i++)
+    {
+        Tile* tile = DynamicArray_Get(tiles, i);
+
+        if (tile->front || i == pointed)
+        {
+            Vector selectionPos = Vector_Sub(Vector_Scale(tile->pos, 12), cameraCentered);
+            Vector selectionSize = Vector_New(48, 48);
+            SDL_Color selectionColor = { 255, 255, 255, 255 };
+            if (tile->front && i == pointed)
+            {
+                selectionColor.g = selectionColor.b = 0;
+            }
+            else if (tile->front)
+            {
+                selectionColor.b = 0;
+            }
+            Render_DrawSelection(renderer, selectionPos, selectionSize, selectionColor);
+        }
     }
 }
 
@@ -168,39 +194,48 @@ void HudRender_DrawGrid(SDL_Renderer* renderer, Vector cameraCentered)
     for (int i = 0; i < 24 + 1; i++)
     {
         Vector linePos = Vector_New(i * 48 - mod.x, 0);
-
-        SDL_Color color = { 255, 255, 255, 63 };
+        Vector lineSize = Vector_New(3, 768);
+        SDL_Color lineColor = { 255, 255, 255, 63 };
         if (linePos.x + cameraCentered.x == 0)
         {
-            color.r = color.b = 0;
-            color.a = 127;
+            lineColor.r = lineColor.b = 0;
+            lineColor.a = 127;
         }
-
-        IntegerRender_FillRect(renderer, linePos, Vector_New(3, 768), color);
+        Render_FillRect(renderer, linePos, lineSize, lineColor);
     }
 
     for (int i = 0; i < 16 + 1; i++)
     {
         Vector linePos = Vector_New(0, i * 48 - mod.y);
-
-        SDL_Color color = { 255, 255, 255, 63 };
+        Vector lineSize = Vector_New(1552, 3);
+        SDL_Color lineColor = { 255, 255, 255, 63 };
         if (linePos.y + cameraCentered.y == 0)
         {
-            color.g = color.b = 0;
-            color.a = 127;
+            lineColor.g = lineColor.b = 0;
+            lineColor.a = 127;
         }
-
-        IntegerRender_FillRect(renderer, linePos, Vector_New(1152, 3), color);
+        Render_FillRect(renderer, linePos, lineSize, lineColor);
     }
 }
 
-void HudRender_DrawRect(SDL_Renderer* renderer,
-    Vector pos,
-    Vector size,
-    SDL_Color color)
+SDL_Color HudRender_GetBoxColor(BoxType type)
 {
-    IntegerRender_FillRect(renderer, pos, Vector_New(3, size.y), color);
-    IntegerRender_FillRect(renderer, Vector_Add(pos, Vector_New(size.x - 3, 0)), Vector_New(3, size.y), color);
-    IntegerRender_FillRect(renderer, Vector_Add(pos, Vector_New(3, 0)), Vector_New(size.x - 6, 3), color);
-    IntegerRender_FillRect(renderer, Vector_Add(pos, Vector_New(3, size.y - 3)), Vector_New(size.x - 6, 3), color);
+    SDL_Color color = { 255, 255, 255, 255 };
+
+    switch (type)
+    {
+    case COLLISIONS:
+        color.r = color.g = 0;
+        break;
+    case ROOMS:
+        color.g = 0;
+        break;
+    case LIGHTS:
+        color.r = 0;
+        break;
+    case EMIT_LIGHTS:
+        color.b = 0;
+    }
+
+    return color;
 }
