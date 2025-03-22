@@ -143,6 +143,8 @@ void Game_Update(Game* game, SDL_Renderer* renderer, bool* events, Vector mouse,
         }
     }
 
+    if (events[4]) game->grid = !game->grid;
+
     Game_UpdateCursor(game, mouse);
 
     Player_Update(game->player, keyboard, game->map->boxes[COLLISIONS], elapsed);

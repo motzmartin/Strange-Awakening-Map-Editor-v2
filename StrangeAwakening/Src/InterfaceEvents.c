@@ -48,6 +48,13 @@ bool InterfaceEvents_Poll(InterfaceEvents* interfaceEvents)
             }
             break;
 
+        case SDL_EVENT_KEY_DOWN:
+            if (event.key.scancode == SDL_SCANCODE_G)
+            {
+                interfaceEvents->events[4] = true;
+            }
+            break;
+
         case SDL_EVENT_QUIT:
             return false;
         }
