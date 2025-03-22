@@ -139,7 +139,7 @@ void HudRender_DrawOptions(SDL_Renderer* renderer, SDL_Texture* ui, int optionPo
     {
         Vector spritePos = Vector_New(i * 8, 0);
         Vector spriteSize = Vector_New(8, 8);
-        Vector optionPos = Vector_New(i < 8 ? (i * 30 + 6) : (1152 - (13 - i) * 30 - 6), 768 - 30 - 6);
+        Vector optionPos = Vector_New(i < 8 ? (i * 30) + 9 : (1152 - (13 - i) * 30 - 3), 768 - 24 - 9);
         Vector optionSize = Vector_New(24, 24);
         Render_DrawTexture(renderer, ui, spritePos, spriteSize, optionPos, optionSize);
 

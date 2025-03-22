@@ -79,21 +79,23 @@ void Game_Update(Game* game, SDL_Renderer* renderer, bool* events, Vector mouse,
                 {
                     game->grid = !game->grid;
                 }
-                else if (game->optionPointed == 9 || game->optionPointed == 10)
+                else if (game->optionPointed == 9 || game->optionPointed == 10 || game->optionPointed == 12)
                 {
                     if (game->optionPointed == 10)
                     {
                         LevelLoader_Load(&game->player->pos, game->map->tiles, game->map->boxes);
+                    }
+                    else if (game->optionPointed == 12)
+                    {
+                        Map_Clear(game->map);
+
+                        game->player->pos = VectorF_New(0.f, 0.f);
                     }
                     Lights_Process(game->lights, game->map->boxes, renderer);
                 }
                 else if (game->optionPointed == 11)
                 {
                     LevelLoader_Save(game->player->pos, game->map->tiles, game->map->boxes);
-                }
-                else if (game->optionPointed == 12)
-                {
-                    Map_Clear(game->map);
                 }
             }
             else if (game->mode == 1)
@@ -226,7 +228,10 @@ void Game_Draw(Game* game, SDL_Renderer* renderer, DynamicArray* textures)
         game->player->pos.y,
         false);
 
-    LightsRender_Draw(game->lights, renderer, cameraCentered);
+    if (game->lights->texture)
+    {
+        LightsRender_Draw(game->lights, renderer, cameraCentered);
+    }
 
     HudRender_Draw(renderer,
         TextureLoader_Get(textures, 0),
@@ -248,7 +253,7 @@ int Game_GetOptionPointed(Game* game, Vector mouse)
 {
     for (int i = 0; i < 13; i++)
     {
-        Vector pos = Vector_New(i < 8 ? (i * 30 + 6) : (1152 - (13 - i) * 30 - 9), 768 - 30 - 9);
+        Vector pos = Vector_New(i < 8 ? (i * 30) + 6 : (1152 - (13 - i) * 30 - 6), 768 - 24 - 12);
 
         if (mouse.x >= pos.x && mouse.x < pos.x + 30 && mouse.y >= pos.y && mouse.y < pos.y + 30)
         {

@@ -20,6 +20,7 @@
 #include "GameObjects.h"
 
 #include "Vector.h"
+#include "VectorF.h"
 
 typedef struct Game
 {
